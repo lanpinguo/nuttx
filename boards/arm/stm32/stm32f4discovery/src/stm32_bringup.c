@@ -206,6 +206,28 @@ int stm32_bringup(void)
   stm32_i2ctool();
 #endif
 
+#ifdef CONFIG_DEV_GPIO
+  /* Initialize GPIO driver */
+
+  ret = stm32_gpio_initialize();
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: stm32_gpio_initialize() failed: %d\n", ret);
+    }
+#endif
+
+#ifdef CONFIG_IEEE802154_CC2520
+  /* Configure MRF24J40 wireless */
+
+  ret = stm32_cc2520_initialize();
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: stm32_cc2520_initialize() failed:"
+                      " %d\n", ret);
+    }
+#endif
+
+
 #ifdef CONFIG_SENSORS_BMP180
   /* Initialize the BMP180 pressure sensor. */
 

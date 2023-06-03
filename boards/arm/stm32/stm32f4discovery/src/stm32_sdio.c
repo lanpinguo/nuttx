@@ -116,6 +116,12 @@ int stm32_sdio_initialize(void)
 
   stm32_gpiosetevent(GPIO_SDIO_NCD, true, true, true,
                      stm32_ncd_interrupt, NULL);
+
+  stm32_configgpio(GPIO_SDIO_PWR);
+  
+  up_udelay(200);
+  stm32_gpiowrite(GPIO_SDIO_PWR, 1);
+
 #endif
 
   /* Mount the SDIO-based MMC/SD block driver */

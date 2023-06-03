@@ -40,6 +40,7 @@
 
 #if defined(CONFIG_STM32_SPI1) || defined(CONFIG_STM32_SPI2) || defined(CONFIG_STM32_SPI3)
 
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -55,47 +56,26 @@
 
 void weak_function stm32_spidev_initialize(void)
 {
-#ifdef CONFIG_ENC28J60
-  stm32_configgpio(GPIO_ENC28J60_CS);
-  stm32_configgpio(GPIO_ENC28J60_RESET);
-  stm32_configgpio(GPIO_ENC28J60_INTR);
-#endif
 
-#ifdef CONFIG_NET_W5500
-  stm32_configgpio(GPIO_W5500_CS);
-  stm32_configgpio(GPIO_W5500_RESET);
-  stm32_configgpio(GPIO_W5500_INTR);
-#endif
+    stm32_configgpio(GPIO_WIRELESS_INT);
+    stm32_configgpio(GPIO_WIRELESS_CS_0);
+    stm32_configgpio(GPIO_WIRELESS_CS_1);
+    stm32_configgpio(GPIO_WIRELESS_CS_2);
+    stm32_configgpio(GPIO_WIRELESS_CS_3);
+    stm32_configgpio(GPIO_WIRELESS_CS_4);
+    stm32_configgpio(GPIO_WIRELESS_CS_5);
+    stm32_configgpio(GPIO_WIRELESS_CS_6);
+    stm32_configgpio(GPIO_WIRELESS_CS_7);
+    stm32_configgpio(GPIO_WIRELESS_CS_8);
+    stm32_configgpio(GPIO_WIRELESS_CS_9);
+    stm32_configgpio(GPIO_WIRELESS_CS_10);
+    stm32_configgpio(GPIO_WIRELESS_CS_11);
+    stm32_configgpio(GPIO_WIRELESS_CS_12);
+    stm32_configgpio(GPIO_WIRELESS_CS_13);
+    stm32_configgpio(GPIO_WIRELESS_CS_14);
+    stm32_configgpio(GPIO_WIRELESS_CS_15);
 
-#ifdef CONFIG_STM32_SPI1
-  stm32_configgpio(GPIO_CS_MEMS);    /* MEMS chip select */
-#endif
-#if defined(CONFIG_STM32_SPI2) && defined(CONFIG_SENSORS_MAX31855)
-  stm32_configgpio(GPIO_MAX31855_CS); /* MAX31855 chip select */
-#endif
-#if defined(CONFIG_LCD_MAX7219) || defined(CONFIG_LEDS_MAX7219)
-  stm32_configgpio(GPIO_MAX7219_CS);  /* MAX7219 chip select */
-#endif
-#ifdef CONFIG_LPWAN_SX127X
-  stm32_configgpio(GPIO_SX127X_CS);   /* SX127x chip select */
-#endif
 
-#if defined(CONFIG_LCD_ST7567) || defined(CONFIG_LCD_ST7567)
-  stm32_configgpio(STM32_LCD_CS);     /* ST7567/ST7789 chip select */
-#endif
-#if defined(CONFIG_STM32_SPI2) && defined(CONFIG_SENSORS_MAX6675)
-  stm32_configgpio(GPIO_MAX6675_CS); /* MAX6675 chip select */
-#endif
-#if defined(CONFIG_LCD_UG2864AMBAG01) || defined(CONFIG_LCD_UG2864HSWEG01) || \
-    defined(CONFIG_LCD_SSD1351)
-  stm32_configgpio(GPIO_OLED_CS);    /* OLED chip select */
-# if defined(CONFIG_LCD_UG2864AMBAG01)
-  stm32_configgpio(GPIO_OLED_A0);    /* OLED Command/Data */
-# endif
-# if defined(CONFIG_LCD_UG2864HSWEG01) || defined(CONFIG_LCD_SSD1351)
-  stm32_configgpio(GPIO_OLED_DC);    /* OLED Command/Data */
-# endif
-#endif
 }
 
 /****************************************************************************
@@ -131,56 +111,62 @@ void stm32_spi1select(struct spi_dev_s *dev, uint32_t devid,
   spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" :
           "de-assert");
 
-#ifdef CONFIG_ENC28J60
-  if (devid == SPIDEV_ETHERNET(0))
-    {
-      /* Set the GPIO low to select and high to de-select */
+  switch (devid)
+  {
+  case SPIDEV_IEEE802154(0):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_0, !selected);
+    break;
+  case SPIDEV_IEEE802154(1):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_1, !selected);
+    break;
+  case SPIDEV_IEEE802154(2):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_2, !selected);
+    break;
+  case SPIDEV_IEEE802154(3):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_3, !selected);
+    break;
+  case SPIDEV_IEEE802154(4):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_4, !selected);
+    break;
+  case SPIDEV_IEEE802154(5):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_5, !selected);
+    break;
+  case SPIDEV_IEEE802154(6):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_6, !selected);
+    break;
+  case SPIDEV_IEEE802154(7):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_7, !selected);
+    break;
+  case SPIDEV_IEEE802154(8):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_8, !selected);
+    break;
+  case SPIDEV_IEEE802154(9):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_9, !selected);
+    break;
+  case SPIDEV_IEEE802154(10):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_10, !selected);
+    break;
+  case SPIDEV_IEEE802154(11):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_11, !selected);
+    break;
+  case SPIDEV_IEEE802154(12):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_12, !selected);
+    break;
+  case SPIDEV_IEEE802154(13):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_13, !selected);
+    break;
+  case SPIDEV_IEEE802154(14):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_14, !selected);
+    break;
+  case SPIDEV_IEEE802154(15):
+    stm32_gpiowrite(GPIO_WIRELESS_CS_15, !selected);
+    break;
+  
+  default:
+    break;
+  };
 
-      stm32_gpiowrite(GPIO_ENC28J60_CS, !selected);
-    }
-#endif
 
-#ifdef CONFIG_NET_W5500
-  if (devid == SPIDEV_ETHERNET(0))
-    {
-      /* Set the GPIO low to select and high to de-select */
-
-      stm32_gpiowrite(GPIO_W5500_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_LPWAN_SX127X
-  if (devid == SPIDEV_LPWAN(0))
-    {
-      stm32_gpiowrite(GPIO_SX127X_CS, !selected);
-    }
-#endif
-
-#if defined(CONFIG_LCD_ST7567) || defined(CONFIG_LCD_ST7789)
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(STM32_LCD_CS, !selected);
-    }
-#endif
-
-#if defined(CONFIG_LCD_MAX7219) || defined(CONFIG_LEDS_MAX7219)
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(GPIO_MAX7219_CS, !selected);
-    }
-#endif
-
-#if defined(CONFIG_LCD_UG2864AMBAG01) || defined(CONFIG_LCD_UG2864HSWEG01) || \
-    defined(CONFIG_LCD_SSD1351)
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(GPIO_OLED_CS, !selected);
-    }
-  else
-#endif
-    {
-      stm32_gpiowrite(GPIO_CS_MEMS, !selected);
-    }
 }
 
 uint8_t stm32_spi1status(struct spi_dev_s *dev, uint32_t devid)

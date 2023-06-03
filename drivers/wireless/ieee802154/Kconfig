@@ -30,4 +30,12 @@ config IEEE802154_XBEE
 
 source "drivers/wireless/ieee802154/xbee/Kconfig"
 
+config IEEE802154_CC2520
+        bool "CC2520 transceiver driver"
+        depends on SPI
+        default n
+        ---help---
+		This selection enables support for the CC2520 device.
+source "drivers/wireless/ieee802154/cc2520/Kconfig"
+
 endif # DRIVERS_IEEE802154

@@ -245,14 +245,16 @@
 #ifdef CONFIG_USART1_RS485
   /* Lets use for RS485 on pins: PB6 and PB7 */
 
-#  define GPIO_USART1_TX        GPIO_USART1_TX_2
-#  define GPIO_USART1_RX        GPIO_USART1_RX_2
+#define GPIO_USART1_RX    GPIO_USART1_RX_1     /* PA10 */
+#define GPIO_USART1_TX    GPIO_USART1_TX_1     /* PA9 */
 
   /* RS485 DIR pin: PA15 */
 
 #  define GPIO_USART1_RS485_DIR (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz |\
                                GPIO_OUTPUT_CLEAR | GPIO_PORTA | GPIO_PIN15)
-
+#else
+#define GPIO_USART1_RX    GPIO_USART1_RX_1     /* PA10 */
+#define GPIO_USART1_TX    GPIO_USART1_TX_1     /* PA9 */
 #endif
 
 /* USART2:
@@ -302,7 +304,6 @@
  * NOTE: CTS and RTS are not brought out to the RS-232 connector on the
  * baseboard.
  */
-
 #define GPIO_USART6_RX    GPIO_USART6_RX_1     /* PC7 (also I2S3_MCK and P2 pin 48) */
 #define GPIO_USART6_TX    GPIO_USART6_TX_1     /* PC6 (also P2 pin 47) */
 
@@ -332,7 +333,7 @@
 #define GPIO_TIM2_CH2OUT  GPIO_TIM2_CH2OUT_1
 #define GPIO_TIM3_CH3OUT  GPIO_TIM3_CH3OUT_1
 
-/* SPI - There is a MEMS device on SPI1 using these pins: */
+/* SPI - There is a CC2520 device on SPI1 using these pins: */
 
 #define GPIO_SPI1_MISO    GPIO_SPI1_MISO_1
 #define GPIO_SPI1_MOSI    GPIO_SPI1_MOSI_1
@@ -345,8 +346,8 @@
 
 /* SPI2 - Test MAX31855 on SPI2 PB10 = SCK, PB14 = MISO */
 
-#define GPIO_SPI2_MISO    GPIO_SPI2_MISO_1
-#define GPIO_SPI2_MOSI    GPIO_SPI2_MOSI_1
+#define GPIO_SPI2_MISO    GPIO_SPI2_MISO_2
+#define GPIO_SPI2_MOSI    GPIO_SPI2_MOSI_3
 #define GPIO_SPI2_SCK     GPIO_SPI2_SCK_1
 
 /* SPI2 DMA -- As used for MMC/SD SPI */
@@ -419,7 +420,7 @@
                            GPIO_OUTPUT_SET | GPIO_PORTB | GPIO_PIN12)
 
 #define GPIO_MMCSD_NCD    (GPIO_INPUT | GPIO_FLOAT | GPIO_EXTI | \
-                           GPIO_PORTC | GPIO_PIN1)
+                           GPIO_PORTB | GPIO_PIN6)
 #endif
 
 /* DMA Channel/Stream Selections ********************************************/

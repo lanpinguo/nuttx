@@ -1,5 +1,5 @@
 ############################################################################
-# drivers/wireless/ieee802154/Make.defs
+# drivers/wireless/ieee802154/cc2520/Make.defs
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,23 +18,16 @@
 #
 ############################################################################
 
-# Include nothing if IEEE 802.15.4 is disabled
+ifeq ($(CONFIG_IEEE802154_CC2520),y)
 
-ifeq ($(CONFIG_DRIVERS_IEEE802154),y)
+# Include CC2520 files into the build
 
-# Include common IEEE 802.15.4 files into the build
+CSRCS += cc2520.c cc2520_interrupt.c cc2520_radif.c cc2520_regops.c cc2520_cdev.c
 
-# Include IEEE 802.15.4 drivers into the build
+# Include CC2520 build support
 
-include wireless/ieee802154/mrf24j40/Make.defs
-include wireless/ieee802154/at86rf23x/Make.defs
-include wireless/ieee802154/xbee/Make.defs
-include wireless/ieee802154/cc2520/Make.defs
+DEPPATH += --dep-path wireless$(DELIM)ieee802154$(DELIM)cc2520
+VPATH += :wireless$(DELIM)ieee802154$(DELIM)cc2520
+CFLAGS += ${INCDIR_PREFIX}$(TOPDIR)$(DELIM)drivers$(DELIM)wireless$(DELIM)ieee802154$(DELIM)cc2520
 
-# Include common IEEE 802.15.4 build support
-
-DEPPATH += --dep-path wireless$(DELIM)ieee802154
-VPATH += :wireless$(DELIM)ieee802154
-CFLAGS += ${INCDIR_PREFIX}$(TOPDIR)$(DELIM)drivers$(DELIM)wireless$(DELIM)ieee802154
-
-endif # CONFIG_DRIVERS_IEEE802154
+endif # CONFIG_IEEE802154_CC2520

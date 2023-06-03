@@ -205,8 +205,8 @@ void board_autoled_initialize(void)
 
   stm32_configgpio(GPIO_LED1);
   stm32_configgpio(GPIO_LED2);
-  stm32_configgpio(GPIO_LED3);
-  stm32_configgpio(GPIO_LED4);
+//   stm32_configgpio(GPIO_LED3);
+//   stm32_configgpio(GPIO_LED4);
 }
 
 /****************************************************************************

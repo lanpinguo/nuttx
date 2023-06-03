@@ -209,9 +209,9 @@
 /* LEDs */
 
 #define GPIO_LED1       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
-                         GPIO_OUTPUT_CLEAR|GPIO_PORTD|GPIO_PIN12)
+                         GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN0)
 #define GPIO_LED2       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
-                         GPIO_OUTPUT_CLEAR|GPIO_PORTD|GPIO_PIN13)
+                         GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN1)
 #define GPIO_LED3       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
                          GPIO_OUTPUT_CLEAR|GPIO_PORTD|GPIO_PIN14)
 #define GPIO_LED4       (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
@@ -234,6 +234,12 @@
 #define GPIO_JOY_LEFT     (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTE|GPIO_PIN4)
 #define GPIO_JOY_DOWN     (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTE|GPIO_PIN5)
 #define GPIO_JOY_RIGHT    (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTE|GPIO_PIN6)
+
+/* Wireless CC2520*/
+#define GPIO_WIRELESS_INT (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTC|GPIO_PIN1)
+
+#define GPIO_WIRELESS_RST (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                         GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN5)
 
 /* LoRa SX127x */
 
@@ -260,7 +266,74 @@
 #define STM32F4DISCOVERY_CAPTURETIMER   3
 #define STM32F4DISCOVERY_CAPTURECHANNEL 2
 
+
+/* GPIO pins used by the GPIO Subsystem */
+
+#define BOARD_NGPIOIN     1 /* Amount of GPIO Input pins */
+#define BOARD_NGPIOOUT    2 /* Amount of GPIO Output pins */
+#define BOARD_NGPIOINT    1 /* Amount of GPIO Input w/ Interruption pins */
+
+#define GPIO_IN1          (GPIO_INPUT | GPIO_PULLDOWN | GPIO_SPEED_2MHz | \
+                           GPIO_PORTA | GPIO_PIN2)
+#define GPIO_OUT_ALARM    (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                           GPIO_OUTPUT_SET | GPIO_PORTA | GPIO_PIN0)
+#define GPIO_OUT_RUN      (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                           GPIO_OUTPUT_SET | GPIO_PORTA | GPIO_PIN1)
+
+#define GPIO_INT1         (GPIO_INPUT | GPIO_FLOAT | GPIO_SPEED_50MHz | \
+                           GPIO_PORTC | GPIO_PIN1)
+
+
+
 /* SPI chip selects */
+
+#define GPIO_WIRELESS_CS_0  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN0)
+
+#define GPIO_WIRELESS_CS_1  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN1)
+
+#define GPIO_WIRELESS_CS_2  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN2)
+
+#define GPIO_WIRELESS_CS_3  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN3)
+
+#define GPIO_WIRELESS_CS_4  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN4)
+
+#define GPIO_WIRELESS_CS_5  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN5)
+
+#define GPIO_WIRELESS_CS_6  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN6)
+
+#define GPIO_WIRELESS_CS_7  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN7)
+
+#define GPIO_WIRELESS_CS_8  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN8)
+
+#define GPIO_WIRELESS_CS_9  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN9)
+
+#define GPIO_WIRELESS_CS_10  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN10)
+
+#define GPIO_WIRELESS_CS_11  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN11)
+
+#define GPIO_WIRELESS_CS_12  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN12)
+
+#define GPIO_WIRELESS_CS_13  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN13)
+
+#define GPIO_WIRELESS_CS_14  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN14)
+
+#define GPIO_WIRELESS_CS_15  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN15)
 
 #define GPIO_CS_MEMS      (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
                            GPIO_OUTPUT_SET|GPIO_PORTE|GPIO_PIN3)
@@ -308,9 +381,9 @@
  */
 
 #define GPIO_OTGFS_VBUS   (GPIO_INPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|\
-                           GPIO_OPENDRAIN|GPIO_PORTA|GPIO_PIN9)
+                           GPIO_OPENDRAIN|GPIO_PORTA|GPIO_PIN2)
 #define GPIO_OTGFS_PWRON  (GPIO_OUTPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|\
-                           GPIO_PUSHPULL|GPIO_PORTC|GPIO_PIN0)
+                           GPIO_PUSHPULL|GPIO_PORTA|GPIO_PIN3)
 
 #ifdef CONFIG_USBHOST
 #  define GPIO_OTGFS_OVER (GPIO_INPUT|GPIO_EXTI|GPIO_FLOAT|\
@@ -365,24 +438,27 @@
 #define STM32_LCD_RS      (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
                            GPIO_OUTPUT_SET|GPIO_PORTB|GPIO_PIN8)
 
-/* STM32F4DIS-BB MicroSD
+/* STM32F4DIS MicroSD
  *
  * ---------- ------------- ------------------------------
  * PIO        SIGNAL        Comments
  * ---------- ------------- ------------------------------
- * PB15       NCD           Pulled up externally
+ * PB6        NCD           Pulled up externally
  * PC9        DAT1          Configured by driver
  * PC8        DAT0          "        " "" "    "
  * PC12       CLK           "        " "" "    "
  * PD2        CMD           "        " "" "    "
  * PC11       CD/DAT3       "        " "" "    "
  * PC10       DAT2          "        " "" "    "
+ * PC0        PWR           "        " "" "    "
  * ---------- ------------- ------------------------------
  */
 
-#if defined(CONFIG_STM32F4DISBB) && defined(CONFIG_STM32_SDIO)
-#  define GPIO_SDIO_NCD   (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|\
-                           GPIO_PORTB|GPIO_PIN15)
+#if defined(CONFIG_STM32_SDIO)
+#define GPIO_SDIO_NCD   (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|\
+                           GPIO_PORTB|GPIO_PIN6)
+#define GPIO_SDIO_PWR   (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                           GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN0)
 #endif
 
 /* STM32F4DIS-BB LAN8720
@@ -907,6 +983,38 @@ int stm32_gs2200m_initialize(const char *devpath, int bus);
 
 #ifdef CONFIG_INPUT_DJOYSTICK
 int stm32_djoy_initialize(void);
+#endif
+
+
+/****************************************************************************
+ * Name: stm32_cc2520_initialize
+ *
+ * Description:
+ *   Initialize the CC2520 device.
+ *
+ * Returned Value:
+ *   Zero is returned on success.  Otherwise, a negated errno value is
+ *   returned to indicate the nature of the failure.
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_IEEE802154_CC2520
+int stm32_cc2520_initialize(void);
+#endif
+
+/****************************************************************************
+ * Name: stm32_gpio_initialize
+ *
+ * Description:
+ *   Initialize GPIO drivers for use with /apps/examples/gpio
+ *
+ * Return Value:
+ *   OK on success; a negated errno value on failure.
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_DEV_GPIO
+int stm32_gpio_initialize(void);
 #endif
 
 #endif /* __ASSEMBLY__ */
