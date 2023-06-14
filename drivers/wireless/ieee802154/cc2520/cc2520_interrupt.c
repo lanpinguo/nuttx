@@ -83,103 +83,171 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
     FAR struct cc2520_radio_s *dev = (FAR struct cc2520_radio_s *)radio;
     FAR struct ieee802154_primitive_s *primitive;
     FAR struct ieee802154_data_ind_s *ind;
-	uint8_t len = 0, lqi = 0, bytes = 1;
+	uint8_t len = 0, lqi = 0, bytes = 0;
     uint8_t reg_val = 0;
+    int8_t rxfifo_cnt;
+    uint8_t rxfifo_1st;
+    uint8_t excflag0;
+    uint8_t excflag0_new;
+
 
     if(dev == NULL){
         return;
     }
 
+	ret = cc2520_read_register(dev, CC2520_EXCFLAG0, &excflag0);
+	if (ret)
+		return;
 	ret = cc2520_read_register(dev, CC2520_EXCFLAG1, &reg_val);
 	if (ret)
 		return;
+    /* clear interrupt status */
+	cc2520_write_register(dev, CC2520_EXCFLAG0, 0);
+	cc2520_write_register(dev, CC2520_EXCFLAG1, 0);
+	cc2520_write_register(dev, CC2520_EXCFLAG2, 0);
 
-    if(reg_val & 1){
-        /* clear interrupt */
-        ret = cc2520_write_register(dev, CC2520_EXCFLAG1, 0x00);
-    }
-    else{
-        /* not rx frame int, return */
-        return;
-    }
-
-    wlinfo("RX interrupt\n");
-
-	/* Read single length byte from the radio. */
-	cc2520_read_rxfifo(dev, &len, bytes);
+    // if((reg_val & ((1<<4) | 1)) == 0){
+    //     /* not rx frame int, return */
+    //     goto done;
+    // }
 
 
-    /* Allocate a data_ind to put the frame in */
-    primitive = ieee802154_primitive_allocate();
-    ind = (FAR struct ieee802154_data_ind_s *)primitive;
-    if (ind == NULL)
-    {
-        wlerr("ERROR: Unable to allocate data_ind. Discarding frame\n");
-        goto done;
-    }
-
-    primitive->type = IEEE802154_PRIMITIVE_IND_DATA;
-
-    /* Allocate an IOB to put the frame into */
-
-    ind->frame = iob_alloc(false);
-    DEBUGASSERT(ind->frame != NULL);
-
-	if (cc2520_read_rxfifo(dev, ind->frame->io_data, len)) {
-		wlerr("frame reception failed\n");
-		iob_free(ind->frame);
-		ieee802154_primitive_free(primitive);
-	}
-
-    ind->frame->io_len = len;
+    wlinfo("RX interrupt: 0x%02x%02x\n", reg_val, excflag0);
 
 
-	/* In promiscuous mode, we configure the radio to include the
-	 * CRC (AUTOCRC==0) and we pass on the packet unconditionally. If not
-	 * in promiscuous mode, we check the CRC here, but leave the
-	 * RSSI/LQI/CRC_OK bytes as they will get removed in the mac layer.
-	 */
-	if (!dev->promiscuous) {
-		bool crc_ok;
+    do{
+        uint8_t len = 0, lqi = 0;
+        uint8_t reg_val;
 
-		/* Check if the CRC is valid. With AUTOCRC set, the most
-		 * significant bit of the last byte returned from the CC2520
-		 * is CRC_OK flag. See section 20.3.4 of the datasheet.
-		 */
-		crc_ok = ind->frame->io_data[len - 1] & BIT(7);
+        rxfifo_cnt = 0;
+        cc2520_read_register(dev, CC2520_RXFIFOCNT, &rxfifo_cnt);
+        wlinfo("RX FIFO-CNT: 0x%02x\n", rxfifo_cnt);
+        if(rxfifo_cnt == 0){
+            goto done;
+        }
 
-		/* If we failed CRC drop the packet in the driver layer. */
-		if (!crc_ok) {
-			wlerr("CRC check failed\n");
+        ret = cc2520_read_register(dev, CC2520_RXFIRST, &rxfifo_1st);
+        if (ret)
+            goto done;
+
+        /*assume 1st byte is phy length */
+        wlinfo("RX FIFO-1ST: 0x%02x\n", rxfifo_1st);
+
+        if(rxfifo_1st == 0 || rxfifo_1st > rxfifo_cnt){
+            /* no more one complete frame data in fifo, return */
+            goto done;
+        }
+
+        len = rxfifo_1st;
+
+        /* read firt byte in fifo */
+        cc2520_read_rxfifo(dev, &bytes, 1);
+        wlinfo("Frame len: 0x%02x\n", bytes);
+        if(bytes != len || len > 128){
+            /* there is a malformed pkt */
+            goto flush;
+        }
+
+#if 1
+        /* Allocate a data_ind to put the frame in */
+        primitive = ieee802154_primitive_allocate();
+        ind = (FAR struct ieee802154_data_ind_s *)primitive;
+        if (ind == NULL)
+        {
+            wlerr("ERROR: Unable to allocate data_ind. Discarding frame\n");
+            goto flush;
+        }
+
+        primitive->type = IEEE802154_PRIMITIVE_IND_DATA;
+
+        /* Allocate an IOB to put the frame into */
+        ind->frame = iob_alloc(false);
+        if (ind->frame == NULL) {
+            wlerr("no more memory \n");
+            ieee802154_primitive_free(primitive);
+            goto flush;
+        }
+
+
+        if (cc2520_read_rxfifo(dev, ind->frame->io_data, len)) {
+            wlerr("frame reception failed\n");
             iob_free(ind->frame);
             ieee802154_primitive_free(primitive);
-            goto done;
-		}
+            goto flush;
+        }
 
-		/* To calculate LQI, the lower 7 bits of the last byte (the
-		 * correlation value provided by the radio) must be scaled to
-		 * the range 0-255. According to section 20.6, the correlation
-		 * value ranges from 50-110. Ideally this would be calibrated
-		 * per hardware design, but we use roughly the datasheet values
-		 * to get close enough while avoiding floating point.
-		 */
-		lqi = ind->frame->io_data[len - 1] & 0x7f;
-		if (lqi < 50)
-			lqi = 50;
-		else if (lqi > 113)
-			lqi = 113;
-		lqi = (lqi - 50) * 4;
-	}
+        ind->frame->io_len = len;
 
-    ind->lqi = lqi;
-	wlinfo("RXFIFO: 0x%x 0x%x\n", len, lqi);
 
-    /* Callback the receiver in the next highest layer */
-    dev->radiocb->rxframe(dev->radiocb, ind);
+        /* In promiscuous mode, we configure the radio to include the
+        * CRC (AUTOCRC==0) and we pass on the packet unconditionally. If not
+        * in promiscuous mode, we check the CRC here, but leave the
+        * RSSI/LQI/CRC_OK bytes as they will get removed in the mac layer.
+        */
+        if (!dev->promiscuous) {
+            bool crc_ok;
+
+            /* Check if the CRC is valid. With AUTOCRC set, the most
+            * significant bit of the last byte returned from the CC2520
+            * is CRC_OK flag. See section 20.3.4 of the datasheet.
+            */
+            crc_ok = ind->frame->io_data[len - 1] & BIT(7);
+
+            /* If we failed CRC drop the packet in the driver layer. */
+            if (!crc_ok) {
+                wlerr("CRC check failed\n");
+                iob_free(ind->frame);
+                ieee802154_primitive_free(primitive);
+                goto flush;
+            }
+
+            /* To calculate LQI, the lower 7 bits of the last byte (the
+            * correlation value provided by the radio) must be scaled to
+            * the range 0-255. According to section 20.6, the correlation
+            * value ranges from 50-110. Ideally this would be calibrated
+            * per hardware design, but we use roughly the datasheet values
+            * to get close enough while avoiding floating point.
+            */
+            lqi = ind->frame->io_data[len - 1] & 0x7f;
+            if (lqi < 50)
+                lqi = 50;
+            else if (lqi > 113)
+                lqi = 113;
+            lqi = (lqi - 50) * 4;
+        }
+
+        ind->lqi = lqi;
+        wlinfo("RXFIFO: 0x%02x, LQI: 0x%02x\n", len, lqi);
+
+        /* Callback the receiver in the next highest layer */
+        dev->radiocb->rxframe(dev->radiocb, ind);
+#else
+        uint8_t dummy[128];
+        if (cc2520_read_rxfifo(dev, dummy, len)) {
+            wlerr("frame reception failed\n");
+            goto flush;
+        }
+        _info("chl: %d, frame received: %d\n", dev->chan, len);
+
+#endif
+    }while(rxfifo_cnt > 0);
 
 done:
-    /* Enable reception of next packet by flushing the fifo. */
-	cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
+	ret = cc2520_read_register(dev, CC2520_EXCFLAG0, &excflag0_new);
+    if(((excflag0 | excflag0_new) & ((1<<6) | (1<<5))) != 0){
+        /* SFLUSHRX
+            The workaround consists of flushing the RX FIFO twice instead of once.
+            The second flush operation removes the unwanted byte from the RX FIFO
+        */
+flush:
+        cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
+        cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
+        dev->stat.flush_cnt++;
+    }
+
+
+
+    return;
 
 }
 
@@ -275,6 +343,7 @@ static void cc2520_single_irqwork_rx(FAR struct cc2520_radio_s *dev)
 
 done:
     /* Enable reception of next packet by flushing the fifo. */
+	cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
 	cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
 
 }

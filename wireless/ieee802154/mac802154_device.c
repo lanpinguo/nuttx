@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <time.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #include <nuttx/arch.h>
 #include <nuttx/mutex.h>
@@ -48,6 +49,10 @@
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
+/* Maximum number of threads than can be waiting for POLL events */
+#ifndef CONFIG_MAC802154_NPOLLWAITERS
+#  define CONFIG_MAC802154_NPOLLWAITERS 2
+#endif
 
 /* Device naming ************************************************************/
 
@@ -112,6 +117,13 @@ struct mac802154_chardevice_s
   pid_t   md_notify_pid;
   struct sigevent md_notify_event;
   struct sigwork_s md_notify_work;
+
+    /* The following is a list if poll structures of threads waiting for
+   * driver events. 
+   */
+
+  struct pollfd *fds[CONFIG_MAC802154_NPOLLWAITERS];
+
 };
 
 /****************************************************************************
@@ -131,6 +143,8 @@ static ssize_t mac802154dev_write(FAR struct file *filep,
                                   FAR const char *buffer, size_t len);
 static int  mac802154dev_ioctl(FAR struct file *filep, int cmd,
                                unsigned long arg);
+static int mac802154dev_poll(struct file *filep, struct pollfd *fds,
+                           bool setup);
 
 /****************************************************************************
  * Private Data
@@ -138,12 +152,13 @@ static int  mac802154dev_ioctl(FAR struct file *filep, int cmd,
 
 static const struct file_operations mac802154dev_fops =
 {
-  mac802154dev_open,  /* open */
-  mac802154dev_close, /* close */
-  mac802154dev_read,  /* read */
-  mac802154dev_write, /* write */
-  NULL,               /* seek */
-  mac802154dev_ioctl, /* ioctl */
+  .open   = mac802154dev_open,  /* open */
+  .close  = mac802154dev_close, /* close */
+  .read   = mac802154dev_read,  /* read */
+  .write  = mac802154dev_write, /* write */
+  .seek   = NULL,               /* seek */
+  .ioctl  = mac802154dev_ioctl, /* ioctl */
+  .poll   = mac802154dev_poll,
 };
 
 /****************************************************************************
@@ -763,6 +778,16 @@ static int mac802154dev_rxframe(FAR struct mac802154_chardevice_s *dev,
 
   while (nxmutex_lock(&dev->md_lock) != 0);
 
+
+  /* If there are threads waiting on poll() for MAX11802 data to become
+   * available, then wake them up now.  NOTE: we wake up all waiting
+   * threads because we do not know that they are going to do.  If they
+   * all try to read the data, then some make end up blocking after all.
+   */
+
+  poll_notify(dev->fds, CONFIG_MAC802154_NPOLLWAITERS, POLLIN);
+
+
   /* Push the indication onto the list */
 
   sq_addlast((FAR sq_entry_t *)ind, &dev->dataind_queue);
@@ -782,6 +807,81 @@ static int mac802154dev_rxframe(FAR struct mac802154_chardevice_s *dev,
   nxmutex_unlock(&dev->md_lock);
   return OK;
 }
+
+
+static int mac802154dev_poll(struct file *filep, struct pollfd *fds,
+                           bool setup)
+{
+  struct inode            *inode;
+  struct mac802154_chardevice_s *dev;
+  int                      ret = OK;
+  int                      i;
+
+  inode = filep->f_inode;
+  dev  = (struct mac802154_chardevice_s *)inode->i_private;
+
+  ret = nxmutex_lock(&dev->md_lock);
+  if (ret < 0)
+  {
+    return ret;
+  }
+
+  if (setup)
+  {
+      /* Ignore waits that do not include POLLIN */
+
+      if ((fds->events & POLLIN) == 0)
+        {
+          ret = -EDEADLK;
+          goto errout;
+        }
+
+      /* This is a request to set up the poll.  Find an available
+       * slot for the poll structure reference
+       */
+
+      for (i = 0; i < CONFIG_MAC802154_NPOLLWAITERS; i++)
+        {
+          /* Find an available slot */
+
+          if (!dev->fds[i])
+            {
+              /* Bind the poll structure and this slot */
+
+              dev->fds[i] = fds;
+              fds->priv    = &dev->fds[i];
+              break;
+            }
+        }
+
+      if (i >= CONFIG_MAC802154_NPOLLWAITERS)
+        {
+          fds->priv    = NULL;
+          ret          = -EBUSY;
+          goto errout;
+        }
+
+
+  }
+  else if (fds->priv)
+    {
+      /* This is a request to tear down the poll. */
+
+      struct pollfd **slot = (struct pollfd **)fds->priv;
+      DEBUGASSERT(slot != NULL);
+
+      /* Remove all memory of the poll setup */
+
+      *slot                = NULL;
+      fds->priv            = NULL;
+    }
+
+errout:
+  nxmutex_unlock(&dev->md_lock);
+  return ret;
+}
+
+
 
 /****************************************************************************
  * Public Functions

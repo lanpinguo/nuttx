@@ -292,6 +292,11 @@ int cc2520_setattr(FAR struct ieee802154_radio_s *radio,
             // mrf24j40_setdevmode(dev, attrval->mac.devmode);
         }
         break;
+        case IEEE802154_ATTR_MAC_RX_ON_WHEN_IDLE:
+        {
+            cc2520_cmd_strobe(dev, CC2520_CMD_SRXON);
+        }
+        break;
 
         default:
         ret = IEEE802154_STATUS_UNSUPPORTED_ATTRIBUTE;

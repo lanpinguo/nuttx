@@ -22,6 +22,6 @@
 #define __DRIVERS_WIRELESS_IEEE802154_CC2520_CDEV__RADIF_H
 
 int 
-cc2520_cdev_driver_register(FAR const char *devpath, struct cc2520_radio_s *dev);
+cc2520_cdev_register(FAR const char *devpath, struct cc2520_radio_s *dev);
 
 #endif /* __DRIVERS_WIRELESS_IEEE802154_CC2520_CDEV__RADIF_H */

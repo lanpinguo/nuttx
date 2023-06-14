@@ -76,7 +76,11 @@
 
 #define CC2520_SYMBOL_DURATION_PS           16000000
 
-
+struct cc2520_radio_stat_s {
+    uint32_t flush_cnt;
+    uint32_t rx_frm_cnt;
+    uint32_t tx_frm_cnt;
+};
 
 
 /* Driver private information */
@@ -113,6 +117,8 @@ struct cc2520_radio_s {
 	struct work_s irqwork;                      /* Workqueue for FIFOP */
 	mutex_t lock;		                        /* Lock for is_tx*/
 	bool promiscuous;                           /* Flag for promiscuous mode */
+
+    struct cc2520_radio_stat_s stat;
 };
 
 

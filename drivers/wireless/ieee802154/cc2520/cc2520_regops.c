@@ -46,14 +46,13 @@ cc2520_cmd_strobe(struct cc2520_radio_s *dev, uint8_t cmd)
 
     dev->spi->ops->lock(dev->spi, true);
 	dev->buf[len++] = cmd;
-	wlinfo("command strobe buf[0] = %02x\n",
-		 dev->buf[0]);
+	wlinfo("command strobe = %02x\n",cmd);
 
     SPI_SELECT(dev->spi, SPIDEV_IEEE802154(dev->minor), true);
     SPI_EXCHANGE(dev->spi, dev->buf, rx_buf, len);
     SPI_SELECT(dev->spi, SPIDEV_IEEE802154(dev->minor), false);
 
-	wlinfo("rx_buf[0] = %02x\n", rx_buf[0]);
+	wlinfo("status = %02x\n", rx_buf[0]);
     dev->spi->ops->lock(dev->spi, false);
 
 	return ret;
@@ -254,7 +253,7 @@ cc2520_read_rxfifo(struct cc2520_radio_s *dev, uint8_t *data, uint8_t len)
     SPI_SELECT(dev->spi, SPIDEV_IEEE802154(dev->minor), false);
 
 
-	wlinfo("length buf[0] = %02x\n", data[0]);
+	//wlinfo("length = %02x\n", data[0]);
 
     dev->spi->ops->lock(dev->spi, false);
 
@@ -267,12 +266,14 @@ cc2520_set_channel(struct cc2520_radio_s *dev, uint8_t page, uint8_t channel)
 {
 	int ret;
 
-	wlinfo("trying to set channel\n");
+	wlinfo("set channel: %d\n", channel);
 
 	// WARN_ON(page != 0);
 	// WARN_ON(channel < CC2520_MINCHANNEL);
 	// WARN_ON(channel > CC2520_MAXCHANNEL);
-
+	nxmutex_lock(&dev->lock);
+	dev->chan = channel;
+	nxmutex_unlock(&dev->lock);
 	ret = cc2520_write_register(dev, CC2520_FREQCTRL,
 				    11 + 5 * (channel - 11));
 
@@ -306,7 +307,6 @@ cc2520_set_promiscuous_mode(struct cc2520_radio_s *dev, bool on)
 int
 cc2520_probe(FAR struct spi_dev_s *spi, int32_t minor)
 {
-	int ret = OK;
     int len = 0;
     uint8_t chipid = 0;
     uint8_t buf[4] = {0};
@@ -449,7 +449,7 @@ int cc2520_hw_init(struct cc2520_radio_s *priv)
 	if (ret)
 		goto err_ret;
 
-	ret = cc2520_write_register(priv, CC2520_FIFOPCTRL, 127);
+	ret = cc2520_write_register(priv, CC2520_FIFOPCTRL, 64);
 	if (ret)
 		goto err_ret;
 
@@ -467,9 +467,25 @@ int cc2520_hw_init(struct cc2520_radio_s *priv)
 		goto err_ret;
 
     /* GPIO2 as output RX_FRM_DONE exception */
-	ret = cc2520_write_register(priv, CC2520_GPIOCTRL2, GPIO_OUT_EXC_RX_FRM_DONE);
+	ret = cc2520_write_register(priv, CC2520_EXCMASKA0, (1<<6) | (1<<5));
 	if (ret)
 		goto err_ret;
+
+	ret = cc2520_write_register(priv, CC2520_EXCMASKA1, (1<<4) | (1<<0));
+	if (ret)
+		goto err_ret;
+
+	ret = cc2520_write_register(priv, CC2520_EXCMASKA2, 0);
+	if (ret)
+		goto err_ret;
+
+
+	ret = cc2520_write_register(priv, CC2520_GPIOCTRL2, GPIO_OUT_EXC_CHL_A);
+	if (ret)
+		goto err_ret;
+
+
+
 
     /* GPIO3 as input with tied to ground*/
 	ret = cc2520_write_register(priv, CC2520_GPIOCTRL3, (1<<7) | 0x10);

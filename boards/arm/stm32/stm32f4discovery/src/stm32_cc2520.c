@@ -31,6 +31,7 @@
 #include <debug.h>
 
 #include <nuttx/arch.h>
+#include <nuttx/wdog.h>
 #include <nuttx/fs/fs.h>
 #include <nuttx/spi/spi.h>
 #include <nuttx/spi/spi_transfer.h>
@@ -68,6 +69,12 @@
 #  endif
 #endif
 
+
+/* Poll timeout */
+
+#define POLLTIMEOUT MSEC2TICK(100)
+
+
 /****************************************************************************
  * Private Types
  ****************************************************************************/
@@ -80,7 +87,13 @@ struct stm32_priv_s
     uint32_t intcfg;
     uint32_t rstcfg;
     uint8_t spidev;
+
+    /* Timing */
+    struct wdog_s         poll_wd;     /* poll timeout timer */
+
+
     struct work_s irqwork;   /* Workqueue for FIFOP */
+    struct work_s poll_work;   /* Workqueue for FIFOP */
     struct ieee802154_radio_s * radio_lst[16];
 
 };
@@ -106,6 +119,8 @@ static int  stm32_cc2520_devsetup(struct stm32_priv_s *priv);
 
 static int stm32_interrupt_handler(int irq, FAR void *context, FAR void *arg);
 
+static void cc2520_poll_timeout(wdparm_t arg);
+
 /****************************************************************************
  * Private Data
  ****************************************************************************/
@@ -129,6 +144,7 @@ static struct stm32_priv_s g_cc2520_mb1_priv =
   .intcfg      = GPIO_WIRELESS_INT,
   .rstcfg      = GPIO_WIRELESS_RST,
   .spidev      = 1,
+
 };
 
 
@@ -191,8 +207,6 @@ static void stm32_enable_irq(const struct cc2520_lower_s *lower,
 void stm32_irqworker(FAR void *arg)
 {
     FAR struct stm32_priv_s *priv = (FAR struct stm32_priv_s *)arg;
-    uint8_t intstat;
-    uint8_t reg;
 
     DEBUGASSERT(priv);
 
@@ -208,6 +222,24 @@ void stm32_irqworker(FAR void *arg)
     /* Re-enable GPIO interrupts */
     priv->dev.enable(&priv->dev, true);
 }
+
+void stm32_poll_worker(FAR void *arg)
+{
+    FAR struct stm32_priv_s *priv = (FAR struct stm32_priv_s *)arg;
+
+    DEBUGASSERT(priv);
+
+
+    /* Get exclusive access to the driver */
+    for(int minor = 0; minor < 16; minor++){
+        cc2520_irqwork_rx(priv->radio_lst[minor]);
+    }
+
+    wd_start(&priv->poll_wd, POLLTIMEOUT, cc2520_poll_timeout, (wdparm_t)priv);
+
+
+}
+
 
 static int stm32_interrupt_handler(int irq, FAR void *context, FAR void *arg)
 {
@@ -234,6 +266,27 @@ static int stm32_interrupt_handler(int irq, FAR void *context, FAR void *arg)
                     stm32_irqworker, (FAR void *)arg, 0);
 }
 
+static void cc2520_poll_timeout(wdparm_t arg)
+{
+    int ret;
+
+    FAR struct stm32_priv_s *priv = (FAR struct stm32_priv_s *)arg;
+
+    DEBUGASSERT(priv != NULL);
+
+    /* In complex environments, we cannot do SPI transfers from the interrupt
+    * handler because semaphores are probably used to lock the SPI bus.  In
+    * this case, we will defer processing to the worker thread.  This is also
+    * much kinder in the use of system resources and is, therefore, probably
+    * a good thing to do in any event.
+    */
+
+    DEBUGASSERT(work_available(&priv->poll_work));
+
+    ret = work_queue(HPWORK, &priv->poll_work, stm32_poll_worker, (FAR void *)arg, 0);
+    DEBUGASSERT(ret == OK);
+    UNUSED(ret);
+}
 
 
 /****************************************************************************
@@ -279,7 +332,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
 
     /* Re-configure spi mode */
     SPI_SETMODE(spi, SPIDEV_MODE0);
-    SPI_SETFREQUENCY(spi, 1000000);
+    SPI_SETFREQUENCY(spi, 8000000);
 
 
 #ifdef CONFIG_SPI_DRIVER
@@ -304,6 +357,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
         /* restore for irq polling devices*/
         priv->radio_lst[minor] = radio;
 
+
         /* Create a 802.15.4 MAC device from a 802.15.4 compatible radio device. */
         mac = mac802154_create(radio);
         if (mac == NULL)
@@ -311,6 +365,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
             wlerr("ERROR: Failed to initialize IEEE802.15.4 MAC\n");
             return -ENODEV;
         }
+
 
 #ifdef CONFIG_IEEE802154_NETDEV
         /* Use the IEEE802.15.4 MAC interface instance to create a 6LoWPAN
@@ -341,7 +396,12 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
         }
 #endif
 
+
     }
+
+
+    wd_start(&priv->poll_wd, POLLTIMEOUT, cc2520_poll_timeout, (wdparm_t)priv);
+
 
 
     /* Attach irq to first dev instance*/
@@ -384,7 +444,6 @@ int stm32_cc2520_initialize(void)
     {
       wlerr("ERROR: Failed to initialize BD in spi-1: %d\n", ret);
     }
-
 
   UNUSED(ret);
   return OK;

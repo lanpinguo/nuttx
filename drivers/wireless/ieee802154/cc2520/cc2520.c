@@ -27,6 +27,7 @@
 
 #include "cc2520.h"
 #include "cc2520_radif.h"
+#include "cc2520_regops.h"
 #include "cc2520_cdev.h"
 
 
@@ -83,7 +84,7 @@ cc2520_init(FAR struct spi_dev_s *spi, FAR const struct cc2520_lower_s *lower, i
 
     snprintf(devname, sizeof(devname), "/dev/snif%u", (unsigned int)minor);
 
-    if (cc2520_cdev_driver_register(devname, dev) != OK)
+    if (cc2520_cdev_register(devname, dev) != OK)
     {
         wlerr("Failed to register character device\n");
     }

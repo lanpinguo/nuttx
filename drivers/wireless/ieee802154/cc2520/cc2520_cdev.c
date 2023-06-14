@@ -28,6 +28,14 @@
 #include <errno.h>
 #include <debug.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include <debug.h>
+#include <time.h>
+#include <fcntl.h>
+#include <poll.h>
+
 
 #include <nuttx/kmalloc.h>
 #include <nuttx/fs/fs.h>
@@ -41,20 +49,31 @@
 #include "cc2520_regops.h"
 
 
+
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
+/* Maximum number of threads than can be waiting for POLL events */
+#ifndef CONFIG_MAC802154_NPOLLWAITERS
+#  define CONFIG_MAC802154_NPOLLWAITERS 2
+#endif
 
 
 /****************************************************************************
  * Private Types
  ****************************************************************************/
 
-struct cc2520_cdev_driver_dev_s
+struct cc2520_cdev_dev_s
 {
     off_t offset;
     struct cc2520_radio_s *dev;
     mutex_t lock;		                        /* Lock for dev data*/
+
+    /* The following is a list if poll structures of threads waiting for
+   * driver events. 
+   */
+
+  struct pollfd *fds[CONFIG_MAC802154_NPOLLWAITERS];
 
 };
 
@@ -63,6 +82,8 @@ typedef enum CC2520_CFG_E{
     CC2520_CFG_CHL = 1,
     CC2520_CFG_PROMIS,
     CC2520_CFG_STROBE,
+    CC2520_CFG_MOD_POLL,
+    CC2520_CFG_MOD_INT,
 }CC2520_CFG_e;
 
 /****************************************************************************
@@ -72,39 +93,44 @@ typedef enum CC2520_CFG_E{
 /* Character driver methods */
 
 static int 
-cc2520_cdev_driver_open(FAR struct file *filep);
+cc2520_cdev_open(FAR struct file *filep);
 
 static int 
-cc2520_cdev_driver_close(FAR struct file *filep);
+cc2520_cdev_close(FAR struct file *filep);
 
 static ssize_t 
-cc2520_cdev_driver_read(FAR struct file *filep, FAR char *buffer,
+cc2520_cdev_read(FAR struct file *filep, FAR char *buffer,
                             size_t buflen);
 
 static ssize_t 
-cc2520_cdev_driver_write(FAR struct file *filep,
+cc2520_cdev_write(FAR struct file *filep,
                             FAR const char *buffer, size_t buflen);
 
 static int 
-cc2520_cdev_driver_ioctl(FAR struct file *filep, int cmd,
+cc2520_cdev_ioctl(FAR struct file *filep, int cmd,
                         unsigned long arg);
 
 static off_t 
-cc2520_cdev_driver_seek(FAR struct file *filep, off_t offset, int whence);
+cc2520_cdev_seek(FAR struct file *filep, off_t offset, int whence);
+
+
+static int cc2520_cdev_poll(struct file *filep, struct pollfd *fds,
+                           bool setup);
+
 
 /****************************************************************************
  * Private Data
  ****************************************************************************/
 
-static const struct file_operations g_cc2520_cdev_driver_fops =
+static const struct file_operations g_cc2520_cdev_fops =
 {
-    cc2520_cdev_driver_open,
-    cc2520_cdev_driver_close,
-    cc2520_cdev_driver_read,
-    cc2520_cdev_driver_write,
-    cc2520_cdev_driver_seek,  
-    cc2520_cdev_driver_ioctl,
-    NULL   /* Poll not implemented */
+    .open   = cc2520_cdev_open,
+    .close  = cc2520_cdev_close,
+    .read   = cc2520_cdev_read,
+    .write  = cc2520_cdev_write,
+    .seek   = cc2520_cdev_seek,  
+    .ioctl  = cc2520_cdev_ioctl,
+    .poll   = cc2520_cdev_poll,
 };
 
 
@@ -114,14 +140,14 @@ static const struct file_operations g_cc2520_cdev_driver_fops =
 
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_open
+ * Name: cc2520_cdev_open
  *
  * Description:
  *   This function is called whenever the device is opened.
  *
  ****************************************************************************/
 
-static int cc2520_cdev_driver_open(FAR struct file *filep)
+static int cc2520_cdev_open(FAR struct file *filep)
 {
     _info("\n");
     DEBUGASSERT(filep != NULL);
@@ -129,28 +155,27 @@ static int cc2520_cdev_driver_open(FAR struct file *filep)
 }
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_close
+ * Name: cc2520_cdev_close
  *
  * Description:
  *   This function is called whenever the device is closed.
  *
  ****************************************************************************/
 
-static int cc2520_cdev_driver_close(FAR struct file *filep)
+static int cc2520_cdev_close(FAR struct file *filep)
 {
-    _info("\n");
     DEBUGASSERT(filep != NULL);
     return OK;
 }
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_write
+ * Name: cc2520_cdev_write
  *
  * Description:
  *   Write the buffer to the device.
  ****************************************************************************/
 
-static ssize_t cc2520_cdev_driver_write(FAR struct file *filep,
+static ssize_t cc2520_cdev_write(FAR struct file *filep,
                             FAR const char *buffer,
                             size_t buflen)
 {
@@ -166,7 +191,7 @@ static ssize_t cc2520_cdev_driver_write(FAR struct file *filep,
 
     FAR struct inode *inode = filep->f_inode;
     DEBUGASSERT(inode != NULL);
-    FAR struct cc2520_cdev_driver_dev_s *priv = inode->i_private;
+    FAR struct cc2520_cdev_dev_s *priv = inode->i_private;
     DEBUGASSERT(priv != NULL);
 
     if((priv->offset >= CC2520RAM_TXFIFO) && 
@@ -184,7 +209,7 @@ static ssize_t cc2520_cdev_driver_write(FAR struct file *filep,
             ret = cc2520_write_txfifo_fcs(priv->dev, pkt_len, (uint8_t*)buffer, buflen, fcs);
             if (ret < 0)
             {
-                wlerr("cc2520_write_txfifo failed: %d\n", ret);
+                wlerr("failed: %d\n", ret);
                 return 0;
             }
 
@@ -193,7 +218,7 @@ static ssize_t cc2520_cdev_driver_write(FAR struct file *filep,
             ret = cc2520_write_txfifo(priv->dev, pkt_len, (uint8_t*)buffer, buflen);
             if (ret < 0)
             {
-                wlerr("cc2520_write_txfifo failed: %d\n", ret);
+                wlerr("failed: %d\n", ret);
                 return 0;
             }
 
@@ -214,6 +239,20 @@ static ssize_t cc2520_cdev_driver_write(FAR struct file *filep,
             goto err_tx;
 
     }
+    else{
+        for(int i = 0; i < buflen; i++){
+            ret = cc2520_write_register(priv->dev, priv->offset, buffer[i]);
+            if (ret < 0)
+            {
+                wlerr("cc2520_write_reg failed: %d\n", ret);
+                return 0;
+            }
+            priv->offset++;
+            if(priv->offset > 0x400){
+                priv->offset = 0;
+            }
+        }
+    }
 
 err_tx:
 
@@ -221,13 +260,13 @@ err_tx:
 }
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_read
+ * Name: cc2520_cdev_read
  *
  * Description:
  *   Return the data received from the device.
  ****************************************************************************/
 
-static ssize_t cc2520_cdev_driver_read(FAR struct file *filep, FAR char *buffer,
+static ssize_t cc2520_cdev_read(FAR struct file *filep, FAR char *buffer,
                             size_t buflen)
 {
 	int ret = OK;
@@ -241,18 +280,41 @@ static ssize_t cc2520_cdev_driver_read(FAR struct file *filep, FAR char *buffer,
 
     FAR struct inode *inode = filep->f_inode;
     DEBUGASSERT(inode != NULL);
-    FAR struct cc2520_cdev_driver_dev_s *priv = inode->i_private;
+    FAR struct cc2520_cdev_dev_s *priv = inode->i_private;
     DEBUGASSERT(priv != NULL);
 
     if((priv->offset >= CC2520RAM_RXFIFO) && 
         (priv->offset < CC2520RAM_RXFIFO + CC2520_FIFO_SIZE)){
+        uint8_t len = 0, lqi = 0, bytes = 0;
+        uint8_t reg_val;
+        uint8_t rxfifo_cnt, rxfifo_1st;
+        uint8_t *rx_buf;
 
-        ret = cc2520_read_rxfifo(priv->dev, (uint8_t*)buffer, buflen);
+
+        // ret = cc2520_read_register(priv->dev, CC2520_RXFIRST, &rxfifo_1st);
+        // if (ret)
+        //     return len;
+
+        ret = cc2520_read_register(priv->dev, CC2520_RXFIFOCNT, &rxfifo_cnt);
+        if (ret)
+            return len;
+
+        if(rxfifo_cnt == 0){
+            /* not rx frame int, return */
+            return len;
+        }
+
+        rx_buf = (uint8_t*)buffer + len;
+        bytes = rxfifo_cnt;
+        ret = cc2520_read_rxfifo(priv->dev, rx_buf, bytes);
         if (ret < 0)
         {
             wlerr("cc2520_read_rxfifo failed: %d\n", ret);
-            return 0;
+            return len;
         }
+        len += bytes;
+
+        return len;
     }
     else{
         ret = cc2520_read_ram(priv->dev, priv->offset, buflen, (uint8_t*)buffer);
@@ -274,20 +336,20 @@ static ssize_t cc2520_cdev_driver_read(FAR struct file *filep, FAR char *buffer,
 }
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_seek
+ * Name: cc2520_cdev_seek
  *
  * Description:
  *   This function is called for lseek API.
  *
  ****************************************************************************/
-static off_t cc2520_cdev_driver_seek(FAR struct file *filep, off_t offset, int whence)
+static off_t cc2520_cdev_seek(FAR struct file *filep, off_t offset, int whence)
 {
     _info("offset=0x%x\n", offset);
     DEBUGASSERT(filep != NULL);
 
     FAR struct inode *inode = filep->f_inode;
     DEBUGASSERT(inode != NULL);
-    FAR struct cc2520_cdev_driver_dev_s *priv = inode->i_private;
+    FAR struct cc2520_cdev_dev_s *priv = inode->i_private;
     DEBUGASSERT(priv != NULL);
     
     if(whence == SEEK_SET){
@@ -300,13 +362,13 @@ static off_t cc2520_cdev_driver_seek(FAR struct file *filep, off_t offset, int w
 
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_ioctl
+ * Name: cc2520_cdev_ioctl
  *
  * Description:
  *   Execute ioctl commands for the device.
  ****************************************************************************/
 
-static int cc2520_cdev_driver_ioctl(FAR struct file *filep,
+static int cc2520_cdev_ioctl(FAR struct file *filep,
                         int cmd,
                         unsigned long arg)
 {
@@ -318,7 +380,7 @@ static int cc2520_cdev_driver_ioctl(FAR struct file *filep,
     DEBUGASSERT(filep != NULL);
     FAR struct inode *inode = filep->f_inode;
     DEBUGASSERT(inode != NULL);
-    FAR struct cc2520_cdev_driver_dev_s *priv = inode->i_private;
+    FAR struct cc2520_cdev_dev_s *priv = inode->i_private;
     DEBUGASSERT(priv != NULL);
 
     switch (cmd)
@@ -339,12 +401,88 @@ static int cc2520_cdev_driver_ioctl(FAR struct file *filep,
     return ret;
 }
 
+
+
+static int cc2520_cdev_poll(struct file *filep, struct pollfd *fds,
+                           bool setup)
+{
+  struct inode            *inode;
+  struct cc2520_cdev_dev_s *dev;
+  int                      ret = OK;
+  int                      i;
+
+  inode = filep->f_inode;
+  dev  = (struct cc2520_cdev_dev_s *)inode->i_private;
+
+  ret = nxmutex_lock(&dev->lock);
+  if (ret < 0)
+  {
+    return ret;
+  }
+
+  if (setup)
+  {
+      /* Ignore waits that do not include POLLIN */
+
+      if ((fds->events & POLLIN) == 0)
+        {
+          ret = -EDEADLK;
+          goto errout;
+        }
+
+      /* This is a request to set up the poll.  Find an available
+       * slot for the poll structure reference
+       */
+
+      for (i = 0; i < CONFIG_MAC802154_NPOLLWAITERS; i++)
+        {
+          /* Find an available slot */
+
+          if (!dev->fds[i])
+            {
+              /* Bind the poll structure and this slot */
+
+              dev->fds[i] = fds;
+              fds->priv    = &dev->fds[i];
+              break;
+            }
+        }
+
+      if (i >= CONFIG_MAC802154_NPOLLWAITERS)
+        {
+          fds->priv    = NULL;
+          ret          = -EBUSY;
+          goto errout;
+        }
+
+
+  }
+  else if (fds->priv)
+    {
+      /* This is a request to tear down the poll. */
+
+      struct pollfd **slot = (struct pollfd **)fds->priv;
+      DEBUGASSERT(slot != NULL);
+
+      /* Remove all memory of the poll setup */
+
+      *slot                = NULL;
+      fds->priv            = NULL;
+    }
+
+errout:
+  nxmutex_unlock(&dev->lock);
+  return ret;
+}
+
+
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: cc2520_cdev_driver_register
+ * Name: cc2520_cdev_register
  *
  * Description:
  *   Register the cc2520_cdev_driver character device as 'devpath' during NuttX startup.
@@ -352,10 +490,10 @@ static int cc2520_cdev_driver_ioctl(FAR struct file *filep,
  ****************************************************************************/
 
 int 
-cc2520_cdev_driver_register(FAR const char *devpath, struct cc2520_radio_s *dev)
+cc2520_cdev_register(FAR const char *devpath, struct cc2520_radio_s *dev)
 {
     _info("devpath=%s\n", devpath);
-    FAR struct cc2520_cdev_driver_dev_s *priv;
+    FAR struct cc2520_cdev_dev_s *priv;
     int ret;
 
     /* Sanity check */
@@ -365,8 +503,8 @@ cc2520_cdev_driver_register(FAR const char *devpath, struct cc2520_radio_s *dev)
 
     /* Initialize the device structure */
 
-    priv = (FAR struct cc2520_cdev_driver_dev_s *)
-        kmm_malloc(sizeof(struct cc2520_cdev_driver_dev_s));
+    priv = (FAR struct cc2520_cdev_dev_s *)
+        kmm_malloc(sizeof(struct cc2520_cdev_dev_s));
     if (priv == NULL)
     {
         wlerr("ERROR: Failed to allocate instance\n");
@@ -378,7 +516,7 @@ cc2520_cdev_driver_register(FAR const char *devpath, struct cc2520_radio_s *dev)
     priv->offset = 0;
     priv->dev = dev;
     /* Register the character driver */
-    ret = register_driver(devpath, &g_cc2520_cdev_driver_fops, 0666, priv);
+    ret = register_driver(devpath, &g_cc2520_cdev_fops, 0666, priv);
     if (ret < 0)
     {
         wlerr("ERROR: Failed to register driver: %d\n", ret);
