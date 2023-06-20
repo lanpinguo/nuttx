@@ -282,7 +282,7 @@ FAR struct iob_s *iob_tryalloc(bool throttled)
 
           g_iob_sem.semcount--;
           DEBUGASSERT(g_iob_sem.semcount >= 0);
-
+          iobinfo("iob left: %ld ", g_iob_sem.semcount);
 #if CONFIG_IOB_THROTTLE > 0
           /* The throttle semaphore is a little more complicated because
            * it can be negative!  Decrementing is still safe, however.
@@ -305,6 +305,8 @@ FAR struct iob_s *iob_tryalloc(bool throttled)
           return iob;
         }
     }
+
+  iobinfo("iob left: %ld ", g_iob_sem.semcount);
 
   leave_critical_section(flags);
   return NULL;

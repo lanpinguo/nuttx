@@ -106,14 +106,6 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
 	cc2520_write_register(dev, CC2520_EXCFLAG1, 0);
 	cc2520_write_register(dev, CC2520_EXCFLAG2, 0);
 
-    // if((reg_val & ((1<<4) | 1)) == 0){
-    //     /* not rx frame int, return */
-    //     goto done;
-    // }
-
-
-    wlinfo("RX interrupt: 0x%02x%02x\n", reg_val, excflag0);
-
 
     do{
         uint8_t len = 0, lqi = 0;
@@ -121,8 +113,8 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
 
         rxfifo_cnt = 0;
         cc2520_read_register(dev, CC2520_RXFIFOCNT, &rxfifo_cnt);
-        wlinfo("RX FIFO-CNT: 0x%02x\n", rxfifo_cnt);
         if(rxfifo_cnt == 0){
+            //wlwarn("FIFO-CNT: 0x%02x\n", rxfifo_cnt);
             goto done;
         }
 
@@ -131,8 +123,6 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
             goto done;
 
         /*assume 1st byte is phy length */
-        wlinfo("RX FIFO-1ST: 0x%02x\n", rxfifo_1st);
-
         if(rxfifo_1st == 0 || rxfifo_1st > rxfifo_cnt){
             /* no more one complete frame data in fifo, return */
             goto done;
@@ -142,13 +132,12 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
 
         /* read firt byte in fifo */
         cc2520_read_rxfifo(dev, &bytes, 1);
-        wlinfo("Frame len: 0x%02x\n", bytes);
         if(bytes != len || len > 128){
             /* there is a malformed pkt */
+            wlwarn("Frame len: 0x%02x\n", bytes);
             goto flush;
         }
 
-#if 1
         /* Allocate a data_ind to put the frame in */
         primitive = ieee802154_primitive_allocate();
         ind = (FAR struct ieee802154_data_ind_s *)primitive;
@@ -161,9 +150,9 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
         primitive->type = IEEE802154_PRIMITIVE_IND_DATA;
 
         /* Allocate an IOB to put the frame into */
-        ind->frame = iob_alloc(false);
+        ind->frame = iob_tryalloc(false);
         if (ind->frame == NULL) {
-            wlerr("no more memory \n");
+            wlwarn("no more memory \n");
             ieee802154_primitive_free(primitive);
             goto flush;
         }
@@ -217,19 +206,10 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
         }
 
         ind->lqi = lqi;
-        wlinfo("RXFIFO: 0x%02x, LQI: 0x%02x\n", len, lqi);
 
         /* Callback the receiver in the next highest layer */
+        wlinfo("recv: %d on chl %d\n", len, dev->chan);
         dev->radiocb->rxframe(dev->radiocb, ind);
-#else
-        uint8_t dummy[128];
-        if (cc2520_read_rxfifo(dev, dummy, len)) {
-            wlerr("frame reception failed\n");
-            goto flush;
-        }
-        _info("chl: %d, frame received: %d\n", dev->chan, len);
-
-#endif
     }while(rxfifo_cnt > 0);
 
 done:
@@ -245,10 +225,7 @@ flush:
         dev->stat.flush_cnt++;
     }
 
-
-
     return;
-
 }
 
 

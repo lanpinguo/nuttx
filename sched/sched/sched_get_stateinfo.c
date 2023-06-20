@@ -95,6 +95,12 @@ void nxsched_get_stateinfo(FAR struct tcb_s *tcb, FAR char *state,
 
       snprintf(state, length, "Waiting,Mutex:%d", holder);
     }
+  else if (tcb->task_state == TSTATE_WAIT_SEM)
+    {
+      leave_critical_section(flags);
+
+      snprintf(state, length, "Waiting,Sem:%p", tcb->waitobj);
+    }
   else
     {
       leave_critical_section(flags);

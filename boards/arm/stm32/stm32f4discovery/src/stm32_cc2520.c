@@ -309,8 +309,9 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
     int ret;
 
     /* Configure the interrupt pin */
-
+#if 0
     stm32_configgpio(priv->intcfg);
+#endif
     stm32_configgpio(priv->rstcfg);
 
     /* Tdres ≥ 0.1 ms */
@@ -350,7 +351,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
         radio = cc2520_init(spi, &priv->dev, minor);
         if (radio == NULL)
         {
-            wlerr("ERROR: Failed to initialize cc2520 bus %d\n", minor);
+            wlerr("ERROR: Failed to initialize cc2520 bus %ld\n", minor);
             continue;
         }
 
@@ -403,7 +404,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
     wd_start(&priv->poll_wd, POLLTIMEOUT, cc2520_poll_timeout, (wdparm_t)priv);
 
 
-
+#if 0
     /* Attach irq to first dev instance*/
     if (priv->dev.attach(&priv->dev, stm32_interrupt_handler, priv) != OK)
     {
@@ -411,7 +412,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
     }
 
     priv->dev.enable(&priv->dev, true);
-
+#endif
     UNUSED(ret);
     return OK;
 }

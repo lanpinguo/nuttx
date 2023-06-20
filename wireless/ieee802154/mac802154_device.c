@@ -779,7 +779,7 @@ static int mac802154dev_rxframe(FAR struct mac802154_chardevice_s *dev,
   while (nxmutex_lock(&dev->md_lock) != 0);
 
 
-  /* If there are threads waiting on poll() for MAX11802 data to become
+  /* If there are threads waiting on poll() for mac data to become
    * available, then wake them up now.  NOTE: we wake up all waiting
    * threads because we do not know that they are going to do.  If they
    * all try to read the data, then some make end up blocking after all.
