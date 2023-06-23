@@ -1,0 +1,2 @@
+echo "Nuttx Init system Script from romfs"
+sleep 1
