@@ -402,6 +402,132 @@
 #define GPIO_UART4_SHUTD   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | GPIO_OUTPUT_CLEAR | \
                            GPIO_PORTJ | GPIO_PIN13)
 
+
+/* Ethernet definitions *****************************************************/
+/* Todo */
+#define GPIO_ETH_RMII_TXD0    GPIO_ETH_RMII_TXD0_2    /* PG13 */
+#define GPIO_ETH_RMII_TXD1    GPIO_ETH_RMII_TXD1_1    /* PB 13 */
+#define GPIO_ETH_RMII_TX_EN   GPIO_ETH_RMII_TX_EN_2
+
+#define BUTTON_USER        0
+#define NUM_BUTTONS        1
+#define BUTTON_USER_BIT    (1 << BUTTON_USER)
+
+
+/* LCD
+ *
+ * The STM32F429I-DISCO board contains an onboard TFT LCD connected to the
+ * LTDC interface of the uC.
+ * The LCD is 240x320 pixels.
+ * Define the parameters of the LCD and the interface here.
+ */
+
+/* Panel configuration
+ *
+ * LCD Panel is Saef Technology Limited (SF-TC240T-9229A2-T) with integrated
+ * Ilitek ILI9341 LCD Single Chip Driver (240RGBx320)
+ *
+ * PLLSAI settings
+ * PLLSAIN                : 192
+ * PLLSAIR                : 4
+ * PLLSAIQ                : 7
+ * PLLSAIDIVR             : 8
+ *
+ * Timings
+ * Horizontal Front Porch : 10  (STM32_LTDC_HFP)
+ * Horizontal Back Porch  : 20  (STM32_LTDC_HBP)
+ * Vertical Front Porch   :  4  (STM32_LTDC_VFP)
+ * Vertical Back Porch    :  2  (STM32_LTDC_VBP)
+ *
+ * Horizontal Sync        : 10  (STM32_LTDC_HSYNC)
+ * Vertical Sync          :  4  (STM32_LTDC_VSYNC)
+ *
+ * Active Width           : 240 (STM32_LTDC_ACTIVEW)
+ * Active Height          : 320 (STM32_LTDC_ACTIVEH)
+ */
+
+/* LTDC PLL configuration
+ *
+ * PLLSAI_VCO = STM32_HSE_FREQUENCY / PLLM
+ *            = 8000000ul / 8
+ *            = 1,000,000
+ *
+ * PLL LCD clock output
+ *            = PLLSAI_VCO * PLLSAIN / PLLSAIR / PLLSAIDIVR
+ *            = 1,000,000 * 192 / 4 /8
+ *            = 6,000,000
+ */
+
+/* Defined panel settings */
+
+#define BOARD_LTDC_WIDTH                480
+#define BOARD_LTDC_HEIGHT               800
+
+#define BOARD_LTDC_OUTPUT_BPP           16
+#define BOARD_LTDC_HFP                  10
+#define BOARD_LTDC_HBP                  20
+#define BOARD_LTDC_VFP                  4
+#define BOARD_LTDC_VBP                  2
+#define BOARD_LTDC_HSYNC                10
+#define BOARD_LTDC_VSYNC                2
+
+#define BOARD_LTDC_PLLSAIN              192
+#define BOARD_LTDC_PLLSAIR              4
+#define BOARD_LTDC_PLLSAIQ              7
+
+/* Division factor for LCD clock */
+
+#define STM32_RCC_DCKCFGR_PLLSAIDIVR    RCC_DCKCFGR_PLLSAIDIVR_DIV8
+
+/* Pixel Clock Polarity */
+
+#define BOARD_LTDC_GCR_PCPOL            0 /* !LTDC_GCR_PCPOL */
+
+/* Data Enable Polarity */
+
+#define BOARD_LTDC_GCR_DEPOL            0 /* !LTDC_GCR_DEPOL */
+
+/* Vertical Sync Polarity */
+
+#define BOARD_LTDC_GCR_VSPOL            0 /* !LTDC_GCR_VSPOL */
+
+/* Horizontal Sync Polarity */
+
+#define BOARD_LTDC_GCR_HSPOL            0 /* !LTDC_GCR_HSPOL */
+
+/* GPIO pinset */
+
+#define GPIO_LTDC_PINS                  0 /* 18-bit display */
+
+#define GPIO_LTDC_R2                    GPIO_LTDC_R2_1
+#define GPIO_LTDC_R3                    GPIO_LTDC_R3_1
+#define GPIO_LTDC_R4                    GPIO_LTDC_R4_1
+#define GPIO_LTDC_R5                    GPIO_LTDC_R5_1
+#define GPIO_LTDC_R6                    GPIO_LTDC_R6_1
+#define GPIO_LTDC_R7                    GPIO_LTDC_R7_1
+
+#define GPIO_LTDC_G2                    GPIO_LTDC_G2_1
+#define GPIO_LTDC_G3                    GPIO_LTDC_G3_1
+#define GPIO_LTDC_G4                    GPIO_LTDC_G4_1
+#define GPIO_LTDC_G5                    GPIO_LTDC_G5_1
+#define GPIO_LTDC_G6                    GPIO_LTDC_G6_1
+#define GPIO_LTDC_G7                    GPIO_LTDC_G7_1
+
+#define GPIO_LTDC_B2                    GPIO_LTDC_B2_1
+#define GPIO_LTDC_B3                    GPIO_LTDC_B3_1
+#define GPIO_LTDC_B4                    GPIO_LTDC_B4_1
+#define GPIO_LTDC_B5                    GPIO_LTDC_B5_1
+#define GPIO_LTDC_B6                    GPIO_LTDC_B6_1
+#define GPIO_LTDC_B7                    GPIO_LTDC_B7_1
+
+#define GPIO_LTDC_VSYNC                 GPIO_LTDC_VSYNC_1
+#define GPIO_LTDC_HSYNC                 GPIO_LTDC_HSYNC_1
+#define GPIO_LTDC_DE                    GPIO_LTDC_DE_1
+#define GPIO_LTDC_CLK                   GPIO_LTDC_CLK_1
+
+#define LTDC_USE_DSI                    1
+
+
 /****************************************************************************
  * Public Data
  ****************************************************************************/

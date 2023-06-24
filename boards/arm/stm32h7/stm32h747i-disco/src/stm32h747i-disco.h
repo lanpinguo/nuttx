@@ -106,6 +106,12 @@
 #define SDIO_SLOTNO        0
 #define SDIO_MINOR         0
 
+
+/* OTG_HS_OverCurrent */
+#define GPIO_OTGHS_OVER  (GPIO_INPUT|GPIO_FLOAT|GPIO_SPEED_100MHz|GPIO_PUSHPULL|GPIO_PORTJ|GPIO_PIN1)
+
+
+
 /****************************************************************************
  * Name: stm32_bringup
  *

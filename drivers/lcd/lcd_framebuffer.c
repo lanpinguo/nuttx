@@ -347,7 +347,7 @@ static int lcdfb_getcmap(FAR struct fb_vtable_s *vtable,
     {
       /* Get the color map from the contained LCD */
 
-      lcd = priv->lcd
+      lcd = priv->lcd;
       DEBUGASSERT(lcd->getcmap != NULL);
       ret = lcd->getcmap(lcd, cmap);
       if (ret < 0)
@@ -381,7 +381,7 @@ static int lcdfb_putcmap(FAR struct fb_vtable_s *vtable,
     {
       /* Set the color map to the contained LCD */
 
-      lcd = priv->lcd
+      lcd = priv->lcd;
       DEBUGASSERT(lcd->putcmap != NULL);
       ret = lcd->putcmap(lcd, cmap);
       if (ret < 0)

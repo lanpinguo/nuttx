@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/stm32h7/stm32h747i-disco/src/stm32_appinitialize.c
+ * boards/arm/kinetis/kwikstik-k40/src/k40_lcd.c
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -25,55 +25,65 @@
 #include <nuttx/config.h>
 
 #include <sys/types.h>
-#include <nuttx/board.h>
+#include <assert.h>
+#include <debug.h>
 
+#include <nuttx/board.h>
+#include <arch/board/board.h>
+
+#include "arm_internal.h"
 #include "stm32h747i-disco.h"
 
-/****************************************************************************
- * Pre-processor Definitions
- ****************************************************************************/
+
+
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: board_app_initialize
+ * Name:  board_lcd_initialize
  *
  * Description:
- *   Perform application specific initialization.  This function is never
- *   called directly from application code, but only indirectly via the
- *   (non-standard) boardctl() interface using the command BOARDIOC_INIT.
- *
- * Input Parameters:
- *   arg - The boardctl() argument is passed to the board_app_initialize()
- *         implementation without modification.  The argument has no
- *         meaning to NuttX; the meaning of the argument is a contract
- *         between the board-specific initialization logic and the
- *         matching application logic.  The value could be such things as a
- *         mode enumeration value, a set of DIP switch switch settings, a
- *         pointer to configuration data read from a file or serial FLASH,
- *         or whatever you would like to do with it.  Every implementation
- *         should accept zero/NULL as a default configuration.
- *
- * Returned Value:
- *   Zero (OK) is returned on success; a negated errno value is returned on
- *   any failure to indicate the nature of the failure.
+ *   Initialize the LCD video hardware.
+ *   The initial state of the LCD is fully initialized, display memory
+ *   cleared, and the LCD ready to use, but with the power setting at 0
+ *   (full off).
  *
  ****************************************************************************/
 
-int board_app_initialize(uintptr_t arg)
+int board_lcd_initialize(void)
 {
-// #ifdef CONFIG_BOARD_LATE_INITIALIZE
-//   /* Board initialization already performed by board_late_initialize() */
-
-//   return OK;
-// #else
-//   /* Perform board-specific initialization */
-
-//   return stm32_bringup();
-// #endif
-
+  ginfo("Initializing\n");
+#warning "Missing logic"
   return OK;
+}
 
+/****************************************************************************
+ * Name:  board_lcd_getdev
+ *
+ * Description:
+ *   Return a a reference to the LCD object for the specified LCD.
+ *   This allows support for multiple LCD devices.
+ *
+ ****************************************************************************/
+
+struct lcd_dev_s *board_lcd_getdev(int lcddev)
+{
+  DEBUGASSERT(lcddev == 0);
+#warning "Missing logic"
+  return NULL;
+}
+
+/****************************************************************************
+ * Name:  board_lcd_uninitialize
+ *
+ * Description:
+ *   Uninitialize the LCD support
+ *
+ ****************************************************************************/
+
+void board_lcd_uninitialize(void)
+{
+#warning "Missing logic"
 }

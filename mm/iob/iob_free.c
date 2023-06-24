@@ -137,7 +137,7 @@ FAR struct iob_s *iob_free(FAR struct iob_s *iob)
       g_iob_freelist  = iob;
     }
 
-  iobinfo("iob left: %ld ", g_iob_sem.semcount);
+  iobinfo("iob left: %d ", g_iob_sem.semcount);
 
   /* Signal that an IOB is available.  If there is a thread blocked,
    * waiting for an IOB, this will wake up exactly one thread.  The

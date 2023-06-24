@@ -172,6 +172,11 @@ int stm32_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_STM32H7_LTDC
+  board_lcd_initialize();
+#endif
+
+
 #ifdef CONFIG_INPUT_BUTTONS
   /* Register the BUTTON driver */
 

@@ -60,4 +60,12 @@ ifeq ($(CONFIG_FAT_DMAMEMORY),y)
 CSRCS += stm32_dma_alloc.c
 endif
 
+ifeq ($(CONFIG_STM32H7_LTDC),y)
+CSRCS += stm32_lcd.c
+endif
+
+ifeq ($(CONFIG_STM32H7_FMC),y)
+CSRCS += stm32_extmem.c
+endif
+
 include $(TOPDIR)/boards/Board.mk

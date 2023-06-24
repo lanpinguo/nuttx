@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/stm32h7/stm32h747i-disco/src/stm32_appinitialize.c
+ * arch/arm/src/stm32h7/stm32_ltdc.h
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,62 +18,83 @@
  *
  ****************************************************************************/
 
+#ifndef __ARCH_ARM_SRC_STM32H7_STM32_LTDC_H
+#define __ARCH_ARM_SRC_STM32H7_STM32_LTDC_H
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx/config.h>
 
-#include <sys/types.h>
-#include <nuttx/board.h>
+#include <stdbool.h>
 
-#include "stm32h747i-disco.h"
+#include <nuttx/video/fb.h>
+#include <nuttx/nx/nxglib.h>
 
 /****************************************************************************
- * Pre-processor Definitions
+ * Public Function Prototypes
  ****************************************************************************/
 
 /****************************************************************************
- * Public Functions
- ****************************************************************************/
-
-/****************************************************************************
- * Name: board_app_initialize
+ * Name: stm32_ltdcreset
  *
  * Description:
- *   Perform application specific initialization.  This function is never
- *   called directly from application code, but only indirectly via the
- *   (non-standard) boardctl() interface using the command BOARDIOC_INIT.
- *
- * Input Parameters:
- *   arg - The boardctl() argument is passed to the board_app_initialize()
- *         implementation without modification.  The argument has no
- *         meaning to NuttX; the meaning of the argument is a contract
- *         between the board-specific initialization logic and the
- *         matching application logic.  The value could be such things as a
- *         mode enumeration value, a set of DIP switch switch settings, a
- *         pointer to configuration data read from a file or serial FLASH,
- *         or whatever you would like to do with it.  Every implementation
- *         should accept zero/NULL as a default configuration.
- *
- * Returned Value:
- *   Zero (OK) is returned on success; a negated errno value is returned on
- *   any failure to indicate the nature of the failure.
+ *   Reset LTDC via APB2RSTR
  *
  ****************************************************************************/
 
-int board_app_initialize(uintptr_t arg)
-{
-// #ifdef CONFIG_BOARD_LATE_INITIALIZE
-//   /* Board initialization already performed by board_late_initialize() */
+void stm32_ltdcreset(void);
 
-//   return OK;
-// #else
-//   /* Perform board-specific initialization */
+/****************************************************************************
+ * Name: stm32_ltdcinitialize
+ *
+ * Description:
+ *   Initialize the ltdc controller
+ *
+ * Returned Value:
+ *   OK
+ *
+ ****************************************************************************/
 
-//   return stm32_bringup();
-// #endif
+int stm32_ltdcinitialize(void);
 
-  return OK;
+/****************************************************************************
+ * Name: stm32_ltdcuninitialize
+ *
+ * Description:
+ *   Uninitialize the ltdc controller
+ *
+ ****************************************************************************/
 
-}
+void stm32_ltdcuninitialize(void);
+
+/****************************************************************************
+ * Name: stm32_ltdcgetvplane
+ *
+ * Description:
+ *   Get video plane reference used by framebuffer interface
+ *
+ * Parameter:
+ *   vplane - Video plane
+ *
+ * Returned Value:
+ *   Video plane reference
+ *
+ ****************************************************************************/
+
+struct fb_vtable_s *stm32_ltdcgetvplane(int vplane);
+
+/****************************************************************************
+ * Name: stm32_lcd_backlight
+ *
+ * Description:
+ *   If CONFIG_STM32H7_LCD_BACKLIGHT is defined, then the board-specific
+ *   logic must provide this interface to turn the backlight on and off.
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_STM32H7_LCD_BACKLIGHT
+void stm32_backlight(bool blon);
+#endif
+#endif /* __ARCH_ARM_SRC_STM32H7_STM32_LTDC_H */
