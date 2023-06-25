@@ -64,14 +64,14 @@
 #  error "Required GPIO ports not enabled"
 #endif
 
-#define STM32_FMC_NADDRCONFIGS 22
-#define STM32_FMC_NDATACONFIGS 16
+#define STM32_FMC_NADDRCONFIGS 25
+#define STM32_FMC_NDATACONFIGS 32
 
-#define STM32_SDRAM_CLKEN     FMC_SDCMR_CTB1 | FMC_SDCMR_MODE_CLK_ENABLE
-#define STM32_SDRAM_PALL      FMC_SDCMR_CTB1 | FMC_SDCMR_MODE_PALL
-#define STM32_SDRAM_REFRESH   FMC_SDCMR_CTB1 | FMC_SDCMR_MODE_AUTO_REFRESH |\
+#define STM32_SDRAM_CLKEN     FMC_SDCMR_CTB2 | FMC_SDCMR_MODE_CLK_ENABLE
+#define STM32_SDRAM_PALL      FMC_SDCMR_CTB2 | FMC_SDCMR_MODE_PALL
+#define STM32_SDRAM_REFRESH   FMC_SDCMR_CTB2 | FMC_SDCMR_MODE_AUTO_REFRESH |\
                                 FMC_SDCMR_NRFS(8)
-#define STM32_SDRAM_MODEREG   FMC_SDCMR_CTB1 | FMC_SDCMR_MODE_LOAD_MODE |\
+#define STM32_SDRAM_MODEREG   FMC_SDCMR_CTB2 | FMC_SDCMR_MODE_LOAD_MODE |\
                                 FMC_SDCMR_MRD_BURST_LENGTH_1 | \
                                 FMC_SDCMR_MRD_BURST_TYPE_SEQUENTIAL |\
                                 FMC_SDCMR_MRD_CAS_LATENCY_3 |\
@@ -88,11 +88,11 @@ static const uint32_t g_addressconfig[STM32_FMC_NADDRCONFIGS] =
 {
   GPIO_FMC_A0,  GPIO_FMC_A1,  GPIO_FMC_A2,  GPIO_FMC_A3,  GPIO_FMC_A4,
   GPIO_FMC_A5,  GPIO_FMC_A6,  GPIO_FMC_A7,  GPIO_FMC_A8,  GPIO_FMC_A9,
-  GPIO_FMC_A10, GPIO_FMC_A11,
+  GPIO_FMC_A10, GPIO_FMC_A11, GPIO_FMC_A12, GPIO_FMC_A14, GPIO_FMC_A15,
 
-  GPIO_FMC_SDCKE0_1, GPIO_FMC_SDNE0_3, GPIO_FMC_SDNWE_3, GPIO_FMC_NBL0,
-  GPIO_FMC_SDNRAS, GPIO_FMC_NBL1,  GPIO_FMC_BA0,   GPIO_FMC_BA1,
-  GPIO_FMC_SDCLK,  GPIO_FMC_SDNCAS
+  GPIO_FMC_SDCKE1_2, GPIO_FMC_SDNE1_2, GPIO_FMC_SDNWE_3, GPIO_FMC_SDNRAS,
+  GPIO_FMC_SDCLK,  GPIO_FMC_SDNCAS, GPIO_FMC_NBL0, GPIO_FMC_NBL1, 
+  GPIO_FMC_NBL2, GPIO_FMC_NBL3
 };
 
 static const uint32_t g_dataconfig[STM32_FMC_NDATACONFIGS] =
@@ -100,7 +100,10 @@ static const uint32_t g_dataconfig[STM32_FMC_NDATACONFIGS] =
   GPIO_FMC_D0, GPIO_FMC_D1, GPIO_FMC_D2, GPIO_FMC_D3, GPIO_FMC_D4,
   GPIO_FMC_D5, GPIO_FMC_D6, GPIO_FMC_D7, GPIO_FMC_D8, GPIO_FMC_D9,
   GPIO_FMC_D10, GPIO_FMC_D11, GPIO_FMC_D12, GPIO_FMC_D13, GPIO_FMC_D14,
-  GPIO_FMC_D15
+  GPIO_FMC_D15, GPIO_FMC_D16, GPIO_FMC_D17, GPIO_FMC_D18, GPIO_FMC_D19,
+  GPIO_FMC_D20, GPIO_FMC_D21, GPIO_FMC_D22, GPIO_FMC_D23, GPIO_FMC_D24,
+  GPIO_FMC_D25, GPIO_FMC_D26, GPIO_FMC_D27, GPIO_FMC_D28, GPIO_FMC_D29,
+  GPIO_FMC_D30, GPIO_FMC_D31
 };
 
 /****************************************************************************
@@ -181,54 +184,59 @@ void stm32_enablefmc(void)
   stm32_extmemgpios(g_addressconfig, STM32_FMC_NADDRCONFIGS);
   stm32_extmemgpios(g_dataconfig, STM32_FMC_NDATACONFIGS);
 
-  /* Enable AHB clocking to the FMC */
+  /* Enable AHB clocking to the FMC and MDMA */
 
   regval  = getreg32(STM32_RCC_AHB3ENR);
-  regval |= RCC_AHB3ENR_FMCEN;
+  regval |= (RCC_AHB3ENR_FMCEN | RCC_AHB3ENR_MDMAEN);
   putreg32(regval, STM32_RCC_AHB3ENR);
 
-  /* Configure and enable the SDRAM bank1
-   *
-   *   FMC clock = 216MHz/2 = 108MHz
-   *   108MHz = 9,26 ns
-   *   All timings from the datasheet for Speedgrade -6A (=6ns)
-   */
 
-  putreg32(FMC_SDCR_RPIPE_0 |
-           FMC_SDCR_BURST_READ |
-           FMC_SDCR_SDCLK_2X |
-           FMC_SDCR_CASLAT_3 |
-           FMC_SDCR_BANKS_4 |
-           FMC_SDCR_WIDTH_16 |
-           FMC_SDCR_ROWBITS_12 |
-           FMC_SDCR_COLBITS_8,
-      STM32_FMC_SDCR1);
 
-  putreg32(FMC_SDTR_TRCD(2) |          /* tRCD min = 18ns */
-           FMC_SDTR_TRP(2) |           /* tRP  min = 18ns */
-           FMC_SDTR_TWR(2) |           /* tWR      = 2CLK */
-           FMC_SDTR_TRC(7) |           /* tRC  min = 64ns */
-           FMC_SDTR_TRAS(5) |          /* tRAS min = 46ns */
-           FMC_SDTR_TXSR(8) |          /* tXSR min = 74ns */
-           FMC_SDTR_TMRD(2),           /* tMRD     = 2CLK */
-      STM32_FMC_SDTR1);
 
-  /* SDRAM Initialization sequence */
+    /* Todo: link mdma and fmc */
 
-  stm32_sdramcommand(STM32_SDRAM_CLKEN);      /* Clock enable command */
-  for (count = 0; count < 10000; count++) ;   /* Delay */
-  stm32_sdramcommand(STM32_SDRAM_PALL);       /* Precharge ALL command */
-  stm32_sdramcommand(STM32_SDRAM_REFRESH);    /* Auto refresh command */
-  stm32_sdramcommand(STM32_SDRAM_MODEREG);    /* Mode Register program */
+    /* Configure and enable the SDRAM bank2
+    *
+    *   FMC clock = 216MHz/2 = 108MHz
+    *   108MHz = 9,26 ns
+    *   All timings from the datasheet for Speedgrade -6A (=6ns)
+    */
 
-  /* Set refresh count
-   *
-   * FMC_CLK = 108MHz
-   * Refresh_Rate = 64ms / 4096 rows = 15.63us
-   * Counter = (FMC_CLK * Refresh_Rate) - 20
-   */
+    putreg32(FMC_SDCR_RPIPE_0 |
+            FMC_SDCR_BURST_READ |
+            FMC_SDCR_SDCLK_2X |
+            FMC_SDCR_CASLAT_3 |
+            FMC_SDCR_BANKS_4 |
+            FMC_SDCR_WIDTH_32 |
+            FMC_SDCR_ROWBITS_12 |
+            FMC_SDCR_COLBITS_9,
+        STM32_FMC_SDCR2);
 
-  putreg32(1668 << 1, STM32_FMC_SDRTR);
+    putreg32(FMC_SDTR_TRCD(2) |          /* tRCD min = 18ns */
+            FMC_SDTR_TRP(2) |           /* tRP  min = 18ns */
+            FMC_SDTR_TWR(2) |           /* tWR      = 2CLK */
+            FMC_SDTR_TRC(7) |           /* tRC  min = 64ns */
+            FMC_SDTR_TRAS(4) |          /* tRAS min = 46ns */
+            FMC_SDTR_TXSR(7) |          /* tXSR min = 74ns */
+            FMC_SDTR_TMRD(2),           /* tMRD     = 2CLK */
+        STM32_FMC_SDTR2);
+
+    /* SDRAM Initialization sequence */
+
+    stm32_sdramcommand(STM32_SDRAM_CLKEN);      /* Clock enable command */
+    for (count = 0; count < 10000; count++) ;   /* Delay */
+    stm32_sdramcommand(STM32_SDRAM_PALL);       /* Precharge ALL command */
+    stm32_sdramcommand(STM32_SDRAM_REFRESH);    /* Auto refresh command */
+    stm32_sdramcommand(STM32_SDRAM_MODEREG);    /* Mode Register program */
+
+    /* Set refresh count
+    *
+    * FMC_CLK = 108MHz
+    * Refresh_Rate = 64ms / 4096 rows = 15.63us
+    * Counter = (FMC_CLK * Refresh_Rate) - 20
+    */
+
+    putreg32(1668 << 1, STM32_FMC_SDRTR);
 }
 
 /****************************************************************************
