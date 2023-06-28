@@ -129,238 +129,437 @@
 
 /* LTDC Register Bit Definitions ********************************************/
 
-/* LTDC Synchronization Size Configuration Register */
+/******************************************************************************/
+/*                                                                            */
+/*                      LCD-TFT Display Controller (LTDC)                     */
+/*                                                                            */
+/******************************************************************************/
 
-#define LTDC_SSCR_VSH_SHIFT         (0)       /* Bits 0-10: Vertical Sync Height (scan lines) */
-#define LTDC_SSCR_VSH_MASK          (0x7ff << LTDC_SSCR_VSH_SHIFT)
-#  define LTDC_SSCR_VSH(n)          ((uint32_t)(n) << LTDC_SSCR_VSH_SHIFT)
-#define LTDC_SSCR_HSW_SHIFT         (16)      /* Bits 16-27: Horizontal Sync Width (pixel clocks) */
-#define LTDC_SSCR_HSW_MASK          (0xfff << LTDC_SSCR_HSW_SHIFT)
-#  define LTDC_SSCR_HSW(n)          ((uint32_t)(n) << LTDC_SSCR_HSW_SHIFT)
+/********************  Bit definition for LTDC_SSCR register  *****************/
 
-/* LTDC Back Porch Configuration Register */
+#define LTDC_SSCR_VSH_Pos            (0U)
+#define LTDC_SSCR_VSH_Msk            (0x7FFUL << LTDC_SSCR_VSH_Pos)            /*!< 0x000007FF */
+#define LTDC_SSCR_VSH                LTDC_SSCR_VSH_Msk                         /*!< Vertical Synchronization Height  */
+#define LTDC_SSCR_HSW_Pos            (16U)
+#define LTDC_SSCR_HSW_Msk            (0xFFFUL << LTDC_SSCR_HSW_Pos)            /*!< 0x0FFF0000 */
+#define LTDC_SSCR_HSW                LTDC_SSCR_HSW_Msk                         /*!< Horizontal Synchronization Width */
 
-#define LTDC_BPCR_AVBP_SHIFT        (0)       /* Bits 0-10: Accumulated Vertical back porch (scan lines) */
-#define LTDC_BPCR_AVBP_MASK         (0x7ff << LTDC_BPCR_AVBP_SHIFT)
-#  define LTDC_BPCR_AVBP(n)         ((uint32_t)(n) << LTDC_BPCR_AVBP_SHIFT)
-#define LTDC_BPCR_AHBP_SHIFT        (16)      /* Bits 16-27: Accumulated Horizontal back porch (pixel clocks) */
-#define LTDC_BPCR_AHBP_MASK         (0xfff << LTDC_BPCR_AVBP_SHIFT)
-#  define LTDC_BPCR_AHBP(n)         ((uint32_t)(n) << LTDC_BPCR_AHBP_SHIFT)
+/********************  Bit definition for LTDC_BPCR register  *****************/
 
-/* LTDC Active Width Configuration Register */
+#define LTDC_BPCR_AVBP_Pos           (0U)
+#define LTDC_BPCR_AVBP_Msk           (0x7FFUL << LTDC_BPCR_AVBP_Pos)           /*!< 0x000007FF */
+#define LTDC_BPCR_AVBP               LTDC_BPCR_AVBP_Msk                        /*!< Accumulated Vertical Back Porch   */
+#define LTDC_BPCR_AHBP_Pos           (16U)
+#define LTDC_BPCR_AHBP_Msk           (0xFFFUL << LTDC_BPCR_AHBP_Pos)           /*!< 0x0FFF0000 */
+#define LTDC_BPCR_AHBP               LTDC_BPCR_AHBP_Msk                        /*!< Accumulated Horizontal Back Porch */
 
-#define LTDC_AWCR_AAH_SHIFT         (0)       /* Bits 0-10: Accumulated Active Height (scan lines) */
-#define LTDC_AWCR_AAH_MASK          (0x7ff << LTDC_AWCR_AAH_SHIFT)
-#  define LTDC_AWCR_AAH(n)          ((uint32_t)(n) << LTDC_AWCR_AAH_SHIFT)
-#define LTDC_AWCR_AAW_SHIFT         (16)      /* Bits 16-27: Accumulated Active Width (pixel clocks) */
-#define LTDC_AWCR_AAW_MASK          (0xfff << LTDC_AWCR_AAW_SHIFT)
-#  define LTDC_AWCR_AAW(n)          ((uint32_t)(n) << LTDC_AWCR_AAW_SHIFT)
+/********************  Bit definition for LTDC_AWCR register  *****************/
 
-/* LTDC Total Width Configuration Register */
+#define LTDC_AWCR_AAH_Pos            (0U)
+#define LTDC_AWCR_AAH_Msk            (0x7FFUL << LTDC_AWCR_AAH_Pos)            /*!< 0x000007FF */
+#define LTDC_AWCR_AAH                LTDC_AWCR_AAH_Msk                         /*!< Accumulated Active height */
+#define LTDC_AWCR_AAW_Pos            (16U)
+#define LTDC_AWCR_AAW_Msk            (0xFFFUL << LTDC_AWCR_AAW_Pos)            /*!< 0x0FFF0000 */
+#define LTDC_AWCR_AAW                LTDC_AWCR_AAW_Msk                         /*!< Accumulated Active Width */
 
-#define LTDC_TWCR_TOTALH_SHIFT      (0)       /* Bits 0-10: Total Height (scan lines) */
-#define LTDC_TWCR_TOTALH_MASK       (0x7ff << LTDC_TWCR_TOTALH_SHIFT)
-#  define LTDC_TWCR_TOTALH(n)       ((uint32_t)(n) << LTDC_TWCR_TOTALH_SHIFT)
-#define LTDC_TWCR_TOTALW_SHIFT      (16)      /* Bits 16-27: Total Width (pixel clocks) */
-#define LTDC_TWCR_TOTALW_MASK       (0xfff << LTDC_TWCR_TOTALW_SHIFT)
-#  define LTDC_TWCR_TOTALW(n)       ((uint32_t)(n) << LTDC_TWCR_TOTALW_SHIFT)
+/********************  Bit definition for LTDC_TWCR register  *****************/
 
-/* LTDC Global Control Register */
+#define LTDC_TWCR_TOTALH_Pos         (0U)
+#define LTDC_TWCR_TOTALH_Msk         (0x7FFUL << LTDC_TWCR_TOTALH_Pos)         /*!< 0x000007FF */
+#define LTDC_TWCR_TOTALH             LTDC_TWCR_TOTALH_Msk                      /*!< Total height */
+#define LTDC_TWCR_TOTALW_Pos         (16U)
+#define LTDC_TWCR_TOTALW_Msk         (0xFFFUL << LTDC_TWCR_TOTALW_Pos)         /*!< 0x0FFF0000 */
+#define LTDC_TWCR_TOTALW             LTDC_TWCR_TOTALW_Msk                      /*!< Total Width */
 
-#define LTDC_GCR_LTDCEN             (1 << 0)  /* Bit 0:  LCD-TFT Controller Enable Bit */
-#define LTDC_GCR_DBW_SHIFT          (4)       /* Bits 4-6: Dither Blue Width */
-#define LTDC_GCR_DBW_MASK           (0x7 << LTDC_GCR_DBW_SHIFT)
-#  define LTDC_GCR_DBW(n)           ((uint32_t)(n) << LTDC_GCR_DBW_SHIFT)
-#define LTDC_GCR_DGW_SHIFT          (8)       /* Bits 8-10: Dither Green Width */
-#define LTDC_GCR_DGW_MASK           (0x7 << LTDC_GCR_DGW_SHIFT)
-#  define LTDC_GCR_DGW(n)           ((uint32_t)(n) << LTDC_GCR_DGW_SHIFT)
-#define LTDC_GCR_DRW_SHIFT          (12)      /* Bits 12-14: Dither Red Width */
-#define LTDC_GCR_DRW_MASK           (0x7 << LTDC_GCR_DRW_SHIFT)
-#  define LTDC_GCR_DRW(n)           ((uint32_t)(n) << LTDC_GCR_DRW_SHIFT)
-#define LTDC_GCR_DEN                (1 << 16) /* Bit 16:  Dither Enable */
-#define LTDC_GCR_PCPOL              (1 << 28) /* Bit 28:  Pixel Clock Polarity */
-#define LTDC_GCR_DEPOL              (1 << 29) /* Bit 29:  Not(Data Enable) Polarity */
-#define LTDC_GCR_VSPOL              (1 << 30) /* Bit 30:  Vertical Sync Polarity */
-#define LTDC_GCR_HSPOL              (1 << 31) /* Bit 31:  Horizontal Sync Polarity */
+/********************  Bit definition for LTDC_GCR register  ******************/
 
-/* LTDC Shadow Reload Configuration Register */
+#define LTDC_GCR_LTDCEN_Pos          (0U)
+#define LTDC_GCR_LTDCEN_Msk          (0x1UL << LTDC_GCR_LTDCEN_Pos)            /*!< 0x00000001 */
+#define LTDC_GCR_LTDCEN              LTDC_GCR_LTDCEN_Msk                       /*!< LCD-TFT controller enable bit       */
+#define LTDC_GCR_DBW_Pos             (4U)
+#define LTDC_GCR_DBW_Msk             (0x7UL << LTDC_GCR_DBW_Pos)               /*!< 0x00000070 */
+#define LTDC_GCR_DBW                 LTDC_GCR_DBW_Msk                          /*!< Dither Blue Width                   */
+#define LTDC_GCR_DGW_Pos             (8U)
+#define LTDC_GCR_DGW_Msk             (0x7UL << LTDC_GCR_DGW_Pos)               /*!< 0x00000700 */
+#define LTDC_GCR_DGW                 LTDC_GCR_DGW_Msk                          /*!< Dither Green Width                  */
+#define LTDC_GCR_DRW_Pos             (12U)
+#define LTDC_GCR_DRW_Msk             (0x7UL << LTDC_GCR_DRW_Pos)               /*!< 0x00007000 */
+#define LTDC_GCR_DRW                 LTDC_GCR_DRW_Msk                          /*!< Dither Red Width                    */
+#define LTDC_GCR_DEN_Pos             (16U)
+#define LTDC_GCR_DEN_Msk             (0x1UL << LTDC_GCR_DEN_Pos)               /*!< 0x00010000 */
+#define LTDC_GCR_DEN                 LTDC_GCR_DEN_Msk                          /*!< Dither Enable                       */
+#define LTDC_GCR_PCPOL_Pos           (28U)
+#define LTDC_GCR_PCPOL_Msk           (0x1UL << LTDC_GCR_PCPOL_Pos)             /*!< 0x10000000 */
+#define LTDC_GCR_PCPOL               LTDC_GCR_PCPOL_Msk                        /*!< Pixel Clock Polarity                */
+#define LTDC_GCR_DEPOL_Pos           (29U)
+#define LTDC_GCR_DEPOL_Msk           (0x1UL << LTDC_GCR_DEPOL_Pos)             /*!< 0x20000000 */
+#define LTDC_GCR_DEPOL               LTDC_GCR_DEPOL_Msk                        /*!< Data Enable Polarity                */
+#define LTDC_GCR_VSPOL_Pos           (30U)
+#define LTDC_GCR_VSPOL_Msk           (0x1UL << LTDC_GCR_VSPOL_Pos)             /*!< 0x40000000 */
+#define LTDC_GCR_VSPOL               LTDC_GCR_VSPOL_Msk                        /*!< Vertical Synchronization Polarity   */
+#define LTDC_GCR_HSPOL_Pos           (31U)
+#define LTDC_GCR_HSPOL_Msk           (0x1UL << LTDC_GCR_HSPOL_Pos)             /*!< 0x80000000 */
+#define LTDC_GCR_HSPOL               LTDC_GCR_HSPOL_Msk                        /*!< Horizontal Synchronization Polarity */
 
-#define LTDC_SRCR_IMR               (1 << 0)  /* Bit 0:  Immediate Reload */
-#define LTDC_SRCR_VBR               (1 << 1)  /* Bit 1:  Vertical Blanking Reload */
 
-/* LTDC Background Color Configuration Register */
+/********************  Bit definition for LTDC_SRCR register  *****************/
 
-#define LTDC_BCCR_BCBLUE_SHIFT      (0)       /* Bits 0-7: Background Color Blue Value */
-#define LTDC_BCCR_BCBLUE_MASK       (0xff << LTDC_BCCR_BCBLUE_SHIFT)
-#  define LTDC_BCCR_BCBLUE(n)       ((uint32_t)(n) << LTDC_BCCR_BCBLUE_SHIFT)
-#define LTDC_BCCR_BCGREEN_SHIFT     (8)       /* Bits 8-15: Background Color Green Value */
-#define LTDC_BCCR_BCGREEN_MASK      (0xff << LTDC_BCCR_BCGREEN_SHIFT)
-#  define LTDC_BCCR_BCGREEN(n)      ((uint32_t)(n) << LTDC_BCCR_BCGREEN_SHIFT)
-#define LTDC_BCCR_BCRED_SHIFT       (16)       /* Bits 16-23: Background Color Red Value */
-#define LTDC_BCCR_BCRED_MASK        (0xff << LTDC_BCCR_BCRED_SHIFT)
-#  define LTDC_BCCR_BCRED(n)        ((uint32_t)(n) << LTDC_BCCR_BCRED_SHIFT)
+#define LTDC_SRCR_IMR_Pos            (0U)
+#define LTDC_SRCR_IMR_Msk            (0x1UL << LTDC_SRCR_IMR_Pos)              /*!< 0x00000001 */
+#define LTDC_SRCR_IMR                LTDC_SRCR_IMR_Msk                         /*!< Immediate Reload         */
+#define LTDC_SRCR_VBR_Pos            (1U)
+#define LTDC_SRCR_VBR_Msk            (0x1UL << LTDC_SRCR_VBR_Pos)              /*!< 0x00000002 */
+#define LTDC_SRCR_VBR                LTDC_SRCR_VBR_Msk                         /*!< Vertical Blanking Reload */
 
-/* LTDC Interrupt Enable Register */
+/********************  Bit definition for LTDC_BCCR register  *****************/
 
-#define LTDC_IER_LIE                (1 << 0)  /* Bit 0:  Line Interrupt Enable */
-#define LTDC_IER_FUIE               (1 << 1)  /* Bit 1:  FIFO Underrun Interrupt Enable */
-#define LTDC_IER_TERRIE             (1 << 2)  /* Bit 2:  Transfer Error Interrupt Enable */
-#define LTDC_IER_RRIE               (1 << 3)  /* Bit 3:  Register Reload Interrupt Enable */
+#define LTDC_BCCR_BCBLUE_Pos         (0U)
+#define LTDC_BCCR_BCBLUE_Msk         (0xFFUL << LTDC_BCCR_BCBLUE_Pos)          /*!< 0x000000FF */
+#define LTDC_BCCR_BCBLUE             LTDC_BCCR_BCBLUE_Msk                      /*!< Background Blue value  */
+#define LTDC_BCCR_BCGREEN_Pos        (8U)
+#define LTDC_BCCR_BCGREEN_Msk        (0xFFUL << LTDC_BCCR_BCGREEN_Pos)         /*!< 0x0000FF00 */
+#define LTDC_BCCR_BCGREEN            LTDC_BCCR_BCGREEN_Msk                     /*!< Background Green value */
+#define LTDC_BCCR_BCRED_Pos          (16U)
+#define LTDC_BCCR_BCRED_Msk          (0xFFUL << LTDC_BCCR_BCRED_Pos)           /*!< 0x00FF0000 */
+#define LTDC_BCCR_BCRED              LTDC_BCCR_BCRED_Msk                       /*!< Background Red value   */
 
-/* LTDC Interrupt Status Register */
+/********************  Bit definition for LTDC_IER register  ******************/
 
-#define LTDC_ISR_LIF                (1 << 0)  /* Bit 0:  Line Interrupt Flag */
-#define LTDC_ISR_FUIF               (1 << 1)  /* Bit 1:  FIFO Underrun Interrupt Flag */
-#define LTDC_IER_TERRIF             (1 << 2)  /* Bit 2:  Transfer Error Interrupt Flag */
-#define LTDC_ISR_RRIF               (1 << 3)  /* Bit 3:  Register Reload Interrupt Flag */
+#define LTDC_IER_LIE_Pos             (0U)
+#define LTDC_IER_LIE_Msk             (0x1UL << LTDC_IER_LIE_Pos)               /*!< 0x00000001 */
+#define LTDC_IER_LIE                 LTDC_IER_LIE_Msk                          /*!< Line Interrupt Enable            */
+#define LTDC_IER_FUIE_Pos            (1U)
+#define LTDC_IER_FUIE_Msk            (0x1UL << LTDC_IER_FUIE_Pos)              /*!< 0x00000002 */
+#define LTDC_IER_FUIE                LTDC_IER_FUIE_Msk                         /*!< FIFO Underrun Interrupt Enable   */
+#define LTDC_IER_TERRIE_Pos          (2U)
+#define LTDC_IER_TERRIE_Msk          (0x1UL << LTDC_IER_TERRIE_Pos)            /*!< 0x00000004 */
+#define LTDC_IER_TERRIE              LTDC_IER_TERRIE_Msk                       /*!< Transfer Error Interrupt Enable  */
+#define LTDC_IER_RRIE_Pos            (3U)
+#define LTDC_IER_RRIE_Msk            (0x1UL << LTDC_IER_RRIE_Pos)              /*!< 0x00000008 */
+#define LTDC_IER_RRIE                LTDC_IER_RRIE_Msk                         /*!< Register Reload interrupt enable */
 
-/* LTDC Interrupt Clear Register */
+/********************  Bit definition for LTDC_ISR register  ******************/
 
-#define LTDC_ICR_CLIF               (1 << 0)  /* Bit 0:  Clear Line Interrupt Flag */
-#define LTDC_ICR_CFUIF              (1 << 1)  /* Bit 1:  Clear FIFO Underrun Interrupt Flag */
-#define LTDC_ICR_CTERRIF            (1 << 2)  /* Bit 2:  Clear Transfer Error Interrupt Flag */
-#define LTDC_ICR_CRRIF              (1 << 3)  /* Bit 3:  Clear Register Reload Interrupt Flag */
+#define LTDC_ISR_LIF_Pos             (0U)
+#define LTDC_ISR_LIF_Msk             (0x1UL << LTDC_ISR_LIF_Pos)               /*!< 0x00000001 */
+#define LTDC_ISR_LIF                 LTDC_ISR_LIF_Msk                          /*!< Line Interrupt Flag */
+#define LTDC_ISR_FUIF_Pos            (1U)
+#define LTDC_ISR_FUIF_Msk            (0x1UL << LTDC_ISR_FUIF_Pos)              /*!< 0x00000002 */
+#define LTDC_ISR_FUIF                LTDC_ISR_FUIF_Msk                         /*!< FIFO Underrun Interrupt Flag */
+#define LTDC_ISR_TERRIF_Pos          (2U)
+#define LTDC_ISR_TERRIF_Msk          (0x1UL << LTDC_ISR_TERRIF_Pos)            /*!< 0x00000004 */
+#define LTDC_ISR_TERRIF              LTDC_ISR_TERRIF_Msk                       /*!< Transfer Error Interrupt Flag */
+#define LTDC_ISR_RRIF_Pos            (3U)
+#define LTDC_ISR_RRIF_Msk            (0x1UL << LTDC_ISR_RRIF_Pos)              /*!< 0x00000008 */
+#define LTDC_ISR_RRIF                LTDC_ISR_RRIF_Msk                         /*!< Register Reload interrupt Flag */
 
-/* LTDC Line Interrupt Posittion Configuration Register */
+/********************  Bit definition for LTDC_ICR register  ******************/
 
-#define LTDC_LIPCR_LIPOS_SHIFT      (0)       /* Bits 0-10: Line Interrupt Position */
-#define LTDC_LIPCR_LIPOS_MASK       (0x7ff << LTDC_LIPCR_LIPOS_SHIFT)
-#  define LTDC_LIPCR_LIPOS(n)       ((uint32_t)(n) << LTDC_LIPCR_LIPOS_SHIFT)
+#define LTDC_ICR_CLIF_Pos            (0U)
+#define LTDC_ICR_CLIF_Msk            (0x1UL << LTDC_ICR_CLIF_Pos)              /*!< 0x00000001 */
+#define LTDC_ICR_CLIF                LTDC_ICR_CLIF_Msk                         /*!< Clears the Line Interrupt Flag */
+#define LTDC_ICR_CFUIF_Pos           (1U)
+#define LTDC_ICR_CFUIF_Msk           (0x1UL << LTDC_ICR_CFUIF_Pos)             /*!< 0x00000002 */
+#define LTDC_ICR_CFUIF               LTDC_ICR_CFUIF_Msk                        /*!< Clears the FIFO Underrun Interrupt Flag */
+#define LTDC_ICR_CTERRIF_Pos         (2U)
+#define LTDC_ICR_CTERRIF_Msk         (0x1UL << LTDC_ICR_CTERRIF_Pos)           /*!< 0x00000004 */
+#define LTDC_ICR_CTERRIF             LTDC_ICR_CTERRIF_Msk                      /*!< Clears the Transfer Error Interrupt Flag */
+#define LTDC_ICR_CRRIF_Pos           (3U)
+#define LTDC_ICR_CRRIF_Msk           (0x1UL << LTDC_ICR_CRRIF_Pos)             /*!< 0x00000008 */
+#define LTDC_ICR_CRRIF               LTDC_ICR_CRRIF_Msk                        /*!< Clears Register Reload interrupt Flag */
 
-/* LTDC Current Position Status Register */
+/********************  Bit definition for LTDC_LIPCR register  ****************/
 
-#define LTDC_CPSR_CYPOS_SHIFT       (0)       /* Bits 0-15: Current Y Position */
-#define LTDC_CPSR_CYPOS_MASK        (0xFFFF << LTDC_CPSR_CYPOS_SHIFT)
-#  define LTDC_CPSR_CYPOS(n)        ((uint32_t)(n) << LTDC_CPSR_CYPOS_SHIFT)
-#define LTDC_CPSR_CXPOS_SHIFT       (16)      /* Bits 15-31: Current X Position */
-#define LTDC_CPSR_CXPOS_MASK        (0xFFFF << LTDC_CPSR_CXPOS_SHIFT)
-#  define LTDC_CPSR_CXPOS(n)        ((uint32_t)(n) << LTDC_CPSR_CXPOS_SHIFT)
+#define LTDC_LIPCR_LIPOS_Pos         (0U)
+#define LTDC_LIPCR_LIPOS_Msk         (0x7FFUL << LTDC_LIPCR_LIPOS_Pos)         /*!< 0x000007FF */
+#define LTDC_LIPCR_LIPOS             LTDC_LIPCR_LIPOS_Msk                      /*!< Line Interrupt Position */
 
-/* LTDC Current Display Status Register */
+/********************  Bit definition for LTDC_CPSR register  *****************/
 
-#define LTDC_CDSR_VDES              (1 << 0)  /* Bit 0:  Vertical Data Enable display Status */
-#define LTDC_CDSR_HDES              (1 << 1)  /* Bit 1:  Horizontal Data Enable display Status */
-#define LTDC_CDSR_VSYNCS            (1 << 2)  /* Bit 2:  Vertical Sync display Status */
-#define LTDC_CDSR_HSYNCS            (1 << 3)  /* Bit 3:  Horizontal Sync display Status */
+#define LTDC_CPSR_CYPOS_Pos          (0U)
+#define LTDC_CPSR_CYPOS_Msk          (0xFFFFUL << LTDC_CPSR_CYPOS_Pos)         /*!< 0x0000FFFF */
+#define LTDC_CPSR_CYPOS              LTDC_CPSR_CYPOS_Msk                       /*!< Current Y Position */
+#define LTDC_CPSR_CXPOS_Pos          (16U)
+#define LTDC_CPSR_CXPOS_Msk          (0xFFFFUL << LTDC_CPSR_CXPOS_Pos)         /*!< 0xFFFF0000 */
+#define LTDC_CPSR_CXPOS              LTDC_CPSR_CXPOS_Msk                       /*!< Current X Position */
 
-/* LTDC Layer x Control Register */
+/********************  Bit definition for LTDC_CDSR register  *****************/
 
-#define LTDC_LXCR_LEN               (1 << 0)  /* Bit 0:  Layer Enable */
-#define LTDC_LXCR_COLKEN            (1 << 1)  /* Bit 1:  Color Keying Enable */
-#define LTDC_LXCR_CLUTEN            (1 << 4)  /* Bit 4:  Color Look-Up Table Enable */
+#define LTDC_CDSR_VDES_Pos           (0U)
+#define LTDC_CDSR_VDES_Msk           (0x1UL << LTDC_CDSR_VDES_Pos)             /*!< 0x00000001 */
+#define LTDC_CDSR_VDES               LTDC_CDSR_VDES_Msk                        /*!< Vertical Data Enable Status       */
+#define LTDC_CDSR_HDES_Pos           (1U)
+#define LTDC_CDSR_HDES_Msk           (0x1UL << LTDC_CDSR_HDES_Pos)             /*!< 0x00000002 */
+#define LTDC_CDSR_HDES               LTDC_CDSR_HDES_Msk                        /*!< Horizontal Data Enable Status     */
+#define LTDC_CDSR_VSYNCS_Pos         (2U)
+#define LTDC_CDSR_VSYNCS_Msk         (0x1UL << LTDC_CDSR_VSYNCS_Pos)           /*!< 0x00000004 */
+#define LTDC_CDSR_VSYNCS             LTDC_CDSR_VSYNCS_Msk                      /*!< Vertical Synchronization Status   */
+#define LTDC_CDSR_HSYNCS_Pos         (3U)
+#define LTDC_CDSR_HSYNCS_Msk         (0x1UL << LTDC_CDSR_HSYNCS_Pos)           /*!< 0x00000008 */
+#define LTDC_CDSR_HSYNCS             LTDC_CDSR_HSYNCS_Msk                      /*!< Horizontal Synchronization Status */
 
-/* LTDC Layer x Window Horizontal Position Configuration Register */
+/********************  Bit definition for LTDC_LxCR register  *****************/
 
-#define LTDC_LXWHPCR_WHSTPOS_SHIFT  (0)       /* Bits 0-11: Window Horizontal Start Position */
-#define LTDC_LXWHPCR_WHSTPOS_MASK   (0xfff << LTDC_LXWHPCR_WHSTPOS_SHIFT)
-#  define LTDC_LXWHPCR_WHSTPOS(n)   ((uint32_t)(n) << LTDC_LXWHPCR_WHSTPOS_SHIFT)
-#define LTDC_LXWHPCR_WHSPPOS_SHIFT  (16)      /* Bits 16-27: Window Horizontal Stop Position */
-#define LTDC_LXWHPCR_WHSPPOS_MASK   (0xfff << LTDC_LXWHPCR_WHSPPOS_SHIFT)
-#  define LTDC_LXWHPCR_WHSPPOS(n)   ((uint32_t)(n) << LTDC_LXWHPCR_WHSPPOS_SHIFT)
+#define LTDC_LxCR_LEN_Pos            (0U)
+#define LTDC_LxCR_LEN_Msk            (0x1UL << LTDC_LxCR_LEN_Pos)              /*!< 0x00000001 */
+#define LTDC_LxCR_LEN                LTDC_LxCR_LEN_Msk                         /*!< Layer Enable              */
+#define LTDC_LxCR_COLKEN_Pos         (1U)
+#define LTDC_LxCR_COLKEN_Msk         (0x1UL << LTDC_LxCR_COLKEN_Pos)           /*!< 0x00000002 */
+#define LTDC_LxCR_COLKEN             LTDC_LxCR_COLKEN_Msk                      /*!< Color Keying Enable       */
+#define LTDC_LxCR_CLUTEN_Pos         (4U)
+#define LTDC_LxCR_CLUTEN_Msk         (0x1UL << LTDC_LxCR_CLUTEN_Pos)           /*!< 0x00000010 */
+#define LTDC_LxCR_CLUTEN             LTDC_LxCR_CLUTEN_Msk                      /*!< Color Lockup Table Enable */
 
-/* LTDC Layer x Window Vertical Position Configuration Register */
+/********************  Bit definition for LTDC_LxWHPCR register  **************/
 
-#define LTDC_LXWVPCR_WVSTPOS_SHIFT  (0)       /* Bits 0-10: Window Vertical Start Position */
-#define LTDC_LXWVPCR_WVSTPOS_MASK   (0x7ff << LTDC_LXWVPCR_WVSTPOS_SHIFT)
-#  define LTDC_LXWVPCR_WVSTPOS(n)   ((uint32_t)(n) << LTDC_LXWVPCR_WVSTPOS_SHIFT)
-#define LTDC_LXWVPCR_WVSPPOS_SHIFT  (16)      /* Bits 16-26: Window Vertical Stop Position */
-#define LTDC_LXWVPCR_WVSPPOS_MASK   (0x7ff << LTDC_LXWVPCR_WVSPPOS_SHIFT)
-#  define LTDC_LXWVPCR_WVSPPOS(n)   ((uint32_t)(n) << LTDC_LXWVPCR_WVSPPOS_SHIFT)
+#define LTDC_LxWHPCR_WHSTPOS_Pos     (0U)
+#define LTDC_LxWHPCR_WHSTPOS_Msk     (0xFFFUL << LTDC_LxWHPCR_WHSTPOS_Pos)     /*!< 0x00000FFF */
+#define LTDC_LxWHPCR_WHSTPOS         LTDC_LxWHPCR_WHSTPOS_Msk                  /*!< Window Horizontal Start Position */
+#define LTDC_LxWHPCR_WHSPPOS_Pos     (16U)
+#define LTDC_LxWHPCR_WHSPPOS_Msk     (0xFFFFUL << LTDC_LxWHPCR_WHSPPOS_Pos)    /*!< 0xFFFF0000 */
+#define LTDC_LxWHPCR_WHSPPOS         LTDC_LxWHPCR_WHSPPOS_Msk                  /*!< Window Horizontal Stop Position  */
 
-/* LTDC Layer x Color Keying Configuration Register */
+/********************  Bit definition for LTDC_LxWVPCR register  **************/
 
-#define LTDC_LXCKCR_CKBLUE_SHIFT    (0)       /* Bits 0-7: Color Key Blue Value */
-#define LTDC_LXCKCR_CKBLUE_MASK     (0xff << LTDC_LXCKCR_CKBLUE_SHIFT)
-#  define LTDC_LXCKCR_CKBLUE(n)     ((uint32_t)(n) << LTDC_LXCKCR_CKBLUE_SHIFT)
-#define LTDC_LXCKCR_CKGREEN_SHIFT   (8)       /* Bits 8-15: Color Key Green Value */
-#define LTDC_LXCKCR_CKGREEN_MASK    (0xff << LTDC_LXCKCR_CKGREEN_SHIFT)
-#  define LTDC_LXCKCR_CKGREEN(n)    ((uint32_t)(n) << LTDC_LXCKCR_CKGREEN_SHIFT)
-#define LTDC_LXCKCR_CKRED_SHIFT     (16)       /* Bits 16-23: Color Key Red Value */
-#define LTDC_LXCKCR_CKRED_MASK      (0xff << LTDC_LXCKCR_CKRED_SHIFT)
-#  define LTDC_LXCKCR_CKRED(n)      ((uint32_t)(n) << LTDC_LXCKCR_CKRED_SHIFT)
+#define LTDC_LxWVPCR_WVSTPOS_Pos     (0U)
+#define LTDC_LxWVPCR_WVSTPOS_Msk     (0xFFFUL << LTDC_LxWVPCR_WVSTPOS_Pos)     /*!< 0x00000FFF */
+#define LTDC_LxWVPCR_WVSTPOS         LTDC_LxWVPCR_WVSTPOS_Msk                  /*!< Window Vertical Start Position */
+#define LTDC_LxWVPCR_WVSPPOS_Pos     (16U)
+#define LTDC_LxWVPCR_WVSPPOS_Msk     (0xFFFFUL << LTDC_LxWVPCR_WVSPPOS_Pos)    /*!< 0xFFFF0000 */
+#define LTDC_LxWVPCR_WVSPPOS         LTDC_LxWVPCR_WVSPPOS_Msk                  /*!< Window Vertical Stop Position  */
 
-/* LTDC Layer x Pixel Format Configuration Register */
+/********************  Bit definition for LTDC_LxCKCR register  ***************/
 
-#define LTDC_LXPFCR_PF_SHIFT        (0)       /* Bits 0-2: Pixel Format */
-#define LTDC_LXPFCR_PF_MASK         (0x7 << LTDC_LXPFCR_PF_SHIFT)
-#  define LTDC_LXPFCR_PF(n)         ((uint32_t)(n) << LTDC_LXPFCR_PF_SHIFT)
+#define LTDC_LxCKCR_CKBLUE_Pos       (0U)
+#define LTDC_LxCKCR_CKBLUE_Msk       (0xFFUL << LTDC_LxCKCR_CKBLUE_Pos)        /*!< 0x000000FF */
+#define LTDC_LxCKCR_CKBLUE           LTDC_LxCKCR_CKBLUE_Msk                    /*!< Color Key Blue value  */
+#define LTDC_LxCKCR_CKGREEN_Pos      (8U)
+#define LTDC_LxCKCR_CKGREEN_Msk      (0xFFUL << LTDC_LxCKCR_CKGREEN_Pos)       /*!< 0x0000FF00 */
+#define LTDC_LxCKCR_CKGREEN          LTDC_LxCKCR_CKGREEN_Msk                   /*!< Color Key Green value */
+#define LTDC_LxCKCR_CKRED_Pos        (16U)
+#define LTDC_LxCKCR_CKRED_Msk        (0xFFUL << LTDC_LxCKCR_CKRED_Pos)         /*!< 0x00FF0000 */
+#define LTDC_LxCKCR_CKRED            LTDC_LxCKCR_CKRED_Msk                     /*!< Color Key Red value   */
 
-#define LTDC_PF_ARGB8888            0
-#define LTDC_PF_RGB888              1
-#define LTDC_PF_RGB565              2
-#define LTDC_PF_ARGB1555            3
-#define LTDC_PF_ARGB4444            4
-#define LTDC_PF_L8                  5     /* 8-bit Luninance (CLUT lookup) */
-#define LTDC_PF_AL44                6     /* 4-bit Alpha, 4-bit Luminance */
-#define LTDC_PF_AL88                7     /* 8-bit Alpha, 8-bit Luminance */
+/********************  Bit definition for LTDC_LxPFCR register  ***************/
 
-/* LTDC Layer x Constant Alpha Configuration Register */
+#define LTDC_LxPFCR_PF_Pos           (0U)
+#define LTDC_LxPFCR_PF_Msk           (0x7UL << LTDC_LxPFCR_PF_Pos)             /*!< 0x00000007 */
+#define LTDC_LxPFCR_PF               LTDC_LxPFCR_PF_Msk                        /*!< Pixel Format */
 
-#define LTDC_LXCACR_CONSTA_SHIFT    (0)       /* Bits 0-7: Constant Alpha */
-#define LTDC_LXCACR_CONSTA_MASK     (0x7 << LTDC_LXCACR_CONSTA_SHIFT)
-#  define LTDC_LXCACR_CONSTA(n)     ((uint32_t)(n) << LTDC_LXCACR_CONSTA_SHIFT)
+/********************  Bit definition for LTDC_LxCACR register  ***************/
 
-/* LTDC Layer x Default Color Configuration Register */
+#define LTDC_LxCACR_CONSTA_Pos       (0U)
+#define LTDC_LxCACR_CONSTA_Msk       (0xFFUL << LTDC_LxCACR_CONSTA_Pos)        /*!< 0x000000FF */
+#define LTDC_LxCACR_CONSTA           LTDC_LxCACR_CONSTA_Msk                    /*!< Constant Alpha */
 
-#define LTDC_LXDCCR_DCBLUE_SHIFT    (0)       /* Bits 0-7: Default Color Blue Value */
-#define LTDC_LXDCCR_DCBLUE_MASK     (0xff << LTDC_LXDCCR_DCBLUE_SHIFT)
-#  define LTDC_LXDCCR_DCBLUE(n)     ((uint32_t)(n) << LTDC_LXDCCR_DCBLUE_SHIFT)
-#define LTDC_LXDCCR_DCGREEN_SHIFT   (8)       /* Bits 8-15: Default Color Green Value */
-#define LTDC_LXDCCR_DCGREEN_MASK    (0xff << LTDC_LXDCCR_DCGREEN_SHIFT)
-#  define LTDC_LXDCCR_DCGREEN(n)    ((uint32_t)(n) << LTDC_LXDCCR_DCGREEN_SHIFT)
-#define LTDC_LXDCCR_DCRED_SHIFT     (16)       /* Bits 16-23: Default Color Red Value */
-#define LTDC_LXDCCR_DCRED_MASK      (0xff << LTDC_LXDCCR_DCRED_SHIFT)
-#  define LTDC_LXDCCR_DCRED(n)      ((uint32_t)(n) << LTDC_LXDCCR_DCRED_SHIFT)
-#define LTDC_LXDCCR_DCALPHA_SHIFT   (24)       /* Bits 24-31: Default Color Alpha Value */
-#define LTDC_LXDCCR_DCALPHA_MASK    (0xff << LTDC_LXDCCR_DCALPHA_SHIFT)
-#  define LTDC_LXDCCR_DCALPHA(n)    ((uint32_t)(n) << LTDC_LXDCCR_DCALPHA_SHIFT)
+/********************  Bit definition for LTDC_LxDCCR register  ***************/
 
-/* LTDC Layer x Blending Factors Configuration Register */
+#define LTDC_LxDCCR_DCBLUE_Pos       (0U)
+#define LTDC_LxDCCR_DCBLUE_Msk       (0xFFUL << LTDC_LxDCCR_DCBLUE_Pos)        /*!< 0x000000FF */
+#define LTDC_LxDCCR_DCBLUE           LTDC_LxDCCR_DCBLUE_Msk                    /*!< Default Color Blue  */
+#define LTDC_LxDCCR_DCGREEN_Pos      (8U)
+#define LTDC_LxDCCR_DCGREEN_Msk      (0xFFUL << LTDC_LxDCCR_DCGREEN_Pos)       /*!< 0x0000FF00 */
+#define LTDC_LxDCCR_DCGREEN          LTDC_LxDCCR_DCGREEN_Msk                   /*!< Default Color Green */
+#define LTDC_LxDCCR_DCRED_Pos        (16U)
+#define LTDC_LxDCCR_DCRED_Msk        (0xFFUL << LTDC_LxDCCR_DCRED_Pos)         /*!< 0x00FF0000 */
+#define LTDC_LxDCCR_DCRED            LTDC_LxDCCR_DCRED_Msk                     /*!< Default Color Red   */
+#define LTDC_LxDCCR_DCALPHA_Pos      (24U)
+#define LTDC_LxDCCR_DCALPHA_Msk      (0xFFUL << LTDC_LxDCCR_DCALPHA_Pos)       /*!< 0xFF000000 */
+#define LTDC_LxDCCR_DCALPHA          LTDC_LxDCCR_DCALPHA_Msk                   /*!< Default Color Alpha */
 
-#define LTDC_LXBFCR_BF2_SHIFT       (0)       /* Bits 0-2: Blending Factor 2 */
-#define LTDC_LXBFCR_BF2_MASK        (0x7 << LTDC_LXBFCR_BF2_SHIFT)
-#  define LTDC_LXBFCR_BF2(n)        ((uint32_t)(n) << LTDC_LXBFCR_BF2_SHIFT)
-#define LTDC_LXBFCR_BF1_SHIFT       (8)       /* Bits 8-10: Blending Factor 1 */
-#define LTDC_LXBFCR_BF1_MASK        (0x7 << LTDC_LXBFCR_BF1_SHIFT)
-#  define LTDC_LXBFCR_BF1(n)        ((uint32_t)(n) << LTDC_LXBFCR_BF1_SHIFT)
+/********************  Bit definition for LTDC_LxBFCR register  ***************/
 
-#define LTDC_BF1_CONST_ALPHA        0x04      /* Constant Alpha */
-#define LTDC_BF1_PIXEL_ALPHA        0x06      /* Pixel Alpha x Constant Alpha */
-#define LTDC_BF2_CONST_ALPHA        0x05      /* Constant Alpha */
-#define LTDC_BF2_PIXEL_ALPHA        0x07      /* Pixel Alpha x Constant Alpha */
+#define LTDC_LxBFCR_BF2_Pos          (0U)
+#define LTDC_LxBFCR_BF2_Msk          (0x7UL << LTDC_LxBFCR_BF2_Pos)            /*!< 0x00000007 */
+#define LTDC_LxBFCR_BF2              LTDC_LxBFCR_BF2_Msk                       /*!< Blending Factor 2 */
+#define LTDC_LxBFCR_BF1_Pos          (8U)
+#define LTDC_LxBFCR_BF1_Msk          (0x7UL << LTDC_LxBFCR_BF1_Pos)            /*!< 0x00000700 */
+#define LTDC_LxBFCR_BF1              LTDC_LxBFCR_BF1_Msk                       /*!< Blending Factor 1 */
 
-/* LTDC Layer x Color Frame Buffer Length Configuration Register */
+/********************  Bit definition for LTDC_LxCFBAR register  **************/
 
-#define LTDC_LXCFBLR_CFBLL_SHIFT    (0)       /* Bits 0-12: Color Frame Buffer Line Length */
-#define LTDC_LXCFBLR_CFBLL_MASK     (0x1fff << LTDC_LXCFBLR_CFBLL_SHIFT)
-#  define LTDC_LXCFBLR_CFBLL(n)     ((uint32_t)(n) << LTDC_LXCFBLR_CFBLL_SHIFT)
-#define LTDC_LXCFBLR_CFBP_SHIFT     (16)       /* Bits 16-28: Color Frame Buffer Pitch */
-#define LTDC_LXCFBLR_CFBP_MASK      (0x1fff << LTDC_LXCFBLR_CFBP_SHIFT)
-#  define LTDC_LXCFBLR_CFBP(n)      ((uint32_t)(n) << LTDC_LXCFBLR_CFBP_SHIFT)
+#define LTDC_LxCFBAR_CFBADD_Pos      (0U)
+#define LTDC_LxCFBAR_CFBADD_Msk      (0xFFFFFFFFUL << LTDC_LxCFBAR_CFBADD_Pos) /*!< 0xFFFFFFFF */
+#define LTDC_LxCFBAR_CFBADD          LTDC_LxCFBAR_CFBADD_Msk                   /*!< Color Frame Buffer Start Address */
 
-/* LTDC Layer x Color Frame Buffer Line Number Register */
+/********************  Bit definition for LTDC_LxCFBLR register  **************/
 
-#define LTDC_LXCFBLNR_LN_SHIFT      (0)       /* Bits 0-10: Color Frame Buffer Line Number */
-#define LTDC_LXCFBLNR_LN_MASK       (0x7ff << LTDC_LXCFBLNR_LN_SHIFT)
-#  define LTDC_LXCFBLNR_LN(n)       ((uint32_t)(n) << LTDC_LXCFBLNR_LN_SHIFT)
+#define LTDC_LxCFBLR_CFBLL_Pos       (0U)
+#define LTDC_LxCFBLR_CFBLL_Msk       (0x1FFFUL << LTDC_LxCFBLR_CFBLL_Pos)      /*!< 0x00001FFF */
+#define LTDC_LxCFBLR_CFBLL           LTDC_LxCFBLR_CFBLL_Msk                    /*!< Color Frame Buffer Line Length    */
+#define LTDC_LxCFBLR_CFBP_Pos        (16U)
+#define LTDC_LxCFBLR_CFBP_Msk        (0x1FFFUL << LTDC_LxCFBLR_CFBP_Pos)       /*!< 0x1FFF0000 */
+#define LTDC_LxCFBLR_CFBP            LTDC_LxCFBLR_CFBP_Msk                     /*!< Color Frame Buffer Pitch in bytes */
 
-/* LTDC Layer x CLUT Write Register */
+/********************  Bit definition for LTDC_LxCFBLNR register  *************/
 
-#define LTDC_LXCLUTWR_BLUE_SHIFT    (0)       /* Bits 0-7: Default Color Blue Value */
-#define LTDC_LXCLUTWR_BLUE_MASK     (0xff << LTDC_LXCLUTWR_BLUE_SHIFT)
-#  define LTDC_LXCLUTWR_BLUE(n)     ((uint32_t)(n) << LTDC_LXCLUTWR_BLUE_SHIFT)
-#define LTDC_LXCLUTWR_GREEN_SHIFT   (8)       /* Bits 8-15: Default Color Green Value */
-#define LTDC_LXCLUTWR_GREEN_MASK    (0xff << LTDC_LXCLUTWR_GREEN_SHIFT)
-#  define LTDC_LXCLUTWR_GREEN(n)    ((uint32_t)(n) << LTDC_LXCLUTWR_GREEN_SHIFT)
-#define LTDC_LXCLUTWR_RED_SHIFT     (16)       /* Bits 16-23: Default Color Red Value */
-#define LTDC_LXCLUTWR_RED_MASK      (0xff << LTDC_LXCLUTWR_RED_SHIFT)
-#  define LTDC_LXCLUTWR_RED(n)      ((uint32_t)(n) << LTDC_LXCLUTWR_RED_SHIFT)
-#define LTDC_LXCLUTWR_CLUTADD_SHIFT (24)       /* Bits 24-31: CLUT Address */
-#define LTDC_LXCLUTWR_CLUTADD_MASK  (0xff << LTDC_LXCLUTWR_CLUTADD_SHIFT)
-#  define LTDC_LXCLUTWR_CLUTADD(n)  ((uint32_t)(n) << LTDC_LXCLUTWR_CLUTADD_SHIFT)
+#define LTDC_LxCFBLNR_CFBLNBR_Pos    (0U)
+#define LTDC_LxCFBLNR_CFBLNBR_Msk    (0x7FFUL << LTDC_LxCFBLNR_CFBLNBR_Pos)    /*!< 0x000007FF */
+#define LTDC_LxCFBLNR_CFBLNBR        LTDC_LxCFBLNR_CFBLNBR_Msk                 /*!< Frame Buffer Line Number */
+
+/********************  Bit definition for LTDC_LxCLUTWR register  *************/
+
+#define LTDC_LxCLUTWR_BLUE_Pos       (0U)
+#define LTDC_LxCLUTWR_BLUE_Msk       (0xFFUL << LTDC_LxCLUTWR_BLUE_Pos)        /*!< 0x000000FF */
+#define LTDC_LxCLUTWR_BLUE           LTDC_LxCLUTWR_BLUE_Msk                    /*!< Blue value   */
+#define LTDC_LxCLUTWR_GREEN_Pos      (8U)
+#define LTDC_LxCLUTWR_GREEN_Msk      (0xFFUL << LTDC_LxCLUTWR_GREEN_Pos)       /*!< 0x0000FF00 */
+#define LTDC_LxCLUTWR_GREEN          LTDC_LxCLUTWR_GREEN_Msk                   /*!< Green value  */
+#define LTDC_LxCLUTWR_RED_Pos        (16U)
+#define LTDC_LxCLUTWR_RED_Msk        (0xFFUL << LTDC_LxCLUTWR_RED_Pos)         /*!< 0x00FF0000 */
+#define LTDC_LxCLUTWR_RED            LTDC_LxCLUTWR_RED_Msk                     /*!< Red value    */
+#define LTDC_LxCLUTWR_CLUTADD_Pos    (24U)
+#define LTDC_LxCLUTWR_CLUTADD_Msk    (0xFFUL << LTDC_LxCLUTWR_CLUTADD_Pos)     /*!< 0xFF000000 */
+#define LTDC_LxCLUTWR_CLUTADD        LTDC_LxCLUTWR_CLUTADD_Msk                 /*!< CLUT address */
 
 /****************************************************************************
  * Public Types
  ****************************************************************************/
+/** @defgroup LTDC_Layer LTDC Layer
+  * @{
+  */
+#define LTDC_LAYER_1                      0x00000000U   /*!< LTDC Layer 1 */
+#define LTDC_LAYER_2                      0x00000001U   /*!< LTDC Layer 2 */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_HS_POLARITY LTDC HS POLARITY
+  * @{
+  */
+#define LTDC_HSPOLARITY_AL                0x00000000U   /*!< Horizontal Synchronization is active low. */
+#define LTDC_HSPOLARITY_AH                LTDC_GCR_HSPOL            /*!< Horizontal Synchronization is active high. */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_VS_POLARITY LTDC VS POLARITY
+  * @{
+  */
+#define LTDC_VSPOLARITY_AL                0x00000000U   /*!< Vertical Synchronization is active low. */
+#define LTDC_VSPOLARITY_AH                LTDC_GCR_VSPOL            /*!< Vertical Synchronization is active high. */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_DE_POLARITY LTDC DE POLARITY
+  * @{
+  */
+#define LTDC_DEPOLARITY_AL                0x00000000U   /*!< Data Enable, is active low. */
+#define LTDC_DEPOLARITY_AH                LTDC_GCR_DEPOL            /*!< Data Enable, is active high. */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_PC_POLARITY LTDC PC POLARITY
+  * @{
+  */
+#define LTDC_PCPOLARITY_IPC               0x00000000U   /*!< input pixel clock. */
+#define LTDC_PCPOLARITY_IIPC              LTDC_GCR_PCPOL            /*!< inverted input pixel clock. */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_SYNC LTDC SYNC
+  * @{
+  */
+#define LTDC_HORIZONTALSYNC               (LTDC_SSCR_HSW >> 16U)    /*!< Horizontal synchronization width. */
+#define LTDC_VERTICALSYNC                 LTDC_SSCR_VSH             /*!< Vertical synchronization height. */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_BACK_COLOR LTDC BACK COLOR
+  * @{
+  */
+#define LTDC_COLOR                        0x000000FFU   /*!< Color mask */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_BlendingFactor1 LTDC Blending Factor1
+  * @{
+  */
+#define LTDC_BLENDING_FACTOR1_CA          0x00000400U   /*!< Blending factor : Cte Alpha */
+#define LTDC_BLENDING_FACTOR1_PAxCA       0x00000600U   /*!< Blending factor : Cte Alpha x Pixel Alpha*/
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_BlendingFactor2 LTDC Blending Factor2
+  * @{
+  */
+#define LTDC_BLENDING_FACTOR2_CA          0x00000005U   /*!< Blending factor : Cte Alpha */
+#define LTDC_BLENDING_FACTOR2_PAxCA       0x00000007U   /*!< Blending factor : Cte Alpha x Pixel Alpha*/
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_Pixelformat LTDC Pixel format
+  * @{
+  */
+#define LTDC_PIXEL_FORMAT_ARGB8888        0x00000000U   /*!< ARGB8888 LTDC pixel format */
+#define LTDC_PIXEL_FORMAT_RGB888          0x00000001U   /*!< RGB888 LTDC pixel format   */
+#define LTDC_PIXEL_FORMAT_RGB565          0x00000002U   /*!< RGB565 LTDC pixel format   */
+#define LTDC_PIXEL_FORMAT_ARGB1555        0x00000003U   /*!< ARGB1555 LTDC pixel format */
+#define LTDC_PIXEL_FORMAT_ARGB4444        0x00000004U   /*!< ARGB4444 LTDC pixel format */
+#define LTDC_PIXEL_FORMAT_L8              0x00000005U   /*!< L8 LTDC pixel format       */
+#define LTDC_PIXEL_FORMAT_AL44            0x00000006U   /*!< AL44 LTDC pixel format     */
+#define LTDC_PIXEL_FORMAT_AL88            0x00000007U   /*!< AL88 LTDC pixel format     */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_Alpha LTDC Alpha
+  * @{
+  */
+#define LTDC_ALPHA                        LTDC_LxCACR_CONSTA        /*!< LTDC Constant Alpha mask */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_LAYER_Config LTDC LAYER Config
+  * @{
+  */
+#define LTDC_STOPPOSITION                 (LTDC_LxWHPCR_WHSPPOS >> 16U) /*!< LTDC Layer stop position  */
+#define LTDC_STARTPOSITION                LTDC_LxWHPCR_WHSTPOS          /*!< LTDC Layer start position */
+
+#define LTDC_COLOR_FRAME_BUFFER           LTDC_LxCFBLR_CFBLL            /*!< LTDC Layer Line length    */
+#define LTDC_LINE_NUMBER                  LTDC_LxCFBLNR_CFBLNBR         /*!< LTDC Layer Line number    */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_Interrupts LTDC Interrupts
+  * @{
+  */
+#define LTDC_IT_LI                        LTDC_IER_LIE              /*!< LTDC Line Interrupt            */
+#define LTDC_IT_FU                        LTDC_IER_FUIE             /*!< LTDC FIFO Underrun Interrupt   */
+#define LTDC_IT_TE                        LTDC_IER_TERRIE           /*!< LTDC Transfer Error Interrupt  */
+#define LTDC_IT_RR                        LTDC_IER_RRIE             /*!< LTDC Register Reload Interrupt */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_Flags LTDC Flags
+  * @{
+  */
+#define LTDC_FLAG_LI                      LTDC_ISR_LIF              /*!< LTDC Line Interrupt Flag            */
+#define LTDC_FLAG_FU                      LTDC_ISR_FUIF             /*!< LTDC FIFO Underrun interrupt Flag   */
+#define LTDC_FLAG_TE                      LTDC_ISR_TERRIF           /*!< LTDC Transfer Error interrupt Flag  */
+#define LTDC_FLAG_RR                      LTDC_ISR_RRIF             /*!< LTDC Register Reload interrupt Flag */
+/**
+  * @}
+  */
+
+/** @defgroup LTDC_Reload_Type LTDC Reload Type
+  * @{
+  */
+#define LTDC_RELOAD_IMMEDIATE             LTDC_SRCR_IMR             /*!< Immediate Reload */
+#define LTDC_RELOAD_VERTICAL_BLANKING     LTDC_SRCR_VBR             /*!< Vertical Blanking Reload */
+/**
+  * @}
+  */
+
 
 #endif /* __ARCH_ARM_SRC_STM32H7_HARDWARE_STM32_LTDC_H */

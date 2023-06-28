@@ -730,6 +730,7 @@
 
                                                   /* Bits 0-2: Reserved */
 #define RCC_APB3RSTR_LTDCRST            (1 << 3)  /* RCC APB3RSTR: LTDCRST */
+#define RCC_APB3RSTR_DSIRST             (1 << 4)  /* RCC APB3RSTR: DSIRST */
                                                   /* Bits 4-31: Reserved */
 
 /* APB3 L peripheral reset register */
@@ -886,10 +887,6 @@
 #define RCC_AHB4ENR_HSEMEN              (1 << 25) /* RCC AHB4ENR: HSEMEN */
 #define RCC_AHB4ENR_BKPSRAMEN           (1 << 28) /* RCC AHB4ENR: BKPRAMEN */
 
-/* APB3 Peripheral Clock enable register */
-
-#define RCC_APB3ENR_LTDCEN              (1 << 3)  /* RCC APB3ENR: LTDCEN */
-#define RCC_APB3ENR_WWDG1EN             (1 << 6)  /* RCC APB3ENR: WWDG1EN  */
 
 /* APB1 L Peripheral Clock enable register */
 
@@ -1039,6 +1036,7 @@
 /* APB3 low power mode peripheral clock enable register */
 
 #define RCC_APB3LPENR_LTDCLPEN          (1 << 3)  /* RCC APB3LPENR: LTDCLPEN */
+#define RCC_APB3LPENR_DSILPEN             (1 << 4)  /* RCC APB3LPENR: DSILPEN */
 #define RCC_APB3LPENR_WWDG1LPEN         (1 << 6)  /* RCC APB3LPENR: WWDG1LPEN */
 
 /* APB1 L low power mode peripheral clock enable register */

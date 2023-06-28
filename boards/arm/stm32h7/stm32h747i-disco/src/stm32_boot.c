@@ -56,9 +56,9 @@ void stm32_boardinitialize(void)
   board_autoled_initialize();
 #endif
 
-#ifdef CONFIG_STM32H7_FMC
-  stm32_enablefmc();
-#endif
+// #ifdef CONFIG_STM32H7_FMC
+//   stm32_enablefmc();
+// #endif
 
 #if defined(CONFIG_STM32H7_OTGHS) || defined(CONFIG_STM32H7_HOST)
   /* Initialize USB */

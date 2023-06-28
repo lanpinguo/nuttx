@@ -81,7 +81,7 @@
  *   CPUCLK <= 400 MHz
  */
 
-#define STM32_BOARD_USEHSE
+#define STM32_BOARD_USEHSE                1
 #define STM32_HSEBYP_ENABLE
 
 #define STM32_PLLCFG_PLLSRC      RCC_PLLCKSELR_PLLSRC_HSE
@@ -128,18 +128,28 @@
 #define STM32_PLL2R_FREQUENCY
 
 /* PLL3 */
+/* LCD clock configuration */
+/* LCD clock configuration */
+/* PLL3_VCO Input = HSE_VALUE/PLL3M = 5 Mhz */
+/* PLL3_VCO Output = PLL3_VCO Input * PLL3N = 800 Mhz */
+/* PLLLCDCLK = PLL3_VCO Output/PLL3R = 800/19 = 42 Mhz */
+/* LTDC clock frequency = PLLLCDCLK = 42 Mhz */
+#define STM32_PLLCFG_PLL3CFG (RCC_PLLCFGR_PLL3VCOSEL_WIDE | \
+                                  RCC_PLLCFGR_PLL3RGE_4_8_MHZ | \
+                                  RCC_PLLCFGR_DIVP3EN | \
+                                  RCC_PLLCFGR_DIVQ3EN | \
+                                  RCC_PLLCFGR_DIVR3EN)
+#define STM32_PLLCFG_PLL3M   RCC_PLLCKSELR_DIVM3(5)
+#define STM32_PLLCFG_PLL3N   RCC_PLL3DIVR_N3(160)
+#define STM32_PLLCFG_PLL3P   RCC_PLL3DIVR_P3(2)
+#define STM32_PLLCFG_PLL3Q   RCC_PLL3DIVR_Q3(2)
+#define STM32_PLLCFG_PLL3R   RCC_PLL3DIVR_R3(19)
 
-#define STM32_PLLCFG_PLL3CFG 0
-#define STM32_PLLCFG_PLL3M   0
-#define STM32_PLLCFG_PLL3N   0
-#define STM32_PLLCFG_PLL3P   0
-#define STM32_PLLCFG_PLL3Q   0
-#define STM32_PLLCFG_PLL3R   0
+#define STM32_VCO3_FREQUENCY    ((STM32_HSE_FREQUENCY / STM32_PLLCFG_PLL3M) * STM32_PLLCFG_PLL3N)
+#define STM32_PLL3P_FREQUENCY   STM32_VCO3_FREQUENCY / STM32_PLLCFG_PLL3P
+#define STM32_PLL3Q_FREQUENCY   STM32_VCO3_FREQUENCY / STM32_PLLCFG_PLL3Q    
+#define STM32_PLL3R_FREQUENCY   STM32_VCO3_FREQUENCY / STM32_PLLCFG_PLL3R
 
-#define STM32_VCO3_FREQUENCY
-#define STM32_PLL3P_FREQUENCY
-#define STM32_PLL3Q_FREQUENCY
-#define STM32_PLL3R_FREQUENCY
 
 /* SYSCLK = PLL1P = 400 MHz
  * CPUCLK = SYSCLK / 1 = 400 MHz
@@ -148,6 +158,7 @@
 #define STM32_RCC_D1CFGR_D1CPRE  (RCC_D1CFGR_D1CPRE_SYSCLK)
 #define STM32_SYSCLK_FREQUENCY   (STM32_PLL1P_FREQUENCY)
 #define STM32_CPUCLK_FREQUENCY   (STM32_SYSCLK_FREQUENCY / 1)
+
 
 /* Configure Clock Assignments */
 
@@ -416,22 +427,17 @@
 
 /* LCD
  *
- * The STM32F429I-DISCO board contains an onboard TFT LCD connected to the
+ * The STM32h747XI-DISCO board contains an onboard TFT LCD connected to the
  * LTDC interface of the uC.
- * The LCD is 240x320 pixels.
+ * The LCD is 480x800 pixels.
  * Define the parameters of the LCD and the interface here.
  */
 
 /* Panel configuration
  *
- * LCD Panel is Saef Technology Limited (SF-TC240T-9229A2-T) with integrated
- * Ilitek ILI9341 LCD Single Chip Driver (240RGBx320)
+ * LCD Panel is MB1166-A03 with OTA8009A LCD Single Chip Driver (480RGBx800)
+ *  
  *
- * PLLSAI settings
- * PLLSAIN                : 192
- * PLLSAIR                : 4
- * PLLSAIQ                : 7
- * PLLSAIDIVR             : 8
  *
  * Timings
  * Horizontal Front Porch : 10  (STM32_LTDC_HFP)
@@ -442,38 +448,25 @@
  * Horizontal Sync        : 10  (STM32_LTDC_HSYNC)
  * Vertical Sync          :  4  (STM32_LTDC_VSYNC)
  *
- * Active Width           : 240 (STM32_LTDC_ACTIVEW)
- * Active Height          : 320 (STM32_LTDC_ACTIVEH)
+ * Active Width           : 800 (STM32_LTDC_ACTIVEW)
+ * Active Height          : 480 (STM32_LTDC_ACTIVEH)
  */
 
-/* LTDC PLL configuration
- *
- * PLLSAI_VCO = STM32_HSE_FREQUENCY / PLLM
- *            = 8000000ul / 8
- *            = 1,000,000
- *
- * PLL LCD clock output
- *            = PLLSAI_VCO * PLLSAIN / PLLSAIR / PLLSAIDIVR
- *            = 1,000,000 * 192 / 4 /8
- *            = 6,000,000
- */
+
 
 /* Defined panel settings */
 
-#define BOARD_LTDC_WIDTH                480
-#define BOARD_LTDC_HEIGHT               800
+#define BOARD_LTDC_WIDTH                800
+#define BOARD_LTDC_HEIGHT               480
 
 #define BOARD_LTDC_OUTPUT_BPP           16
-#define BOARD_LTDC_HFP                  10
-#define BOARD_LTDC_HBP                  20
-#define BOARD_LTDC_VFP                  4
-#define BOARD_LTDC_VBP                  2
-#define BOARD_LTDC_HSYNC                10
-#define BOARD_LTDC_VSYNC                2
+#define BOARD_LTDC_HFP                  1
+#define BOARD_LTDC_HBP                  1
+#define BOARD_LTDC_VFP                  1
+#define BOARD_LTDC_VBP                  1
+#define BOARD_LTDC_HSYNC                1
+#define BOARD_LTDC_VSYNC                1
 
-#define BOARD_LTDC_PLLSAIN              192
-#define BOARD_LTDC_PLLSAIR              4
-#define BOARD_LTDC_PLLSAIQ              7
 
 /* Division factor for LCD clock */
 
@@ -495,38 +488,16 @@
 
 #define BOARD_LTDC_GCR_HSPOL            0 /* !LTDC_GCR_HSPOL */
 
-/* GPIO pinset */
-
-#define GPIO_LTDC_PINS                  0 /* 18-bit display */
-
-#define GPIO_LTDC_R2                    GPIO_LTDC_R2_1
-#define GPIO_LTDC_R3                    GPIO_LTDC_R3_1
-#define GPIO_LTDC_R4                    GPIO_LTDC_R4_1
-#define GPIO_LTDC_R5                    GPIO_LTDC_R5_1
-#define GPIO_LTDC_R6                    GPIO_LTDC_R6_1
-#define GPIO_LTDC_R7                    GPIO_LTDC_R7_1
-
-#define GPIO_LTDC_G2                    GPIO_LTDC_G2_1
-#define GPIO_LTDC_G3                    GPIO_LTDC_G3_1
-#define GPIO_LTDC_G4                    GPIO_LTDC_G4_1
-#define GPIO_LTDC_G5                    GPIO_LTDC_G5_1
-#define GPIO_LTDC_G6                    GPIO_LTDC_G6_1
-#define GPIO_LTDC_G7                    GPIO_LTDC_G7_1
-
-#define GPIO_LTDC_B2                    GPIO_LTDC_B2_1
-#define GPIO_LTDC_B3                    GPIO_LTDC_B3_1
-#define GPIO_LTDC_B4                    GPIO_LTDC_B4_1
-#define GPIO_LTDC_B5                    GPIO_LTDC_B5_1
-#define GPIO_LTDC_B6                    GPIO_LTDC_B6_1
-#define GPIO_LTDC_B7                    GPIO_LTDC_B7_1
-
-#define GPIO_LTDC_VSYNC                 GPIO_LTDC_VSYNC_1
-#define GPIO_LTDC_HSYNC                 GPIO_LTDC_HSYNC_1
-#define GPIO_LTDC_DE                    GPIO_LTDC_DE_1
-#define GPIO_LTDC_CLK                   GPIO_LTDC_CLK_1
 
 #define LTDC_USE_DSI                    1
 
+#define LCD_ORIENTATION_PORTRAIT         0x00U /* Portrait orientation choice of LCD screen   */
+#define LCD_ORIENTATION_LANDSCAPE        0x01U /* Landscape orientation choice of LCD screen  */
+
+#define GPIO_LCD_RESET                 (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | GPIO_OUTPUT_CLEAR | \
+                                        GPIO_PORTG | GPIO_PIN3)
+#define GPIO_LCD_BL_CTL                (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | GPIO_OUTPUT_CLEAR | \
+                                        GPIO_PORTJ | GPIO_PIN12)
 
 /****************************************************************************
  * Public Data

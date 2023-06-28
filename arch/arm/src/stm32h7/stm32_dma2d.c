@@ -44,6 +44,7 @@
 #include "arm_internal.h"
 #include "hardware/stm32_ltdc.h"
 #include "hardware/stm32_dma2d.h"
+#include "stm32_rcc.h"
 #include "stm32_dma2d.h"
 #include "stm32_ltdc.h"
 #include "stm32_gpio.h"
@@ -1160,4 +1161,20 @@ void stm32_dma2duninitialize(void)
 struct dma2d_layer_s *stm32_dma2ddev(void)
 {
   return &g_dma2ddev.dma2d;
+}
+
+
+/****************************************************************************
+ * Name: stm32_dma2dreset
+ *
+ * Description:
+ *   Reset DMA2D via APB3RSTR
+ *
+ ****************************************************************************/
+
+void stm32_dma2dreset(void)
+{
+  uint32_t regval = getreg32(STM32_RCC_APB3RSTR);
+  putreg32(regval | RCC_AHB3RSTR_MDMARST, STM32_RCC_APB3RSTR);
+  putreg32(regval & ~RCC_AHB3RSTR_MDMARST, STM32_RCC_APB3RSTR);
 }

@@ -172,6 +172,14 @@ ifeq ($(CONFIG_STM32H7_WWDG),y)
 CHIP_CSRCS += stm32_wwdg.c
 endif
 
+ifeq ($(CONFIG_STM32H7_DSIHOST),y)
+CHIP_CSRCS += stm32_dsi.c
+endif
+
+ifeq ($(CONFIG_STM32H7_DMA2D),y)
+CHIP_CSRCS += stm32_dma2d.c
+endif
+
 ifeq ($(CONFIG_STM32H7_LTDC),y)
 CHIP_CSRCS += stm32_ltdc.c
 endif

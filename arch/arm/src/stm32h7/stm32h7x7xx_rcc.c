@@ -511,8 +511,23 @@ static inline void rcc_enableapb3(void)
    */
 
   regval = getreg32(STM32_RCC_APB3ENR);
+#ifdef CONFIG_STM32H7_LTDC
+  /* LTDC clock enable */
 
-  /* TODO: ... */
+  regval |= RCC_APB3LPENR_LTDCLPEN;
+#endif
+
+#ifdef CONFIG_STM32H7_DMA2D
+  /* DMA2D clock enable */
+
+  regval |= RCC_AHB3ENR_DMA2DEN;
+#endif
+
+#ifdef CONFIG_STM32H7_DSIHOST
+  /* DSIHOST clock enable */
+
+  regval |= RCC_APB3LPENR_DSILPEN;
+#endif
 
   putreg32(regval, STM32_RCC_APB3ENR);   /* Enable peripherals */
 }
@@ -592,6 +607,75 @@ void stm32_stdclockconfig(void)
 {
   uint32_t regval;
   volatile int32_t timeout;
+
+      /* We must write the lower byte of the PWR_CR3 register is written once
+       * after POR and it shall be written before changing VOS level or
+       * ck_sys clock frequency. No limitation applies to the upper bytes.
+       *
+       * Programming data corresponding to an invalid combination of
+       * LDOEN and BYPASS bits will be ignored: data will not be written,
+       * the written-once mechanism will lock the register and any further
+       * write access will be ignored. The default supply configuration will
+       * be kept and the ACTVOSRDY bit in PWR control status register 1
+       * (PWR_CSR1) will go on indicating invalid voltage levels.
+       *
+       * N.B. The system shall be power cycled before writing a new value.
+       */
+
+#if defined(CONFIG_STM32H7_PWR_DIRECT_SMPS_SUPPLY)
+      regval = getreg32(STM32_PWR_CR3);
+      regval &= ~(STM32_PWR_CR3_BYPASS | STM32_PWR_CR3_LDOEN |
+          STM32_PWR_CR3_SMPSEXTHP | STM32_PWR_CR3_SMPSLEVEL_MASK);
+      regval |= STM32_PWR_CR3_LDOESCUEN;
+      putreg32(regval, STM32_PWR_CR3);
+#else
+      regval = getreg32(STM32_PWR_CR3);
+      regval |= STM32_PWR_CR3_LDOEN | STM32_PWR_CR3_LDOESCUEN;
+      putreg32(regval, STM32_PWR_CR3);
+#endif
+
+      /* Set the voltage output scale */
+
+      regval = getreg32(STM32_PWR_D3CR);
+      regval &= ~STM32_PWR_D3CR_VOS_MASK;
+      regval |= STM32_PWR_VOS_SCALE;
+      putreg32(regval, STM32_PWR_D3CR);
+
+      while ((getreg32(STM32_PWR_D3CR) & STM32_PWR_D3CR_VOSRDY) == 0)
+        {
+        }
+
+      /* See Reference manual Section 5.4.1, System supply startup */
+
+      while ((getreg32(STM32_PWR_CSR1) & PWR_CSR1_ACTVOSRDY) == 0)
+        {
+        }
+
+      /* Over-drive is needed if
+       *  - Voltage output scale 1 mode is selected and SYSCLK frequency is
+       *    over 400 MHz.
+       */
+
+      if ((STM32_PWR_VOS_SCALE == PWR_D3CR_VOS_SCALE_1) &&
+           STM32_SYSCLK_FREQUENCY > 400000000)
+        {
+          /* Enable System configuration controller clock to Enable ODEN */
+
+          regval = getreg32(STM32_RCC_APB4ENR);
+          regval |= RCC_APB4ENR_SYSCFGEN;
+          putreg32(regval, STM32_RCC_APB4ENR);
+
+          /* Enable Overdrive to extend the clock frequency up to 480 MHz. */
+
+          regval = getreg32(STM32_SYSCFG_PWRCR);
+          regval |= SYSCFG_PWRCR_ODEN;
+          putreg32(regval, STM32_SYSCFG_PWRCR);
+
+          while ((getreg32(STM32_PWR_D3CR) & STM32_PWR_D3CR_VOSRDY) == 0)
+            {
+            }
+        }
+
 
 #ifdef STM32_BOARD_USEHSI
   /* Enable Internal High-Speed Clock (HSI) */
@@ -812,73 +896,6 @@ void stm32_stdclockconfig(void)
         }
 #endif
 
-      /* We must write the lower byte of the PWR_CR3 register is written once
-       * after POR and it shall be written before changing VOS level or
-       * ck_sys clock frequency. No limitation applies to the upper bytes.
-       *
-       * Programming data corresponding to an invalid combination of
-       * LDOEN and BYPASS bits will be ignored: data will not be written,
-       * the written-once mechanism will lock the register and any further
-       * write access will be ignored. The default supply configuration will
-       * be kept and the ACTVOSRDY bit in PWR control status register 1
-       * (PWR_CSR1) will go on indicating invalid voltage levels.
-       *
-       * N.B. The system shall be power cycled before writing a new value.
-       */
-
-#if defined(CONFIG_STM32H7_PWR_DIRECT_SMPS_SUPPLY)
-      regval = getreg32(STM32_PWR_CR3);
-      regval &= ~(STM32_PWR_CR3_BYPASS | STM32_PWR_CR3_LDOEN |
-          STM32_PWR_CR3_SMPSEXTHP | STM32_PWR_CR3_SMPSLEVEL_MASK);
-      regval |= STM32_PWR_CR3_LDOESCUEN;
-      putreg32(regval, STM32_PWR_CR3);
-#else
-      regval = getreg32(STM32_PWR_CR3);
-      regval |= STM32_PWR_CR3_LDOEN | STM32_PWR_CR3_LDOESCUEN;
-      putreg32(regval, STM32_PWR_CR3);
-#endif
-
-      /* Set the voltage output scale */
-
-      regval = getreg32(STM32_PWR_D3CR);
-      regval &= ~STM32_PWR_D3CR_VOS_MASK;
-      regval |= STM32_PWR_VOS_SCALE;
-      putreg32(regval, STM32_PWR_D3CR);
-
-      while ((getreg32(STM32_PWR_D3CR) & STM32_PWR_D3CR_VOSRDY) == 0)
-        {
-        }
-
-      /* See Reference manual Section 5.4.1, System supply startup */
-
-      while ((getreg32(STM32_PWR_CSR1) & PWR_CSR1_ACTVOSRDY) == 0)
-        {
-        }
-
-      /* Over-drive is needed if
-       *  - Voltage output scale 1 mode is selected and SYSCLK frequency is
-       *    over 400 MHz.
-       */
-
-      if ((STM32_PWR_VOS_SCALE == PWR_D3CR_VOS_SCALE_1) &&
-           STM32_SYSCLK_FREQUENCY > 400000000)
-        {
-          /* Enable System configuration controller clock to Enable ODEN */
-
-          regval = getreg32(STM32_RCC_APB4ENR);
-          regval |= RCC_APB4ENR_SYSCFGEN;
-          putreg32(regval, STM32_RCC_APB4ENR);
-
-          /* Enable Overdrive to extend the clock frequency up to 480 MHz. */
-
-          regval = getreg32(STM32_SYSCFG_PWRCR);
-          regval |= SYSCFG_PWRCR_ODEN;
-          putreg32(regval, STM32_SYSCFG_PWRCR);
-
-          while ((getreg32(STM32_PWR_D3CR) & STM32_PWR_D3CR_VOSRDY) == 0)
-            {
-            }
-        }
 
       /* Configure FLASH wait states */
 

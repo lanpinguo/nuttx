@@ -62,6 +62,8 @@ endif
 
 ifeq ($(CONFIG_STM32H7_LTDC),y)
 CSRCS += stm32_lcd.c
+CSRCS += otm8009a_reg.c
+CSRCS += otm8009a.c
 endif
 
 ifeq ($(CONFIG_STM32H7_FMC),y)
