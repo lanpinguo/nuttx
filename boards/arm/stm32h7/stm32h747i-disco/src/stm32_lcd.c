@@ -141,7 +141,7 @@ int board_lcd_initialize(void)
   usleep(10 * 1000); /* Wait for 10ms after releasing XRES before sending commands */
 
 
-  stm32_ltdcreset();
+  stm32_ltdc_reset();
 
 
   dsiPllInit.PLLNDIV  = 100;
@@ -151,7 +151,7 @@ int board_lcd_initialize(void)
   hlcd_dsi.Init.NumberOfLanes = DSI_TWO_DATA_LANES;
   hlcd_dsi.Init.TXEscapeCkdiv = 0x4;
   
-  stm32_dsireset();
+  stm32_dsi_reset();
   stm32_dsi_init(&(hlcd_dsi), &(dsiPllInit));
 
   /* Configure the DSI for Command mode */
@@ -225,7 +225,7 @@ int board_lcd_initialize(void)
   stm32_dsi_force_rx_lowPower(&hlcd_dsi, 1);  
   
 
-  stm32_dsi_pattern_generator_start(&hlcd_dsi, 0, 1);
+  // stm32_dsi_pattern_generator_start(&hlcd_dsi, 0, 1);
 
   stm32_dsi_wrapper_set(&hlcd_dsi, false);
   stm32_ltdc_layer_init();

@@ -128,17 +128,19 @@ void stm32_ltdc_init(void)
 
 
 /****************************************************************************
- * Name: stm32_ltdcreset
+ * Name: stm32_ltdc_reset
  *
  * Description:
  *   Reset LTDC via APB3RSTR
  *
  ****************************************************************************/
 
-void stm32_ltdcreset(void)
+void stm32_ltdc_reset(void)
 {
   uint32_t regval = getreg32(STM32_RCC_APB3RSTR);
+
   putreg32(regval | RCC_APB3RSTR_LTDCRST, STM32_RCC_APB3RSTR);
+  
   putreg32(regval & ~RCC_APB3RSTR_LTDCRST, STM32_RCC_APB3RSTR);
   
   // dummy read

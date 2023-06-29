@@ -33,6 +33,12 @@
 #include "stm32_start.h"
 #include "stm32h747i-disco.h"
 
+#if defined(CONFIG_STM32H7_OTGHS) || defined(CONFIG_STM32H7_HOST)
+  /* Initialize USB */
+void stm32_usbinitialize(void);
+#endif
+
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/

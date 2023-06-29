@@ -545,6 +545,8 @@ int stm32_dsi_wrapper_set(struct Host_DSI_s *hdsi, bool enable);
 
 int stm32_dsi_refresh(struct Host_DSI_s *hdsi);
 
+void stm32_dsi_reset(void);
+
 #undef EXTERN
 #ifdef __cplusplus
 }

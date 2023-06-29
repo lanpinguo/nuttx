@@ -951,13 +951,13 @@ int stm32_dsi_init(struct Host_DSI_s *hdsi, struct DSI_PLL_Init_s *PLLInit)
 
 
 /****************************************************************************
- * Name: stm32_dsireset
+ * Name: stm32_dsi_reset
  *
  * Description:
  *   Reset DSI via APB3RSTR
  *
  ****************************************************************************/
-void stm32_dsireset(void)
+void stm32_dsi_reset(void)
 {
   uint32_t regval = getreg32(STM32_RCC_APB3RSTR);
   putreg32(regval | RCC_APB3RSTR_DSIRST, STM32_RCC_APB3RSTR);
