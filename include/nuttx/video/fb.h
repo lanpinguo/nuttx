@@ -692,7 +692,7 @@ struct fb_vtable_s
                    FAR struct fb_setcursor_s *settings);
 #endif
 
-#ifdef CONFIG_FB_UPDATE
+#if defined(CONFIG_FB_UPDATE) || defined(CONFIG_NX_UPDATE)
   /* The following are provided only if the video hardware need extera
    * notification to update display content.
    */

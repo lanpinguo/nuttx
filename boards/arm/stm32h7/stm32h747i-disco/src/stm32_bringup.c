@@ -41,9 +41,6 @@
 #  include "stm32_rtc.h"
 #endif
 
-#ifdef CONFIG_STM32H7_LTDC
-int board_lcd_initialize(void);
-#endif
 
 
 /****************************************************************************
@@ -177,9 +174,16 @@ int stm32_bringup(void)
     }
 #endif
 
-#ifdef CONFIG_STM32H7_LTDC
-  board_lcd_initialize();
+#ifdef CONFIG_VIDEO_FB
+  /* Initialize and register the framebuffer driver */
+
+  ret = fb_register(0, 0);
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: fb_register() failed: %d\n", ret);
+    }
 #endif
+
 
 
 #ifdef CONFIG_INPUT_BUTTONS

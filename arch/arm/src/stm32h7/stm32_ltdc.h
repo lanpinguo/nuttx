@@ -162,4 +162,6 @@ void stm32_ltdc_init(void);
 
 void stm32_ltdc_layer_init(void);
 
+struct lcd_dev_s * stm32_ltdc_getdev( unsigned int planeno );
+
 #endif /* __ARCH_ARM_SRC_STM32H7_STM32_LTDC_H */

@@ -137,280 +137,280 @@
 
 /********************  Bit definition for LTDC_SSCR register  *****************/
 
-#define LTDC_SSCR_VSH_Pos            (0U)
-#define LTDC_SSCR_VSH_Msk            (0x7FFUL << LTDC_SSCR_VSH_Pos)            /*!< 0x000007FF */
-#define LTDC_SSCR_VSH                LTDC_SSCR_VSH_Msk                         /*!< Vertical Synchronization Height  */
-#define LTDC_SSCR_HSW_Pos            (16U)
-#define LTDC_SSCR_HSW_Msk            (0xFFFUL << LTDC_SSCR_HSW_Pos)            /*!< 0x0FFF0000 */
-#define LTDC_SSCR_HSW                LTDC_SSCR_HSW_Msk                         /*!< Horizontal Synchronization Width */
+#define LTDC_SSCR_VSH_SHIFT            (0U)
+#define LTDC_SSCR_VSH_MASK            (0x7FFUL << LTDC_SSCR_VSH_SHIFT)            /*!< 0x000007FF */
+#define LTDC_SSCR_VSH                LTDC_SSCR_VSH_MASK                         /*!< Vertical Synchronization Height  */
+#define LTDC_SSCR_HSW_SHIFT            (16U)
+#define LTDC_SSCR_HSW_MASK            (0xFFFUL << LTDC_SSCR_HSW_SHIFT)            /*!< 0x0FFF0000 */
+#define LTDC_SSCR_HSW                LTDC_SSCR_HSW_MASK                         /*!< Horizontal Synchronization Width */
 
 /********************  Bit definition for LTDC_BPCR register  *****************/
 
-#define LTDC_BPCR_AVBP_Pos           (0U)
-#define LTDC_BPCR_AVBP_Msk           (0x7FFUL << LTDC_BPCR_AVBP_Pos)           /*!< 0x000007FF */
-#define LTDC_BPCR_AVBP               LTDC_BPCR_AVBP_Msk                        /*!< Accumulated Vertical Back Porch   */
-#define LTDC_BPCR_AHBP_Pos           (16U)
-#define LTDC_BPCR_AHBP_Msk           (0xFFFUL << LTDC_BPCR_AHBP_Pos)           /*!< 0x0FFF0000 */
-#define LTDC_BPCR_AHBP               LTDC_BPCR_AHBP_Msk                        /*!< Accumulated Horizontal Back Porch */
+#define LTDC_BPCR_AVBP_SHIFT           (0U)
+#define LTDC_BPCR_AVBP_MASK           (0x7FFUL << LTDC_BPCR_AVBP_SHIFT)           /*!< 0x000007FF */
+#define LTDC_BPCR_AVBP               LTDC_BPCR_AVBP_MASK                        /*!< Accumulated Vertical Back Porch   */
+#define LTDC_BPCR_AHBP_SHIFT           (16U)
+#define LTDC_BPCR_AHBP_MASK           (0xFFFUL << LTDC_BPCR_AHBP_SHIFT)           /*!< 0x0FFF0000 */
+#define LTDC_BPCR_AHBP               LTDC_BPCR_AHBP_MASK                        /*!< Accumulated Horizontal Back Porch */
 
 /********************  Bit definition for LTDC_AWCR register  *****************/
 
-#define LTDC_AWCR_AAH_Pos            (0U)
-#define LTDC_AWCR_AAH_Msk            (0x7FFUL << LTDC_AWCR_AAH_Pos)            /*!< 0x000007FF */
-#define LTDC_AWCR_AAH                LTDC_AWCR_AAH_Msk                         /*!< Accumulated Active height */
-#define LTDC_AWCR_AAW_Pos            (16U)
-#define LTDC_AWCR_AAW_Msk            (0xFFFUL << LTDC_AWCR_AAW_Pos)            /*!< 0x0FFF0000 */
-#define LTDC_AWCR_AAW                LTDC_AWCR_AAW_Msk                         /*!< Accumulated Active Width */
+#define LTDC_AWCR_AAH_SHIFT            (0U)
+#define LTDC_AWCR_AAH_MASK            (0x7FFUL << LTDC_AWCR_AAH_SHIFT)            /*!< 0x000007FF */
+#define LTDC_AWCR_AAH                LTDC_AWCR_AAH_MASK                         /*!< Accumulated Active height */
+#define LTDC_AWCR_AAW_SHIFT            (16U)
+#define LTDC_AWCR_AAW_MASK            (0xFFFUL << LTDC_AWCR_AAW_SHIFT)            /*!< 0x0FFF0000 */
+#define LTDC_AWCR_AAW                LTDC_AWCR_AAW_MASK                         /*!< Accumulated Active Width */
 
 /********************  Bit definition for LTDC_TWCR register  *****************/
 
-#define LTDC_TWCR_TOTALH_Pos         (0U)
-#define LTDC_TWCR_TOTALH_Msk         (0x7FFUL << LTDC_TWCR_TOTALH_Pos)         /*!< 0x000007FF */
-#define LTDC_TWCR_TOTALH             LTDC_TWCR_TOTALH_Msk                      /*!< Total height */
-#define LTDC_TWCR_TOTALW_Pos         (16U)
-#define LTDC_TWCR_TOTALW_Msk         (0xFFFUL << LTDC_TWCR_TOTALW_Pos)         /*!< 0x0FFF0000 */
-#define LTDC_TWCR_TOTALW             LTDC_TWCR_TOTALW_Msk                      /*!< Total Width */
+#define LTDC_TWCR_TOTALH_SHIFT         (0U)
+#define LTDC_TWCR_TOTALH_MASK         (0x7FFUL << LTDC_TWCR_TOTALH_SHIFT)         /*!< 0x000007FF */
+#define LTDC_TWCR_TOTALH             LTDC_TWCR_TOTALH_MASK                      /*!< Total height */
+#define LTDC_TWCR_TOTALW_SHIFT         (16U)
+#define LTDC_TWCR_TOTALW_MASK         (0xFFFUL << LTDC_TWCR_TOTALW_SHIFT)         /*!< 0x0FFF0000 */
+#define LTDC_TWCR_TOTALW(n)           ((uint32_t)(n) << LTDC_TWCR_TOTALW_SHIFT)   /*!< Total Width */
 
 /********************  Bit definition for LTDC_GCR register  ******************/
 
-#define LTDC_GCR_LTDCEN_Pos          (0U)
-#define LTDC_GCR_LTDCEN_Msk          (0x1UL << LTDC_GCR_LTDCEN_Pos)            /*!< 0x00000001 */
-#define LTDC_GCR_LTDCEN              LTDC_GCR_LTDCEN_Msk                       /*!< LCD-TFT controller enable bit       */
-#define LTDC_GCR_DBW_Pos             (4U)
-#define LTDC_GCR_DBW_Msk             (0x7UL << LTDC_GCR_DBW_Pos)               /*!< 0x00000070 */
-#define LTDC_GCR_DBW                 LTDC_GCR_DBW_Msk                          /*!< Dither Blue Width                   */
-#define LTDC_GCR_DGW_Pos             (8U)
-#define LTDC_GCR_DGW_Msk             (0x7UL << LTDC_GCR_DGW_Pos)               /*!< 0x00000700 */
-#define LTDC_GCR_DGW                 LTDC_GCR_DGW_Msk                          /*!< Dither Green Width                  */
-#define LTDC_GCR_DRW_Pos             (12U)
-#define LTDC_GCR_DRW_Msk             (0x7UL << LTDC_GCR_DRW_Pos)               /*!< 0x00007000 */
-#define LTDC_GCR_DRW                 LTDC_GCR_DRW_Msk                          /*!< Dither Red Width                    */
-#define LTDC_GCR_DEN_Pos             (16U)
-#define LTDC_GCR_DEN_Msk             (0x1UL << LTDC_GCR_DEN_Pos)               /*!< 0x00010000 */
-#define LTDC_GCR_DEN                 LTDC_GCR_DEN_Msk                          /*!< Dither Enable                       */
-#define LTDC_GCR_PCPOL_Pos           (28U)
-#define LTDC_GCR_PCPOL_Msk           (0x1UL << LTDC_GCR_PCPOL_Pos)             /*!< 0x10000000 */
-#define LTDC_GCR_PCPOL               LTDC_GCR_PCPOL_Msk                        /*!< Pixel Clock Polarity                */
-#define LTDC_GCR_DEPOL_Pos           (29U)
-#define LTDC_GCR_DEPOL_Msk           (0x1UL << LTDC_GCR_DEPOL_Pos)             /*!< 0x20000000 */
-#define LTDC_GCR_DEPOL               LTDC_GCR_DEPOL_Msk                        /*!< Data Enable Polarity                */
-#define LTDC_GCR_VSPOL_Pos           (30U)
-#define LTDC_GCR_VSPOL_Msk           (0x1UL << LTDC_GCR_VSPOL_Pos)             /*!< 0x40000000 */
-#define LTDC_GCR_VSPOL               LTDC_GCR_VSPOL_Msk                        /*!< Vertical Synchronization Polarity   */
-#define LTDC_GCR_HSPOL_Pos           (31U)
-#define LTDC_GCR_HSPOL_Msk           (0x1UL << LTDC_GCR_HSPOL_Pos)             /*!< 0x80000000 */
-#define LTDC_GCR_HSPOL               LTDC_GCR_HSPOL_Msk                        /*!< Horizontal Synchronization Polarity */
+#define LTDC_GCR_LTDCEN_SHIFT          (0U)
+#define LTDC_GCR_LTDCEN_MASK          (0x1UL << LTDC_GCR_LTDCEN_SHIFT)            /*!< 0x00000001 */
+#define LTDC_GCR_LTDCEN              LTDC_GCR_LTDCEN_MASK                       /*!< LCD-TFT controller enable bit       */
+#define LTDC_GCR_DBW_SHIFT             (4U)
+#define LTDC_GCR_DBW_MASK             (0x7UL << LTDC_GCR_DBW_SHIFT)               /*!< 0x00000070 */
+#define LTDC_GCR_DBW                 LTDC_GCR_DBW_MASK                          /*!< Dither Blue Width                   */
+#define LTDC_GCR_DGW_SHIFT             (8U)
+#define LTDC_GCR_DGW_MASK             (0x7UL << LTDC_GCR_DGW_SHIFT)               /*!< 0x00000700 */
+#define LTDC_GCR_DGW                 LTDC_GCR_DGW_MASK                          /*!< Dither Green Width                  */
+#define LTDC_GCR_DRW_SHIFT             (12U)
+#define LTDC_GCR_DRW_MASK             (0x7UL << LTDC_GCR_DRW_SHIFT)               /*!< 0x00007000 */
+#define LTDC_GCR_DRW                 LTDC_GCR_DRW_MASK                          /*!< Dither Red Width                    */
+#define LTDC_GCR_DEN_SHIFT             (16U)
+#define LTDC_GCR_DEN_MASK             (0x1UL << LTDC_GCR_DEN_SHIFT)               /*!< 0x00010000 */
+#define LTDC_GCR_DEN                 LTDC_GCR_DEN_MASK                          /*!< Dither Enable                       */
+#define LTDC_GCR_PCPOL_SHIFT           (28U)
+#define LTDC_GCR_PCPOL_MASK           (0x1UL << LTDC_GCR_PCPOL_SHIFT)             /*!< 0x10000000 */
+#define LTDC_GCR_PCPOL               LTDC_GCR_PCPOL_MASK                        /*!< Pixel Clock Polarity                */
+#define LTDC_GCR_DEPOL_SHIFT           (29U)
+#define LTDC_GCR_DEPOL_MASK           (0x1UL << LTDC_GCR_DEPOL_SHIFT)             /*!< 0x20000000 */
+#define LTDC_GCR_DEPOL               LTDC_GCR_DEPOL_MASK                        /*!< Data Enable Polarity                */
+#define LTDC_GCR_VSPOL_SHIFT           (30U)
+#define LTDC_GCR_VSPOL_MASK           (0x1UL << LTDC_GCR_VSPOL_SHIFT)             /*!< 0x40000000 */
+#define LTDC_GCR_VSPOL               LTDC_GCR_VSPOL_MASK                        /*!< Vertical Synchronization Polarity   */
+#define LTDC_GCR_HSPOL_SHIFT           (31U)
+#define LTDC_GCR_HSPOL_MASK           (0x1UL << LTDC_GCR_HSPOL_SHIFT)             /*!< 0x80000000 */
+#define LTDC_GCR_HSPOL               LTDC_GCR_HSPOL_MASK                        /*!< Horizontal Synchronization Polarity */
 
 
 /********************  Bit definition for LTDC_SRCR register  *****************/
 
-#define LTDC_SRCR_IMR_Pos            (0U)
-#define LTDC_SRCR_IMR_Msk            (0x1UL << LTDC_SRCR_IMR_Pos)              /*!< 0x00000001 */
-#define LTDC_SRCR_IMR                LTDC_SRCR_IMR_Msk                         /*!< Immediate Reload         */
-#define LTDC_SRCR_VBR_Pos            (1U)
-#define LTDC_SRCR_VBR_Msk            (0x1UL << LTDC_SRCR_VBR_Pos)              /*!< 0x00000002 */
-#define LTDC_SRCR_VBR                LTDC_SRCR_VBR_Msk                         /*!< Vertical Blanking Reload */
+#define LTDC_SRCR_IMR_SHIFT            (0U)
+#define LTDC_SRCR_IMR_MASK            (0x1UL << LTDC_SRCR_IMR_SHIFT)              /*!< 0x00000001 */
+#define LTDC_SRCR_IMR                LTDC_SRCR_IMR_MASK                         /*!< Immediate Reload         */
+#define LTDC_SRCR_VBR_SHIFT            (1U)
+#define LTDC_SRCR_VBR_MASK            (0x1UL << LTDC_SRCR_VBR_SHIFT)              /*!< 0x00000002 */
+#define LTDC_SRCR_VBR                LTDC_SRCR_VBR_MASK                         /*!< Vertical Blanking Reload */
 
 /********************  Bit definition for LTDC_BCCR register  *****************/
 
-#define LTDC_BCCR_BCBLUE_Pos         (0U)
-#define LTDC_BCCR_BCBLUE_Msk         (0xFFUL << LTDC_BCCR_BCBLUE_Pos)          /*!< 0x000000FF */
-#define LTDC_BCCR_BCBLUE             LTDC_BCCR_BCBLUE_Msk                      /*!< Background Blue value  */
-#define LTDC_BCCR_BCGREEN_Pos        (8U)
-#define LTDC_BCCR_BCGREEN_Msk        (0xFFUL << LTDC_BCCR_BCGREEN_Pos)         /*!< 0x0000FF00 */
-#define LTDC_BCCR_BCGREEN            LTDC_BCCR_BCGREEN_Msk                     /*!< Background Green value */
-#define LTDC_BCCR_BCRED_Pos          (16U)
-#define LTDC_BCCR_BCRED_Msk          (0xFFUL << LTDC_BCCR_BCRED_Pos)           /*!< 0x00FF0000 */
-#define LTDC_BCCR_BCRED              LTDC_BCCR_BCRED_Msk                       /*!< Background Red value   */
+#define LTDC_BCCR_BCBLUE_SHIFT         (0U)
+#define LTDC_BCCR_BCBLUE_MASK         (0xFFUL << LTDC_BCCR_BCBLUE_SHIFT)          /*!< 0x000000FF */
+#define LTDC_BCCR_BCBLUE             LTDC_BCCR_BCBLUE_MASK                      /*!< Background Blue value  */
+#define LTDC_BCCR_BCGREEN_SHIFT        (8U)
+#define LTDC_BCCR_BCGREEN_MASK        (0xFFUL << LTDC_BCCR_BCGREEN_SHIFT)         /*!< 0x0000FF00 */
+#define LTDC_BCCR_BCGREEN            LTDC_BCCR_BCGREEN_MASK                     /*!< Background Green value */
+#define LTDC_BCCR_BCRED_SHIFT          (16U)
+#define LTDC_BCCR_BCRED_MASK          (0xFFUL << LTDC_BCCR_BCRED_SHIFT)           /*!< 0x00FF0000 */
+#define LTDC_BCCR_BCRED              LTDC_BCCR_BCRED_MASK                       /*!< Background Red value   */
 
 /********************  Bit definition for LTDC_IER register  ******************/
 
-#define LTDC_IER_LIE_Pos             (0U)
-#define LTDC_IER_LIE_Msk             (0x1UL << LTDC_IER_LIE_Pos)               /*!< 0x00000001 */
-#define LTDC_IER_LIE                 LTDC_IER_LIE_Msk                          /*!< Line Interrupt Enable            */
-#define LTDC_IER_FUIE_Pos            (1U)
-#define LTDC_IER_FUIE_Msk            (0x1UL << LTDC_IER_FUIE_Pos)              /*!< 0x00000002 */
-#define LTDC_IER_FUIE                LTDC_IER_FUIE_Msk                         /*!< FIFO Underrun Interrupt Enable   */
-#define LTDC_IER_TERRIE_Pos          (2U)
-#define LTDC_IER_TERRIE_Msk          (0x1UL << LTDC_IER_TERRIE_Pos)            /*!< 0x00000004 */
-#define LTDC_IER_TERRIE              LTDC_IER_TERRIE_Msk                       /*!< Transfer Error Interrupt Enable  */
-#define LTDC_IER_RRIE_Pos            (3U)
-#define LTDC_IER_RRIE_Msk            (0x1UL << LTDC_IER_RRIE_Pos)              /*!< 0x00000008 */
-#define LTDC_IER_RRIE                LTDC_IER_RRIE_Msk                         /*!< Register Reload interrupt enable */
+#define LTDC_IER_LIE_SHIFT             (0U)
+#define LTDC_IER_LIE_MASK             (0x1UL << LTDC_IER_LIE_SHIFT)               /*!< 0x00000001 */
+#define LTDC_IER_LIE                 LTDC_IER_LIE_MASK                          /*!< Line Interrupt Enable            */
+#define LTDC_IER_FUIE_SHIFT            (1U)
+#define LTDC_IER_FUIE_MASK            (0x1UL << LTDC_IER_FUIE_SHIFT)              /*!< 0x00000002 */
+#define LTDC_IER_FUIE                LTDC_IER_FUIE_MASK                         /*!< FIFO Underrun Interrupt Enable   */
+#define LTDC_IER_TERRIE_SHIFT          (2U)
+#define LTDC_IER_TERRIE_MASK          (0x1UL << LTDC_IER_TERRIE_SHIFT)            /*!< 0x00000004 */
+#define LTDC_IER_TERRIE              LTDC_IER_TERRIE_MASK                       /*!< Transfer Error Interrupt Enable  */
+#define LTDC_IER_RRIE_SHIFT            (3U)
+#define LTDC_IER_RRIE_MASK            (0x1UL << LTDC_IER_RRIE_SHIFT)              /*!< 0x00000008 */
+#define LTDC_IER_RRIE                LTDC_IER_RRIE_MASK                         /*!< Register Reload interrupt enable */
 
 /********************  Bit definition for LTDC_ISR register  ******************/
 
-#define LTDC_ISR_LIF_Pos             (0U)
-#define LTDC_ISR_LIF_Msk             (0x1UL << LTDC_ISR_LIF_Pos)               /*!< 0x00000001 */
-#define LTDC_ISR_LIF                 LTDC_ISR_LIF_Msk                          /*!< Line Interrupt Flag */
-#define LTDC_ISR_FUIF_Pos            (1U)
-#define LTDC_ISR_FUIF_Msk            (0x1UL << LTDC_ISR_FUIF_Pos)              /*!< 0x00000002 */
-#define LTDC_ISR_FUIF                LTDC_ISR_FUIF_Msk                         /*!< FIFO Underrun Interrupt Flag */
-#define LTDC_ISR_TERRIF_Pos          (2U)
-#define LTDC_ISR_TERRIF_Msk          (0x1UL << LTDC_ISR_TERRIF_Pos)            /*!< 0x00000004 */
-#define LTDC_ISR_TERRIF              LTDC_ISR_TERRIF_Msk                       /*!< Transfer Error Interrupt Flag */
-#define LTDC_ISR_RRIF_Pos            (3U)
-#define LTDC_ISR_RRIF_Msk            (0x1UL << LTDC_ISR_RRIF_Pos)              /*!< 0x00000008 */
-#define LTDC_ISR_RRIF                LTDC_ISR_RRIF_Msk                         /*!< Register Reload interrupt Flag */
+#define LTDC_ISR_LIF_SHIFT             (0U)
+#define LTDC_ISR_LIF_MASK             (0x1UL << LTDC_ISR_LIF_SHIFT)               /*!< 0x00000001 */
+#define LTDC_ISR_LIF                 LTDC_ISR_LIF_MASK                          /*!< Line Interrupt Flag */
+#define LTDC_ISR_FUIF_SHIFT            (1U)
+#define LTDC_ISR_FUIF_MASK            (0x1UL << LTDC_ISR_FUIF_SHIFT)              /*!< 0x00000002 */
+#define LTDC_ISR_FUIF                LTDC_ISR_FUIF_MASK                         /*!< FIFO Underrun Interrupt Flag */
+#define LTDC_ISR_TERRIF_SHIFT          (2U)
+#define LTDC_ISR_TERRIF_MASK          (0x1UL << LTDC_ISR_TERRIF_SHIFT)            /*!< 0x00000004 */
+#define LTDC_ISR_TERRIF              LTDC_ISR_TERRIF_MASK                       /*!< Transfer Error Interrupt Flag */
+#define LTDC_ISR_RRIF_SHIFT            (3U)
+#define LTDC_ISR_RRIF_MASK            (0x1UL << LTDC_ISR_RRIF_SHIFT)              /*!< 0x00000008 */
+#define LTDC_ISR_RRIF                LTDC_ISR_RRIF_MASK                         /*!< Register Reload interrupt Flag */
 
 /********************  Bit definition for LTDC_ICR register  ******************/
 
-#define LTDC_ICR_CLIF_Pos            (0U)
-#define LTDC_ICR_CLIF_Msk            (0x1UL << LTDC_ICR_CLIF_Pos)              /*!< 0x00000001 */
-#define LTDC_ICR_CLIF                LTDC_ICR_CLIF_Msk                         /*!< Clears the Line Interrupt Flag */
-#define LTDC_ICR_CFUIF_Pos           (1U)
-#define LTDC_ICR_CFUIF_Msk           (0x1UL << LTDC_ICR_CFUIF_Pos)             /*!< 0x00000002 */
-#define LTDC_ICR_CFUIF               LTDC_ICR_CFUIF_Msk                        /*!< Clears the FIFO Underrun Interrupt Flag */
-#define LTDC_ICR_CTERRIF_Pos         (2U)
-#define LTDC_ICR_CTERRIF_Msk         (0x1UL << LTDC_ICR_CTERRIF_Pos)           /*!< 0x00000004 */
-#define LTDC_ICR_CTERRIF             LTDC_ICR_CTERRIF_Msk                      /*!< Clears the Transfer Error Interrupt Flag */
-#define LTDC_ICR_CRRIF_Pos           (3U)
-#define LTDC_ICR_CRRIF_Msk           (0x1UL << LTDC_ICR_CRRIF_Pos)             /*!< 0x00000008 */
-#define LTDC_ICR_CRRIF               LTDC_ICR_CRRIF_Msk                        /*!< Clears Register Reload interrupt Flag */
+#define LTDC_ICR_CLIF_SHIFT            (0U)
+#define LTDC_ICR_CLIF_MASK            (0x1UL << LTDC_ICR_CLIF_SHIFT)              /*!< 0x00000001 */
+#define LTDC_ICR_CLIF                LTDC_ICR_CLIF_MASK                         /*!< Clears the Line Interrupt Flag */
+#define LTDC_ICR_CFUIF_SHIFT           (1U)
+#define LTDC_ICR_CFUIF_MASK           (0x1UL << LTDC_ICR_CFUIF_SHIFT)             /*!< 0x00000002 */
+#define LTDC_ICR_CFUIF               LTDC_ICR_CFUIF_MASK                        /*!< Clears the FIFO Underrun Interrupt Flag */
+#define LTDC_ICR_CTERRIF_SHIFT         (2U)
+#define LTDC_ICR_CTERRIF_MASK         (0x1UL << LTDC_ICR_CTERRIF_SHIFT)           /*!< 0x00000004 */
+#define LTDC_ICR_CTERRIF             LTDC_ICR_CTERRIF_MASK                      /*!< Clears the Transfer Error Interrupt Flag */
+#define LTDC_ICR_CRRIF_SHIFT           (3U)
+#define LTDC_ICR_CRRIF_MASK           (0x1UL << LTDC_ICR_CRRIF_SHIFT)             /*!< 0x00000008 */
+#define LTDC_ICR_CRRIF               LTDC_ICR_CRRIF_MASK                        /*!< Clears Register Reload interrupt Flag */
 
 /********************  Bit definition for LTDC_LIPCR register  ****************/
 
-#define LTDC_LIPCR_LIPOS_Pos         (0U)
-#define LTDC_LIPCR_LIPOS_Msk         (0x7FFUL << LTDC_LIPCR_LIPOS_Pos)         /*!< 0x000007FF */
-#define LTDC_LIPCR_LIPOS             LTDC_LIPCR_LIPOS_Msk                      /*!< Line Interrupt Position */
+#define LTDC_LIPCR_LIPOS_SHIFT         (0U)
+#define LTDC_LIPCR_LIPOS_MASK         (0x7FFUL << LTDC_LIPCR_LIPOS_SHIFT)         /*!< 0x000007FF */
+#define LTDC_LIPCR_LIPOS(n)           ((uint32_t)(n) << LTDC_LIPCR_LIPOS_SHIFT)   /*!< Line Interrupt Position */
 
 /********************  Bit definition for LTDC_CPSR register  *****************/
 
-#define LTDC_CPSR_CYPOS_Pos          (0U)
-#define LTDC_CPSR_CYPOS_Msk          (0xFFFFUL << LTDC_CPSR_CYPOS_Pos)         /*!< 0x0000FFFF */
-#define LTDC_CPSR_CYPOS              LTDC_CPSR_CYPOS_Msk                       /*!< Current Y Position */
-#define LTDC_CPSR_CXPOS_Pos          (16U)
-#define LTDC_CPSR_CXPOS_Msk          (0xFFFFUL << LTDC_CPSR_CXPOS_Pos)         /*!< 0xFFFF0000 */
-#define LTDC_CPSR_CXPOS              LTDC_CPSR_CXPOS_Msk                       /*!< Current X Position */
+#define LTDC_CPSR_CYPOS_SHIFT          (0U)
+#define LTDC_CPSR_CYPOS_MASK          (0xFFFFUL << LTDC_CPSR_CYPOS_SHIFT)         /*!< 0x0000FFFF */
+#define LTDC_CPSR_CYPOS              LTDC_CPSR_CYPOS_MASK                       /*!< Current Y Position */
+#define LTDC_CPSR_CXPOS_SHIFT          (16U)
+#define LTDC_CPSR_CXPOS_MASK          (0xFFFFUL << LTDC_CPSR_CXPOS_SHIFT)         /*!< 0xFFFF0000 */
+#define LTDC_CPSR_CXPOS              LTDC_CPSR_CXPOS_MASK                       /*!< Current X Position */
 
 /********************  Bit definition for LTDC_CDSR register  *****************/
 
-#define LTDC_CDSR_VDES_Pos           (0U)
-#define LTDC_CDSR_VDES_Msk           (0x1UL << LTDC_CDSR_VDES_Pos)             /*!< 0x00000001 */
-#define LTDC_CDSR_VDES               LTDC_CDSR_VDES_Msk                        /*!< Vertical Data Enable Status       */
-#define LTDC_CDSR_HDES_Pos           (1U)
-#define LTDC_CDSR_HDES_Msk           (0x1UL << LTDC_CDSR_HDES_Pos)             /*!< 0x00000002 */
-#define LTDC_CDSR_HDES               LTDC_CDSR_HDES_Msk                        /*!< Horizontal Data Enable Status     */
-#define LTDC_CDSR_VSYNCS_Pos         (2U)
-#define LTDC_CDSR_VSYNCS_Msk         (0x1UL << LTDC_CDSR_VSYNCS_Pos)           /*!< 0x00000004 */
-#define LTDC_CDSR_VSYNCS             LTDC_CDSR_VSYNCS_Msk                      /*!< Vertical Synchronization Status   */
-#define LTDC_CDSR_HSYNCS_Pos         (3U)
-#define LTDC_CDSR_HSYNCS_Msk         (0x1UL << LTDC_CDSR_HSYNCS_Pos)           /*!< 0x00000008 */
-#define LTDC_CDSR_HSYNCS             LTDC_CDSR_HSYNCS_Msk                      /*!< Horizontal Synchronization Status */
+#define LTDC_CDSR_VDES_SHIFT           (0U)
+#define LTDC_CDSR_VDES_MASK           (0x1UL << LTDC_CDSR_VDES_SHIFT)             /*!< 0x00000001 */
+#define LTDC_CDSR_VDES               LTDC_CDSR_VDES_MASK                        /*!< Vertical Data Enable Status       */
+#define LTDC_CDSR_HDES_SHIFT           (1U)
+#define LTDC_CDSR_HDES_MASK           (0x1UL << LTDC_CDSR_HDES_SHIFT)             /*!< 0x00000002 */
+#define LTDC_CDSR_HDES               LTDC_CDSR_HDES_MASK                        /*!< Horizontal Data Enable Status     */
+#define LTDC_CDSR_VSYNCS_SHIFT         (2U)
+#define LTDC_CDSR_VSYNCS_MASK         (0x1UL << LTDC_CDSR_VSYNCS_SHIFT)           /*!< 0x00000004 */
+#define LTDC_CDSR_VSYNCS             LTDC_CDSR_VSYNCS_MASK                      /*!< Vertical Synchronization Status   */
+#define LTDC_CDSR_HSYNCS_SHIFT         (3U)
+#define LTDC_CDSR_HSYNCS_MASK         (0x1UL << LTDC_CDSR_HSYNCS_SHIFT)           /*!< 0x00000008 */
+#define LTDC_CDSR_HSYNCS             LTDC_CDSR_HSYNCS_MASK                      /*!< Horizontal Synchronization Status */
 
 /********************  Bit definition for LTDC_LxCR register  *****************/
 
-#define LTDC_LxCR_LEN_Pos            (0U)
-#define LTDC_LxCR_LEN_Msk            (0x1UL << LTDC_LxCR_LEN_Pos)              /*!< 0x00000001 */
-#define LTDC_LxCR_LEN                LTDC_LxCR_LEN_Msk                         /*!< Layer Enable              */
-#define LTDC_LxCR_COLKEN_Pos         (1U)
-#define LTDC_LxCR_COLKEN_Msk         (0x1UL << LTDC_LxCR_COLKEN_Pos)           /*!< 0x00000002 */
-#define LTDC_LxCR_COLKEN             LTDC_LxCR_COLKEN_Msk                      /*!< Color Keying Enable       */
-#define LTDC_LxCR_CLUTEN_Pos         (4U)
-#define LTDC_LxCR_CLUTEN_Msk         (0x1UL << LTDC_LxCR_CLUTEN_Pos)           /*!< 0x00000010 */
-#define LTDC_LxCR_CLUTEN             LTDC_LxCR_CLUTEN_Msk                      /*!< Color Lockup Table Enable */
+#define LTDC_LxCR_LEN_SHIFT            (0U)
+#define LTDC_LxCR_LEN_MASK            (0x1UL << LTDC_LxCR_LEN_SHIFT)              /*!< 0x00000001 */
+#define LTDC_LxCR_LEN                LTDC_LxCR_LEN_MASK                         /*!< Layer Enable              */
+#define LTDC_LxCR_COLKEN_SHIFT         (1U)
+#define LTDC_LxCR_COLKEN_MASK         (0x1UL << LTDC_LxCR_COLKEN_SHIFT)           /*!< 0x00000002 */
+#define LTDC_LxCR_COLKEN             LTDC_LxCR_COLKEN_MASK                      /*!< Color Keying Enable       */
+#define LTDC_LxCR_CLUTEN_SHIFT         (4U)
+#define LTDC_LxCR_CLUTEN_MASK         (0x1UL << LTDC_LxCR_CLUTEN_SHIFT)           /*!< 0x00000010 */
+#define LTDC_LxCR_CLUTEN             LTDC_LxCR_CLUTEN_MASK                      /*!< Color Lockup Table Enable */
 
 /********************  Bit definition for LTDC_LxWHPCR register  **************/
 
-#define LTDC_LxWHPCR_WHSTPOS_Pos     (0U)
-#define LTDC_LxWHPCR_WHSTPOS_Msk     (0xFFFUL << LTDC_LxWHPCR_WHSTPOS_Pos)     /*!< 0x00000FFF */
-#define LTDC_LxWHPCR_WHSTPOS         LTDC_LxWHPCR_WHSTPOS_Msk                  /*!< Window Horizontal Start Position */
-#define LTDC_LxWHPCR_WHSPPOS_Pos     (16U)
-#define LTDC_LxWHPCR_WHSPPOS_Msk     (0xFFFFUL << LTDC_LxWHPCR_WHSPPOS_Pos)    /*!< 0xFFFF0000 */
-#define LTDC_LxWHPCR_WHSPPOS         LTDC_LxWHPCR_WHSPPOS_Msk                  /*!< Window Horizontal Stop Position  */
+#define LTDC_LxWHPCR_WHSTPOS_SHIFT     (0U)
+#define LTDC_LxWHPCR_WHSTPOS_MASK     (0xFFFUL << LTDC_LxWHPCR_WHSTPOS_SHIFT)     /*!< 0x00000FFF */
+#define LTDC_LxWHPCR_WHSTPOS         LTDC_LxWHPCR_WHSTPOS_MASK                  /*!< Window Horizontal Start Position */
+#define LTDC_LxWHPCR_WHSPPOS_SHIFT     (16U)
+#define LTDC_LxWHPCR_WHSPPOS_MASK     (0xFFFFUL << LTDC_LxWHPCR_WHSPPOS_SHIFT)    /*!< 0xFFFF0000 */
+#define LTDC_LxWHPCR_WHSPPOS         LTDC_LxWHPCR_WHSPPOS_MASK                  /*!< Window Horizontal Stop Position  */
 
 /********************  Bit definition for LTDC_LxWVPCR register  **************/
 
-#define LTDC_LxWVPCR_WVSTPOS_Pos     (0U)
-#define LTDC_LxWVPCR_WVSTPOS_Msk     (0xFFFUL << LTDC_LxWVPCR_WVSTPOS_Pos)     /*!< 0x00000FFF */
-#define LTDC_LxWVPCR_WVSTPOS         LTDC_LxWVPCR_WVSTPOS_Msk                  /*!< Window Vertical Start Position */
-#define LTDC_LxWVPCR_WVSPPOS_Pos     (16U)
-#define LTDC_LxWVPCR_WVSPPOS_Msk     (0xFFFFUL << LTDC_LxWVPCR_WVSPPOS_Pos)    /*!< 0xFFFF0000 */
-#define LTDC_LxWVPCR_WVSPPOS         LTDC_LxWVPCR_WVSPPOS_Msk                  /*!< Window Vertical Stop Position  */
+#define LTDC_LxWVPCR_WVSTPOS_SHIFT     (0U)
+#define LTDC_LxWVPCR_WVSTPOS_MASK     (0xFFFUL << LTDC_LxWVPCR_WVSTPOS_SHIFT)     /*!< 0x00000FFF */
+#define LTDC_LxWVPCR_WVSTPOS         LTDC_LxWVPCR_WVSTPOS_MASK                  /*!< Window Vertical Start Position */
+#define LTDC_LxWVPCR_WVSPPOS_SHIFT     (16U)
+#define LTDC_LxWVPCR_WVSPPOS_MASK     (0xFFFFUL << LTDC_LxWVPCR_WVSPPOS_SHIFT)    /*!< 0xFFFF0000 */
+#define LTDC_LxWVPCR_WVSPPOS         LTDC_LxWVPCR_WVSPPOS_MASK                  /*!< Window Vertical Stop Position  */
 
 /********************  Bit definition for LTDC_LxCKCR register  ***************/
 
-#define LTDC_LxCKCR_CKBLUE_Pos       (0U)
-#define LTDC_LxCKCR_CKBLUE_Msk       (0xFFUL << LTDC_LxCKCR_CKBLUE_Pos)        /*!< 0x000000FF */
-#define LTDC_LxCKCR_CKBLUE           LTDC_LxCKCR_CKBLUE_Msk                    /*!< Color Key Blue value  */
-#define LTDC_LxCKCR_CKGREEN_Pos      (8U)
-#define LTDC_LxCKCR_CKGREEN_Msk      (0xFFUL << LTDC_LxCKCR_CKGREEN_Pos)       /*!< 0x0000FF00 */
-#define LTDC_LxCKCR_CKGREEN          LTDC_LxCKCR_CKGREEN_Msk                   /*!< Color Key Green value */
-#define LTDC_LxCKCR_CKRED_Pos        (16U)
-#define LTDC_LxCKCR_CKRED_Msk        (0xFFUL << LTDC_LxCKCR_CKRED_Pos)         /*!< 0x00FF0000 */
-#define LTDC_LxCKCR_CKRED            LTDC_LxCKCR_CKRED_Msk                     /*!< Color Key Red value   */
+#define LTDC_LxCKCR_CKBLUE_SHIFT       (0U)
+#define LTDC_LxCKCR_CKBLUE_MASK       (0xFFUL << LTDC_LxCKCR_CKBLUE_SHIFT)        /*!< 0x000000FF */
+#define LTDC_LxCKCR_CKBLUE           LTDC_LxCKCR_CKBLUE_MASK                    /*!< Color Key Blue value  */
+#define LTDC_LxCKCR_CKGREEN_SHIFT      (8U)
+#define LTDC_LxCKCR_CKGREEN_MASK      (0xFFUL << LTDC_LxCKCR_CKGREEN_SHIFT)       /*!< 0x0000FF00 */
+#define LTDC_LxCKCR_CKGREEN          LTDC_LxCKCR_CKGREEN_MASK                   /*!< Color Key Green value */
+#define LTDC_LxCKCR_CKRED_SHIFT        (16U)
+#define LTDC_LxCKCR_CKRED_MASK        (0xFFUL << LTDC_LxCKCR_CKRED_SHIFT)         /*!< 0x00FF0000 */
+#define LTDC_LxCKCR_CKRED            LTDC_LxCKCR_CKRED_MASK                     /*!< Color Key Red value   */
 
 /********************  Bit definition for LTDC_LxPFCR register  ***************/
 
-#define LTDC_LxPFCR_PF_Pos           (0U)
-#define LTDC_LxPFCR_PF_Msk           (0x7UL << LTDC_LxPFCR_PF_Pos)             /*!< 0x00000007 */
-#define LTDC_LxPFCR_PF               LTDC_LxPFCR_PF_Msk                        /*!< Pixel Format */
+#define LTDC_LxPFCR_PF_SHIFT           (0U)
+#define LTDC_LxPFCR_PF_MASK           (0x7UL << LTDC_LxPFCR_PF_SHIFT)             /*!< 0x00000007 */
+#define LTDC_LxPFCR_PF               LTDC_LxPFCR_PF_MASK                        /*!< Pixel Format */
 
 /********************  Bit definition for LTDC_LxCACR register  ***************/
 
-#define LTDC_LxCACR_CONSTA_Pos       (0U)
-#define LTDC_LxCACR_CONSTA_Msk       (0xFFUL << LTDC_LxCACR_CONSTA_Pos)        /*!< 0x000000FF */
-#define LTDC_LxCACR_CONSTA           LTDC_LxCACR_CONSTA_Msk                    /*!< Constant Alpha */
+#define LTDC_LxCACR_CONSTA_SHIFT       (0U)
+#define LTDC_LxCACR_CONSTA_MASK       (0xFFUL << LTDC_LxCACR_CONSTA_SHIFT)        /*!< 0x000000FF */
+#define LTDC_LxCACR_CONSTA           LTDC_LxCACR_CONSTA_MASK                    /*!< Constant Alpha */
 
 /********************  Bit definition for LTDC_LxDCCR register  ***************/
 
-#define LTDC_LxDCCR_DCBLUE_Pos       (0U)
-#define LTDC_LxDCCR_DCBLUE_Msk       (0xFFUL << LTDC_LxDCCR_DCBLUE_Pos)        /*!< 0x000000FF */
-#define LTDC_LxDCCR_DCBLUE           LTDC_LxDCCR_DCBLUE_Msk                    /*!< Default Color Blue  */
-#define LTDC_LxDCCR_DCGREEN_Pos      (8U)
-#define LTDC_LxDCCR_DCGREEN_Msk      (0xFFUL << LTDC_LxDCCR_DCGREEN_Pos)       /*!< 0x0000FF00 */
-#define LTDC_LxDCCR_DCGREEN          LTDC_LxDCCR_DCGREEN_Msk                   /*!< Default Color Green */
-#define LTDC_LxDCCR_DCRED_Pos        (16U)
-#define LTDC_LxDCCR_DCRED_Msk        (0xFFUL << LTDC_LxDCCR_DCRED_Pos)         /*!< 0x00FF0000 */
-#define LTDC_LxDCCR_DCRED            LTDC_LxDCCR_DCRED_Msk                     /*!< Default Color Red   */
-#define LTDC_LxDCCR_DCALPHA_Pos      (24U)
-#define LTDC_LxDCCR_DCALPHA_Msk      (0xFFUL << LTDC_LxDCCR_DCALPHA_Pos)       /*!< 0xFF000000 */
-#define LTDC_LxDCCR_DCALPHA          LTDC_LxDCCR_DCALPHA_Msk                   /*!< Default Color Alpha */
+#define LTDC_LxDCCR_DCBLUE_SHIFT       (0U)
+#define LTDC_LxDCCR_DCBLUE_MASK       (0xFFUL << LTDC_LxDCCR_DCBLUE_SHIFT)        /*!< 0x000000FF */
+#define LTDC_LxDCCR_DCBLUE           LTDC_LxDCCR_DCBLUE_MASK                    /*!< Default Color Blue  */
+#define LTDC_LxDCCR_DCGREEN_SHIFT      (8U)
+#define LTDC_LxDCCR_DCGREEN_MASK      (0xFFUL << LTDC_LxDCCR_DCGREEN_SHIFT)       /*!< 0x0000FF00 */
+#define LTDC_LxDCCR_DCGREEN          LTDC_LxDCCR_DCGREEN_MASK                   /*!< Default Color Green */
+#define LTDC_LxDCCR_DCRED_SHIFT        (16U)
+#define LTDC_LxDCCR_DCRED_MASK        (0xFFUL << LTDC_LxDCCR_DCRED_SHIFT)         /*!< 0x00FF0000 */
+#define LTDC_LxDCCR_DCRED            LTDC_LxDCCR_DCRED_MASK                     /*!< Default Color Red   */
+#define LTDC_LxDCCR_DCALPHA_SHIFT      (24U)
+#define LTDC_LxDCCR_DCALPHA_MASK      (0xFFUL << LTDC_LxDCCR_DCALPHA_SHIFT)       /*!< 0xFF000000 */
+#define LTDC_LxDCCR_DCALPHA          LTDC_LxDCCR_DCALPHA_MASK                   /*!< Default Color Alpha */
 
 /********************  Bit definition for LTDC_LxBFCR register  ***************/
 
-#define LTDC_LxBFCR_BF2_Pos          (0U)
-#define LTDC_LxBFCR_BF2_Msk          (0x7UL << LTDC_LxBFCR_BF2_Pos)            /*!< 0x00000007 */
-#define LTDC_LxBFCR_BF2              LTDC_LxBFCR_BF2_Msk                       /*!< Blending Factor 2 */
-#define LTDC_LxBFCR_BF1_Pos          (8U)
-#define LTDC_LxBFCR_BF1_Msk          (0x7UL << LTDC_LxBFCR_BF1_Pos)            /*!< 0x00000700 */
-#define LTDC_LxBFCR_BF1              LTDC_LxBFCR_BF1_Msk                       /*!< Blending Factor 1 */
+#define LTDC_LxBFCR_BF2_SHIFT          (0U)
+#define LTDC_LxBFCR_BF2_MASK          (0x7UL << LTDC_LxBFCR_BF2_SHIFT)            /*!< 0x00000007 */
+#define LTDC_LxBFCR_BF2              LTDC_LxBFCR_BF2_MASK                       /*!< Blending Factor 2 */
+#define LTDC_LxBFCR_BF1_SHIFT          (8U)
+#define LTDC_LxBFCR_BF1_MASK          (0x7UL << LTDC_LxBFCR_BF1_SHIFT)            /*!< 0x00000700 */
+#define LTDC_LxBFCR_BF1              LTDC_LxBFCR_BF1_MASK                       /*!< Blending Factor 1 */
 
 /********************  Bit definition for LTDC_LxCFBAR register  **************/
 
-#define LTDC_LxCFBAR_CFBADD_Pos      (0U)
-#define LTDC_LxCFBAR_CFBADD_Msk      (0xFFFFFFFFUL << LTDC_LxCFBAR_CFBADD_Pos) /*!< 0xFFFFFFFF */
-#define LTDC_LxCFBAR_CFBADD          LTDC_LxCFBAR_CFBADD_Msk                   /*!< Color Frame Buffer Start Address */
+#define LTDC_LxCFBAR_CFBADD_SHIFT      (0U)
+#define LTDC_LxCFBAR_CFBADD_MASK      (0xFFFFFFFFUL << LTDC_LxCFBAR_CFBADD_SHIFT) /*!< 0xFFFFFFFF */
+#define LTDC_LxCFBAR_CFBADD          LTDC_LxCFBAR_CFBADD_MASK                   /*!< Color Frame Buffer Start Address */
 
 /********************  Bit definition for LTDC_LxCFBLR register  **************/
 
-#define LTDC_LxCFBLR_CFBLL_Pos       (0U)
-#define LTDC_LxCFBLR_CFBLL_Msk       (0x1FFFUL << LTDC_LxCFBLR_CFBLL_Pos)      /*!< 0x00001FFF */
-#define LTDC_LxCFBLR_CFBLL           LTDC_LxCFBLR_CFBLL_Msk                    /*!< Color Frame Buffer Line Length    */
-#define LTDC_LxCFBLR_CFBP_Pos        (16U)
-#define LTDC_LxCFBLR_CFBP_Msk        (0x1FFFUL << LTDC_LxCFBLR_CFBP_Pos)       /*!< 0x1FFF0000 */
-#define LTDC_LxCFBLR_CFBP            LTDC_LxCFBLR_CFBP_Msk                     /*!< Color Frame Buffer Pitch in bytes */
+#define LTDC_LxCFBLR_CFBLL_SHIFT       (0U)
+#define LTDC_LxCFBLR_CFBLL_MASK       (0x1FFFUL << LTDC_LxCFBLR_CFBLL_SHIFT)      /*!< 0x00001FFF */
+#define LTDC_LxCFBLR_CFBLL           LTDC_LxCFBLR_CFBLL_MASK                    /*!< Color Frame Buffer Line Length    */
+#define LTDC_LxCFBLR_CFBP_SHIFT        (16U)
+#define LTDC_LxCFBLR_CFBP_MASK        (0x1FFFUL << LTDC_LxCFBLR_CFBP_SHIFT)       /*!< 0x1FFF0000 */
+#define LTDC_LxCFBLR_CFBP            LTDC_LxCFBLR_CFBP_MASK                     /*!< Color Frame Buffer Pitch in bytes */
 
 /********************  Bit definition for LTDC_LxCFBLNR register  *************/
 
-#define LTDC_LxCFBLNR_CFBLNBR_Pos    (0U)
-#define LTDC_LxCFBLNR_CFBLNBR_Msk    (0x7FFUL << LTDC_LxCFBLNR_CFBLNBR_Pos)    /*!< 0x000007FF */
-#define LTDC_LxCFBLNR_CFBLNBR        LTDC_LxCFBLNR_CFBLNBR_Msk                 /*!< Frame Buffer Line Number */
+#define LTDC_LxCFBLNR_CFBLNBR_SHIFT    (0U)
+#define LTDC_LxCFBLNR_CFBLNBR_MASK    (0x7FFUL << LTDC_LxCFBLNR_CFBLNBR_SHIFT)    /*!< 0x000007FF */
+#define LTDC_LxCFBLNR_CFBLNBR        LTDC_LxCFBLNR_CFBLNBR_MASK                 /*!< Frame Buffer Line Number */
 
 /********************  Bit definition for LTDC_LxCLUTWR register  *************/
 
-#define LTDC_LxCLUTWR_BLUE_Pos       (0U)
-#define LTDC_LxCLUTWR_BLUE_Msk       (0xFFUL << LTDC_LxCLUTWR_BLUE_Pos)        /*!< 0x000000FF */
-#define LTDC_LxCLUTWR_BLUE           LTDC_LxCLUTWR_BLUE_Msk                    /*!< Blue value   */
-#define LTDC_LxCLUTWR_GREEN_Pos      (8U)
-#define LTDC_LxCLUTWR_GREEN_Msk      (0xFFUL << LTDC_LxCLUTWR_GREEN_Pos)       /*!< 0x0000FF00 */
-#define LTDC_LxCLUTWR_GREEN          LTDC_LxCLUTWR_GREEN_Msk                   /*!< Green value  */
-#define LTDC_LxCLUTWR_RED_Pos        (16U)
-#define LTDC_LxCLUTWR_RED_Msk        (0xFFUL << LTDC_LxCLUTWR_RED_Pos)         /*!< 0x00FF0000 */
-#define LTDC_LxCLUTWR_RED            LTDC_LxCLUTWR_RED_Msk                     /*!< Red value    */
-#define LTDC_LxCLUTWR_CLUTADD_Pos    (24U)
-#define LTDC_LxCLUTWR_CLUTADD_Msk    (0xFFUL << LTDC_LxCLUTWR_CLUTADD_Pos)     /*!< 0xFF000000 */
-#define LTDC_LxCLUTWR_CLUTADD        LTDC_LxCLUTWR_CLUTADD_Msk                 /*!< CLUT address */
+#define LTDC_LxCLUTWR_BLUE_SHIFT       (0U)
+#define LTDC_LxCLUTWR_BLUE_MASK       (0xFFUL << LTDC_LxCLUTWR_BLUE_SHIFT)        /*!< 0x000000FF */
+#define LTDC_LxCLUTWR_BLUE           LTDC_LxCLUTWR_BLUE_MASK                    /*!< Blue value   */
+#define LTDC_LxCLUTWR_GREEN_SHIFT      (8U)
+#define LTDC_LxCLUTWR_GREEN_MASK      (0xFFUL << LTDC_LxCLUTWR_GREEN_SHIFT)       /*!< 0x0000FF00 */
+#define LTDC_LxCLUTWR_GREEN          LTDC_LxCLUTWR_GREEN_MASK                   /*!< Green value  */
+#define LTDC_LxCLUTWR_RED_SHIFT        (16U)
+#define LTDC_LxCLUTWR_RED_MASK        (0xFFUL << LTDC_LxCLUTWR_RED_SHIFT)         /*!< 0x00FF0000 */
+#define LTDC_LxCLUTWR_RED            LTDC_LxCLUTWR_RED_MASK                     /*!< Red value    */
+#define LTDC_LxCLUTWR_CLUTADD_SHIFT    (24U)
+#define LTDC_LxCLUTWR_CLUTADD_MASK    (0xFFUL << LTDC_LxCLUTWR_CLUTADD_SHIFT)     /*!< 0xFF000000 */
+#define LTDC_LxCLUTWR_CLUTADD        LTDC_LxCLUTWR_CLUTADD_MASK                 /*!< CLUT address */
 
 /****************************************************************************
  * Public Types

@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/kinetis/kwikstik-k40/src/k40_lcd.c
+ * boards/arm/stm32f7/stm32f746g-disco/src/stm32_lcd.c
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -24,16 +24,17 @@
 
 #include <nuttx/config.h>
 
-#include <sys/types.h>
-#include <assert.h>
+#include <errno.h>
 #include <debug.h>
 
 #include <nuttx/arch.h>
 #include <nuttx/board.h>
 #include <nuttx/video/fb.h>
-#include <nuttx/clock.h>
 
 #include <arch/board/board.h>
+
+
+#ifdef CONFIG_STM32H7_LTDC
 
 #include "arm_internal.h"
 #include "stm32h747i-disco.h"
@@ -44,8 +45,30 @@
 #include "otm8009a.h"
 
 
+/****************************************************************************
+ * Public Functions
+ ****************************************************************************/
+
+int board_lcd_initialize(void);
+
+
+
+/****************************************************************************
+ * Private variables
+ ****************************************************************************/
+
+/* This structure describes the state of this driver */
+static bool g_initialized;
+
 Host_DSI_t hlcd_dsi;
 static OTM8009A_Object_t   OTM8009AObj;
+
+
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
 
 int32_t DSI_IO_GetTick(void)
 {
@@ -102,11 +125,84 @@ static int32_t DSI_IO_Read(uint16_t ChannelNbr, uint16_t Reg, uint8_t *pData, ui
   return ret;
 }
 
-
-
+#if 1
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
+
+/****************************************************************************
+ * Name: up_fbinitialize
+ *
+ * Description:
+ *   Initialize the framebuffer video hardware associated with the display.
+ *
+ * Input Parameters:
+ *   display - In the case of hardware with multiple displays, this
+ *     specifies the display.  Normally this is zero.
+ *
+ * Returned Value:
+ *   Zero is returned on success; a negated errno value is returned on any
+ *   failure.
+ *
+ ****************************************************************************/
+
+int up_fbinitialize(int display)
+{
+  int ret = OK;
+
+  /* Custom LCD display with RGB interface */
+
+  ret = board_lcd_initialize();
+
+  return  ret;
+}
+
+/****************************************************************************
+ * Name: up_fbgetvplane
+ *
+ * Description:
+ *   Return a a reference to the framebuffer object for the specified video
+ *   plane of the specified plane.
+ *   Many OSDs support multiple planes of video.
+ *
+ * Input Parameters:
+ *   display - In the case of hardware with multiple displays, this
+ *     specifies the display.  Normally this is zero.
+ *   vplane - Identifies the plane being queried.
+ *
+ * Returned Value:
+ *   A non-NULL pointer to the frame buffer access structure is returned on
+ *   success; NULL is returned on any failure.
+ *
+ ****************************************************************************/
+
+struct fb_vtable_s *up_fbgetvplane(int display, int vplane)
+{
+  return stm32_ltdcgetvplane(vplane);
+}
+
+/****************************************************************************
+ * Name: up_fbuninitialize
+ *
+ * Description:
+ *   Uninitialize the framebuffer support for the specified display.
+ *
+ * Input Parameters:
+ *   display - In the case of hardware with multiple displays, this
+ *     specifies the display.  Normally this is zero.
+ *
+ * Returned Value:
+ *   None
+ *
+ ****************************************************************************/
+
+void up_fbuninitialize(int display)
+{
+  stm32_ltdcuninitialize();
+}
+
+#endif
+
 
 /****************************************************************************
  * Name:  board_lcd_initialize
@@ -118,13 +214,19 @@ static int32_t DSI_IO_Read(uint16_t ChannelNbr, uint16_t Reg, uint8_t *pData, ui
  *   (full off).
  *
  ****************************************************************************/
-#define HACT          800
 int board_lcd_initialize(void)
 {
+  int ret = OK;
+
   DSI_PLL_Init_t dsiPllInit;
   DSI_CmdCfg_t CmdCfg;
   DSI_LPCmd_t LPCmd;
   DSI_PHY_Timer_t  PhyTimings;
+
+  if (g_initialized == true)
+  {
+    return ret;
+  }
 
 
   ginfo("Initializing\n");
@@ -160,7 +262,7 @@ int board_lcd_initialize(void)
   CmdCfg.VSPolarity            = DSI_VSYNC_ACTIVE_HIGH;
   CmdCfg.DEPolarity            = DSI_DATA_ENABLE_ACTIVE_HIGH;
   CmdCfg.ColorCoding           = DSI_RGB888;
-  CmdCfg.CommandSize           = HACT;
+  CmdCfg.CommandSize           = BOARD_LTDC_WIDTH;
   CmdCfg.TearingEffectSource   = DSI_TE_DSILINK;
   CmdCfg.TearingEffectPolarity = DSI_TE_RISING_EDGE;
   CmdCfg.VSyncPol              = DSI_VSYNC_FALLING;
@@ -235,6 +337,8 @@ int board_lcd_initialize(void)
 
   stm32_dsi_refresh(&hlcd_dsi);
 
+  g_initialized = true;
+
   return 0;
 }
 
@@ -243,15 +347,13 @@ int board_lcd_initialize(void)
  *
  * Description:
  *   Return a a reference to the LCD object for the specified LCD.
- *   This allows support for multiple LCD devices.
+ *    This allows support for multiple LCD devices.
  *
  ****************************************************************************/
 
 struct lcd_dev_s *board_lcd_getdev(int lcddev)
 {
-  DEBUGASSERT(lcddev == 0);
-#warning "Missing logic"
-  return NULL;
+  return stm32_ltdc_getdev(0);
 }
 
 /****************************************************************************
@@ -264,5 +366,11 @@ struct lcd_dev_s *board_lcd_getdev(int lcddev)
 
 void board_lcd_uninitialize(void)
 {
-#warning "Missing logic"
+
+  /* Turn the display off */
+
 }
+
+
+
+#endif /* CONFIG_STM32H7_LTDC */
