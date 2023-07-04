@@ -333,7 +333,6 @@ int board_lcd_initialize(void)
   stm32_ltdc_layer_init();
   stm32_dsi_wrapper_set(&hlcd_dsi, true);
 
-  memset(0xd0000000, 0xFF, 480 * 800 * 4);
 
   stm32_dsi_refresh(&hlcd_dsi);
 

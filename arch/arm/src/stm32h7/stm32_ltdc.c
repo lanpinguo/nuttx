@@ -1423,13 +1423,22 @@ void stm32_ltdc_layer_init(void)
 {
   LTDC_LayerCfg_t  layercfg;
 
+  uint32_t base_addr = 0;
+
+  base_addr = (uint32_t)malloc(STM32_LTDC_TOTAL_FBSIZE);
+  if (base_addr == NULL)
+    {
+      lcderr("failed to malloc draw buffer");
+      return;
+    }
+
   /* Layer Init */
   layercfg.WindowX0 = 0;
-  layercfg.WindowX1 = 800 ;
+  layercfg.WindowX1 = STM32_LTDC_WIDTH ;
   layercfg.WindowY0 = 0;
-  layercfg.WindowY1 = 480; 
+  layercfg.WindowY1 = STM32_LTDC_HEIGHT; 
   layercfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
-  layercfg.FBStartAdress = 0xD0000000;
+  layercfg.FBStartAdress = base_addr;
   layercfg.Alpha = 255;
   layercfg.Alpha0 = 0;
   layercfg.Backcolor.Blue = 0;
@@ -1441,6 +1450,8 @@ void stm32_ltdc_layer_init(void)
   layercfg.ImageHeight = 480;
 
   stm32_ltdc_config_layer(&layercfg, 0); 
+
+  g_vtable.pinfo.fbmem = base_addr;
 
 }
 
