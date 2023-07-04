@@ -848,12 +848,19 @@ endchoice # Layer 2 color format
 
 endif # STM32H7_LTDC_L2
 
+config STM32_FB_UPDATE
+	bool " LTDC DSI refresh"
+	default n
+	select FB_UPDATE
+	---help---
+		Select to enable support for dsi refresh.
+
 config STM32H7_FB_CMAP
 	bool "Color map support"
 	default y
 	select FB_CMAP
 	---help---
-		EnablingEnablescolor map support is necessary for ltdc L8 format.
+		Enabling color map support is necessary for ltdc L8 format.
 
 config STM32H7_FB_TRANSPARENCY
 	bool "Transparency color map support"
