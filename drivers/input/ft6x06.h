@@ -19,14 +19,14 @@
  ****************************************************************************/
 
 /* References:
- *   "FT5x06", FocalTech Systems Co., Ltd, D-FT5x06-1212-V4.0, Revised
+ *   "FT6x06", FocalTech Systems Co., Ltd, D-FT6x06-1212-V4.0, Revised
  *   Dec. 18, 2012
  */
 
-/* The FT5x06 Series ICs are single-chip capacitive touch panel controller
+/* The FT6x06 Series ICs are single-chip capacitive touch panel controller
  * ICs with a built-in 8 bit Micro-controller unit (MCU).  They adopt the
  * mutual capacitance approach, which supports true multi-touch capability.
- * In conjunction with a mutual capacitive touch panel, the FT5x06 have
+ * In conjunction with a mutual capacitive touch panel, the FT6x06 have
  * user-friendly input functions, which can be applied on many portable
  * devices, such as cellular phones, MIDs, netbook and notebook personal
  * computers.
@@ -45,15 +45,15 @@
 
 /* WARNING: Some definitions may apply only to the FT5336 */
 
-/* FT5x06 maximum number of simultaneously detected touches. */
+/* FT6x06 maximum number of simultaneously detected touches. */
 
-#define FT6X06_MAX_TOUCHES                (5)
+#define FT6X06_MAX_TOUCHES                (2)
 
-/* FT5x06 raw touch data length. */
+/* FT6x06 raw touch data length. */
 
-#define FT6X06_TOUCH_DATA_LEN             (0x20)
+#define FT6X06_TOUCH_DATA_LEN             (0x0E)
 
-/* FT5x06 register addresses */
+/* FT6x06 register addresses */
 
 #define FT6X06_TOUCH_MODE_REG             (0x00) /* Mode register */
 #define FT6X06_TOUCH_GESTID_REG           (0x01) /* Gesture ID register */
@@ -114,7 +114,7 @@
 
 /* Possible values of FT6X06_CHIP_ID_REG */
 
-#define FT6X06_ID_VALUE                   (0x51)
+#define FT6X06_ID_VALUE                   (0x11)
 
 /* Operations on struct ft6x06_touch_point_s */
 
@@ -135,7 +135,7 @@ enum touch_event_e
   FT6X06_INVALID = 3   /* No touch information available */
 };
 
-/* Describes on touchpoint returned by the FT5x06 */
+/* Describes on touchpoint returned by the FT6x06 */
 
 struct ft6x06_touch_point_s
 {
@@ -147,7 +147,7 @@ struct ft6x06_touch_point_s
   uint8_t area;
 };
 
-/* Describes all touch data returned by the FT5x06 */
+/* Describes all touch data returned by the FT6x06 */
 
 struct ft6x06_touch_data_s
 {
