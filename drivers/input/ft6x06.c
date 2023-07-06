@@ -427,12 +427,21 @@ static ssize_t ft6x06_sample(FAR struct ft6x06_dev_s *priv, FAR char *buffer,
 
   /* Get the reported X and Y positions */
 
-  #ifdef CONFIG_FT6X06_SWAPXY
+#ifdef CONFIG_FT6X06_SWAPXY
   y = TOUCH_POINT_GET_X(touch[0]);
   x = TOUCH_POINT_GET_Y(touch[0]);
 #else
   x = TOUCH_POINT_GET_X(touch[0]);
   y = TOUCH_POINT_GET_Y(touch[0]);
+#endif
+
+
+#ifdef CONFIG_FT6X06_SWAPX
+  x = CONFIG_FT6X06_MAX_WIDTH - x;
+#endif
+
+#ifdef CONFIG_FT6X06_SWAPY
+  y = CONFIG_FT6X06_MAX_HEIGHT - y;
 #endif
 
   /* Get the touch point ID and event */
@@ -587,6 +596,16 @@ static ssize_t ft6x06_sample(FAR struct ft6x06_dev_s *priv, FAR char *buffer,
       point[i].x        = TOUCH_POINT_GET_X(touch[i]);
       point[i].y        = TOUCH_POINT_GET_Y(touch[i]);
 #endif
+
+#ifdef CONFIG_FT6X06_SWAPX
+      point[i].x = CONFIG_FT6X06_MAX_WIDTH - point[i].x;
+#endif
+
+#ifdef CONFIG_FT6X06_SWAPY
+      point[i].y = CONFIG_FT6X06_MAX_HEIGHT - point[i].y;
+#endif
+
+
       point[i].h        = 0;
       point[i].w        = 0;
       point[i].pressure = 0;

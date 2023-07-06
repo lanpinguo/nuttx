@@ -210,7 +210,7 @@ config FT5X06_NPOLLWAITERS
 endif # INPUT_FT5X06
 
 config INPUT_FT6X06
-	bool "FocalTech FT5x06 single-touch, capacitive touch panel controller"
+	bool "FocalTech FT6x06 multi-touch, capacitive touch panel controller"
 	default n
 	select I2C
 	select INPUT_TOUCHSCREEN
@@ -236,6 +236,38 @@ config FT6X06_SWAPXY
 	default n
 	---help---
 		Reverse the meaning of X and Y to handle different LCD orientations.
+
+config FT6X06_SWAPX
+	bool "Swap X"
+	default n
+	---help---
+		Reverse the meaning of X to handle different LCD orientations.
+
+if FT6X06_SWAPX
+
+config FT6X06_MAX_WIDTH
+	int "Touchscreen pad max width"
+	default 0
+	---help---
+		Touchscreen pad max width for handling different LCD orientations.
+
+endif # FT6X06_SWAPX
+
+config FT6X06_SWAPY
+	bool "Swap Y"
+	default n
+	---help---
+		Reverse the meaning of X and Y to handle different LCD orientations.
+
+if FT6X06_SWAPY
+
+config FT6X06_MAX_HEIGHT
+	int "Touchscreen pad max height"
+	default 0
+	---help---
+		Touchscreen pad max height for handling different LCD orientations.
+
+endif # FT6X06_SWAPY
 
 config FT6X06_SINGLEPOINT
 	bool "Single point"
