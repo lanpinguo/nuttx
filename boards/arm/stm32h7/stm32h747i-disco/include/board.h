@@ -499,6 +499,17 @@
 #define GPIO_LCD_BL_CTL                (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | GPIO_OUTPUT_CLEAR | \
                                         GPIO_PORTJ | GPIO_PIN12)
 
+
+/* I2C - There is a FT6x06 TouchPanel on I2C4 using these pins: */
+
+#define ADJ_SLEW_RATE(p) (((p) & ~GPIO_SPEED_MASK) | (GPIO_SPEED_100MHz))
+#define GPIO_I2C4_SCL ADJ_SLEW_RATE(GPIO_I2C4_SCL_1)
+#define GPIO_I2C4_SDA ADJ_SLEW_RATE(GPIO_I2C4_SDA_1)
+
+#define GPIO_TP_INT  (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTK|GPIO_PIN7)
+
+#define FT6X06_I2C_ADDRESS          (0x70>>1)
+
 /****************************************************************************
  * Public Data
  ****************************************************************************/

@@ -196,6 +196,17 @@ int stm32_bringup(void)
     }
 #endif /* CONFIG_INPUT_BUTTONS */
 
+#ifdef CONFIG_INPUT_FT6X06
+  /* Initialize the touchscreen */
+
+  ret = stm32_tsc_setup(0);
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: stm32_tsc_setup failed: %d\n", ret);
+    }
+#endif
+
+
 #ifdef CONFIG_ADC
   /* Initialize ADC and register the ADC driver. */
 

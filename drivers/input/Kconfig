@@ -209,6 +209,71 @@ config FT5X06_NPOLLWAITERS
 
 endif # INPUT_FT5X06
 
+config INPUT_FT6X06
+	bool "FocalTech FT5x06 single-touch, capacitive touch panel controller"
+	default n
+	select I2C
+	select INPUT_TOUCHSCREEN
+	---help---
+		Enable support for the FocalTech FT5x06 multi-touch, capacitive
+		touch panel controller
+
+if INPUT_FT6X06
+
+config FT6X06_POLLMODE
+	bool "Polled mode"
+	default n
+	---help---
+		Run the FT6x06 in a non-interrupt driven polled mode.  Events will
+		not be driven by interrupts but rather based on a timed poll.
+
+		This is a non-optimal design both because (1) it will lead to delays
+		in detecting touch related events and (2) it will consume a
+		significant amount of CPU time to perform the polling.
+
+config FT6X06_SWAPXY
+	bool "Swap X/Y"
+	default n
+	---help---
+		Reverse the meaning of X and Y to handle different LCD orientations.
+
+config FT6X06_SINGLEPOINT
+	bool "Single point"
+	default n
+	---help---
+		Do no report multi-touch events
+
+if FT6X06_SINGLEPOINT
+
+config FT6X06_THRESHX
+	int "X threshold"
+	default 12
+	---help---
+		New touch positions will only be reported when the X or Y data changes by these
+		thresholds. This trades reduced data rates for some loss in dragging accuracy.  For
+		12-bit values the raw ranges are 0-4095. So for example, if your display is
+		320x240, then THRESHX=13 and THRESHY=17 would correspond to one pixel.  Default: 12
+
+config FT6X06_THRESHY
+	int "Y threshold"
+	default 12
+	---help---
+		New touch positions will only be reported when the X or Y data changes by these
+		thresholds. This trades reduced data rates for some loss in dragging accuracy.  For
+		12-bit values the raw ranges are 0-4095. So for example, if your display is
+		320x240, then THRESHX=13 and THRESHY=17 would correspond to one pixel.  Default: 12
+
+endif # FT6X06_SINGLEPOINT
+
+config FT6X06_NPOLLWAITERS
+	int "Number FT6x06 poll waiters"
+	default 4
+	---help---
+		Maximum number of threads that can be waiting on poll()
+
+endif # INPUT_FT6X06
+
+
 config INPUT_ADS7843E
 	bool "TI ADS7843/TSC2046 touchscreen controller"
 	default n
