@@ -417,8 +417,8 @@
 /* Ethernet definitions *****************************************************/
 /* Todo */
 #define GPIO_ETH_RMII_TXD0    GPIO_ETH_RMII_TXD0_2    /* PG13 */
-#define GPIO_ETH_RMII_TXD1    GPIO_ETH_RMII_TXD1_1    /* PB 13 */
-#define GPIO_ETH_RMII_TX_EN   GPIO_ETH_RMII_TX_EN_2
+#define GPIO_ETH_RMII_TXD1    GPIO_ETH_RMII_TXD1_2    /* PG12 */
+#define GPIO_ETH_RMII_TX_EN   GPIO_ETH_RMII_TX_EN_2   /* PG11 */
 
 #define BUTTON_USER        0
 #define NUM_BUTTONS        1
