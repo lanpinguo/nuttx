@@ -432,11 +432,18 @@ static inline void rcc_enableapb1(void)
   regval |= RCC_APB1LENR_I2C3EN;
 #endif
 
+
   /* TODO: ... */
 
   putreg32(regval, STM32_RCC_APB1LENR);   /* Enable APB1L peripherals */
 
   regval = getreg32(STM32_RCC_APB1HENR);
+
+#ifdef CONFIG_STM32H7_MDIOS
+  /* MDIOS clock enable */
+
+  regval |= RCC_APB1HENR_MDIOSEN;
+#endif
 
   /* TODO: ... */
 

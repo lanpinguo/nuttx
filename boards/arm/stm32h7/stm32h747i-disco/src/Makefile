@@ -74,4 +74,8 @@ ifeq ($(CONFIG_INPUT_FT6X06),y)
 CSRCS += stm32_touchscreen.c
 endif
 
+ifeq ($(CONFIG_STM32H7_ETHMAC),y)
+CSRCS += stm32_ethernet.c
+endif
+
 include $(TOPDIR)/boards/Board.mk
