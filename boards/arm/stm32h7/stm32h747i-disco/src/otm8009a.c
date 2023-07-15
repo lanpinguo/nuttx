@@ -19,8 +19,19 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "otm8009a.h"
+#include <nuttx/config.h>
+
+#include <stdio.h>
+#include <stdint.h>
+#include <errno.h>
+#include <assert.h>
+#include <debug.h>
 #include <stddef.h>
+
+#include <nuttx/arch.h>
+#include <nuttx/wdog.h>
+
+#include "otm8009a.h"
 
 /** @addtogroup BSP
   * @{
@@ -841,11 +852,12 @@ static int32_t OTM8009A_WriteRegWrap(void *Handle, uint16_t Reg, uint8_t *pData,
   */
 static int32_t OTM8009A_IO_Delay(OTM8009A_Object_t *pObj, uint32_t Delay)
 {
-  uint32_t tickstart;
-  tickstart = pObj->IO.GetTick();
-  while((pObj->IO.GetTick() - tickstart) < Delay)
-  {
-  }
+  // uint32_t tickstart;
+  // tickstart = pObj->IO.GetTick();
+  // while((pObj->IO.GetTick() - tickstart) < Delay)
+  // {
+  // }
+  up_udelay(Delay*1000);
   return OTM8009A_OK;
 }
 /**
