@@ -42,6 +42,24 @@
 #endif
 
 
+#ifdef CONFIG_STM32H7_QUADSPI
+
+#include <nuttx/mtd/mtd.h>
+#include <nuttx/spi/qspi.h>
+
+#include "stm32_qspi.h"
+
+#ifdef CONFIG_FS_FAT
+#include <sys/mount.h>
+#include <nuttx/fs/fat.h>
+#endif
+
+extern FAR struct qspi_dev_s *stm32h7_qspi_initialize(int intf);
+extern FAR struct mtd_dev_s *mt25qlxxx_initialize(FAR struct qspi_dev_s *qspi,
+                                           bool unprotect);
+
+#endif
+
 
 /****************************************************************************
  * Private Functions
@@ -173,6 +191,48 @@ int stm32_bringup(void)
         }
     }
 #endif
+
+
+#ifdef CONFIG_STM32H7_QUADSPI
+
+  FAR struct qspi_dev_s *qspi;
+  FAR struct mtd_dev_s *mtd;
+  struct qspi_meminfo_s meminfo;
+
+  qspi = stm32h7_qspi_initialize(0);
+  if (!qspi){
+    syslog(LOG_ERR, "ERROR: stm32h7_qspi_initialize failed\n");
+  }
+
+  mtd = mt25qlxxx_initialize(qspi, true);
+  if (!mtd){
+    syslog(LOG_ERR, "ERROR: mt25qlxxx_initialize failed\n");
+  }
+
+// #ifndef CONFIG_FS_NXFFS
+
+//   ret = ftl_initialize(0, mtd);
+//   if (ret < 0)
+//     {
+//       ferr("ERROR: Initialize the FTL layer\n");
+//     }
+
+// #endif
+
+  /* memory-mapped fast read mode with 4-byte addresses and 10 dummy cycles (for read only) */
+  meminfo.flags = QSPIMEM_READ | QSPIMEM_QUADIO | QSPIMEM_IQUAD;
+  meminfo.addrlen = 4;
+  meminfo.dummies = 10;
+  meminfo.cmd = 0xec; /* MT25QLXXX_FAST_READ_QUADIO */
+  meminfo.addr = 0;
+  meminfo.buflen = 0;
+  meminfo.buffer = NULL;
+
+  stm32h7_qspi_enter_memorymapped(qspi, &meminfo, 4096);
+
+//     stm32_mpu_uheap((uintptr_t)0x90000000, 0x4000000);
+#endif
+
 
 #ifdef CONFIG_VIDEO_FB
   /* Initialize and register the framebuffer driver */

@@ -698,6 +698,42 @@ config W25QXXXJV_SECTOR512
 
 endif # MTD_W25QXXXJV
 
+config MTD_MT25QLXXX
+	bool "QuadSPI-based  MT25QLXXX family FLASH"
+	default n
+	---help---
+		Support the MT25QL016ABB8ESF, MT25QL032ABB8ESF, MT25QL064ABB8ESF, MT25QL128ABB8ESF,
+		MT25QL256ABB8ESF, MT25QL512ABB8ESF
+
+if MTD_MT25QLXXX
+
+config MT25QLXXX_QSPI_MODE_DUAL
+	bool "Dual Bank"
+	default n
+	---help---
+		This device can operate in dual-flash mode.
+
+config MT25QLXXX_QSPIMODE
+	int "MT25QLXXX QuadSPI Mode"
+	default 0
+	---help---
+		This device can operate in SPI mode 0 or 3.
+
+config MT25QLXXX_QSPI_FREQUENCY
+	int "MT25QLXXX QuadSPI Frequency"
+	default 133000000
+	---help---
+		Per data sheet:
+		– 133MHz Single, Dual/Quad SPI clocks
+		– 266/532MHz equivalent Dual/Quad SPI
+		– 66MB/S continuous data transfer rate
+
+config MT25QLXXX_SECTOR512
+	bool "Simulate 512 byte Erase Blocks"
+	default n
+
+endif # MTD_MT25QLXXX
+
 config MTD_MX25RXX
 	bool "QuadSPI-based Macronix MX25RXX family FLASH"
 	default n

@@ -297,6 +297,12 @@ static inline void rcc_enableahb3(void)
   regval |= RCC_AHB3ENR_FMCEN;
 #endif
 
+#ifdef CONFIG_STM32H7_QUADSPI
+  /* QUADSPI clock enable */
+
+  regval |= RCC_AHB3ENR_QSPIEN;
+#endif
+
   /* TODO: ... */
 
   putreg32(regval, STM32_RCC_AHB3ENR);   /* Enable peripherals */

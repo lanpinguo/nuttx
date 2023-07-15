@@ -94,12 +94,27 @@
 #endif
 
 /* Sanity check that board.h defines requisite QSPI pinmap options for */
+#if defined(CONFIG_STM32H7_QSPI_MODE_DUAL)
+
+#if (!defined(GPIO_QSPI_CS)     || !defined(GPIO_QSPI_BK1_IO0) || !defined(GPIO_QSPI_BK1_IO1) || \
+    !defined(GPIO_QSPI_BK1_IO2) || !defined(GPIO_QSPI_BK1_IO3) || !defined(GPIO_QSPI_BK2_IO0) || \
+    !defined(GPIO_QSPI_BK2_IO1) || !defined(GPIO_QSPI_BK2_IO2) || !defined(GPIO_QSPI_BK2_IO3) || \
+    !defined(GPIO_QSPI_SCK) )
+#  error you must define QSPI pinmapping options for GPIO_QSPI_CS GPIO_QSPI_BK1_IO0 \
+    GPIO_QSPI_BK1_IO1 GPIO_QSPI_BK1_IO2 GPIO_QSPI_BK1_IO3 GPIO_QSPI_BK2_IO0 \
+    GPIO_QSPI_BK2_IO1 GPIO_QSPI_BK2_IO2 GPIO_QSPI_BK2_IO3 GPIO_QSPI_SCK in your board.h
+#endif
+
+#else
 
 #if (!defined(GPIO_QSPI_CS) || !defined(GPIO_QSPI_IO0) || !defined(GPIO_QSPI_IO1) || \
     !defined(GPIO_QSPI_IO2) || !defined(GPIO_QSPI_IO3) || !defined(GPIO_QSPI_SCK))
 #  error you must define QSPI pinmapping options for GPIO_QSPI_CS GPIO_QSPI_IO0 \
     GPIO_QSPI_IO1 GPIO_QSPI_IO2 GPIO_QSPI_IO3 GPIO_QSPI_SCK in your board.h
 #endif
+
+#endif /* CONFIG_STM32H7_QSPI_MODE_DUAL */
+
 
 #ifdef CONFIG_STM32H7_QSPI_DMA
 
@@ -856,7 +871,18 @@ static int qspi_setupxctnfromcmd(struct qspi_xctnspec_s *xctn,
     {
       /* XXX III data mode mode, single, dual, quad option bits */
 
-      xctn->datamode = CCR_DMODE_SINGLE;
+      if (QSPICMD_ISIDUAL(cmdinfo->flags))
+        {
+          xctn->datamode = CCR_DMODE_DUAL;
+        }
+      else if (QSPICMD_ISIQUAD(cmdinfo->flags))
+        {
+          xctn->datamode = CCR_DMODE_QUAD;
+        }
+      else
+        {
+          xctn->datamode = CCR_DMODE_SINGLE;
+        }
       xctn->datasize = cmdinfo->buflen;
 
       /* XXX III double data rate option bits */
@@ -2093,7 +2119,7 @@ static int qspi_command(struct qspi_dev_s *dev,
            */
 
           regval  = qspi_getreg(priv, STM32_QUADSPI_CR_OFFSET);
-          regval |= (QSPI_CR_TEIE | QSPI_CR_FTIE | QSPI_CR_TCIE);
+          regval |= (QSPI_CR_TEIE | QSPI_CR_FTIE | QSPI_CR_TCIE | QSPI_CR_TOIE);
           qspi_putreg(priv, regval, STM32_QUADSPI_CR_OFFSET);
         }
       else
@@ -2118,7 +2144,7 @@ static int qspi_command(struct qspi_dev_s *dev,
            */
 
           regval  = qspi_getreg(priv, STM32_QUADSPI_CR_OFFSET);
-          regval |= (QSPI_CR_TEIE | QSPI_CR_FTIE | QSPI_CR_TCIE);
+          regval |= (QSPI_CR_TEIE | QSPI_CR_FTIE | QSPI_CR_TCIE | QSPI_CR_TOIE);
           qspi_putreg(priv, regval, STM32_QUADSPI_CR_OFFSET);
         }
     }
@@ -2133,7 +2159,7 @@ static int qspi_command(struct qspi_dev_s *dev,
       /* Enable 'Transfer Error' and 'Transfer Complete' interrupts */
 
       regval  = qspi_getreg(priv, STM32_QUADSPI_CR_OFFSET);
-      regval |= (QSPI_CR_TEIE | QSPI_CR_TCIE);
+      regval |= (QSPI_CR_TEIE | QSPI_CR_TCIE | QSPI_CR_TOIE);
       qspi_putreg(priv, regval, STM32_QUADSPI_CR_OFFSET);
 
       /* Set up the Communications Configuration Register as per command
@@ -2142,6 +2168,13 @@ static int qspi_command(struct qspi_dev_s *dev,
 
       qspi_ccrconfig(priv, &xctn, CCR_FMODE_INDWR);
     }
+
+  spiinfo("    CR:%08x   DCR:%08x   CCR:%08x    SR:%08x\n",
+          getreg32(priv->base + STM32_QUADSPI_CR_OFFSET),     /* Control Register */
+          getreg32(priv->base + STM32_QUADSPI_DCR_OFFSET),    /* Device Configuration Register */
+          getreg32(priv->base + STM32_QUADSPI_CCR_OFFSET),    /* Communication Configuration Register */
+          getreg32(priv->base + STM32_QUADSPI_SR_OFFSET));    /* Status Register */
+
 
   /* Wait for the interrupt routine to finish it's magic */
 
@@ -2497,8 +2530,8 @@ static int qspi_hw_initialize(struct stm32h7_qspidev_s *priv)
 
   regval  = qspi_getreg(priv, STM32_QUADSPI_CR_OFFSET);
   regval &= ~(QSPI_CR_PRESCALER_MASK | QSPI_CR_SSHIFT);
-  regval |= (0x01 << QSPI_CR_PRESCALER_SHIFT);
-  regval |= (0x00);
+  regval |= (0x05 << QSPI_CR_PRESCALER_SHIFT);
+  regval |= QSPI_CR_SSHIFT;
   qspi_putreg(priv, regval, STM32_QUADSPI_CR_OFFSET);
 
   /* Configure QSPI Flash Size, CS High Time and Clock Mode */
@@ -2522,6 +2555,7 @@ static int qspi_hw_initialize(struct stm32h7_qspidev_s *priv)
     }
 
   qspi_putreg(priv, regval, STM32_QUADSPI_DCR_OFFSET);
+
 
   /* Enable QSPI */
 
@@ -2598,7 +2632,25 @@ struct qspi_dev_s *stm32h7_qspi_initialize(int intf)
       regval &= ~RCC_AHB3RSTR_QSPIRST;
       putreg32(regval, STM32_RCC_AHB3RSTR);
 
+
       /* Configure multiplexed pins as connected on the board. */
+#if defined(CONFIG_STM32H7_QSPI_MODE_DUAL)
+
+      stm32_configgpio(GPIO_QSPI_BK1_IO0);
+      stm32_configgpio(GPIO_QSPI_BK1_IO1);
+      stm32_configgpio(GPIO_QSPI_BK1_IO2);
+      stm32_configgpio(GPIO_QSPI_BK1_IO3);
+	  
+      stm32_configgpio(GPIO_QSPI_BK2_IO0);
+      stm32_configgpio(GPIO_QSPI_BK2_IO1);
+      stm32_configgpio(GPIO_QSPI_BK2_IO2);
+      stm32_configgpio(GPIO_QSPI_BK2_IO3);	
+	  
+      stm32_configgpio(GPIO_QSPI_SCK);
+
+      stm32_configgpio(GPIO_QSPI_CS);
+
+#else
 
       stm32_configgpio(GPIO_QSPI_CS);
       stm32_configgpio(GPIO_QSPI_IO0);
@@ -2606,6 +2658,8 @@ struct qspi_dev_s *stm32h7_qspi_initialize(int intf)
       stm32_configgpio(GPIO_QSPI_IO2);
       stm32_configgpio(GPIO_QSPI_IO3);
       stm32_configgpio(GPIO_QSPI_SCK);
+
+#endif
     }
   else
     {
