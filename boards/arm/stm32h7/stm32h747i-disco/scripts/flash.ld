@@ -103,6 +103,7 @@ MEMORY
   sram3 (rwx) : ORIGIN = 0x30040000, LENGTH =   32K
   sram4 (rwx) : ORIGIN = 0x38000000, LENGTH =   64K
   bbram (rwx) : ORIGIN = 0x38800000, LENGTH =    4K
+  extflash (rx) : ORIGIN = 0x90000000, LENGTH = 131072K
 }
 
 OUTPUT_ARCH(arm)
@@ -110,6 +111,12 @@ EXTERN(_vectors)
 ENTRY(_stext)
 SECTIONS
 {
+
+    .data_ext :
+    {
+        ui_*.o(.rodata .rodata.*)
+    } > extflash
+
     .text :
     {
         _stext = ABSOLUTE(.);
@@ -134,6 +141,7 @@ SECTIONS
         _einit = ABSOLUTE(.);
     } > flash
 
+
     .ARM.extab :
     {
         *(.ARM.extab*)
@@ -157,6 +165,7 @@ SECTIONS
         . = ALIGN(4);
         _edata = ABSOLUTE(.);
     } > sram AT > flash
+
 
     .bss :
     {
