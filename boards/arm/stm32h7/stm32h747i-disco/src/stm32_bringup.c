@@ -42,6 +42,10 @@
 #endif
 
 
+#ifdef CONFIG_VIDEO_FB
+#include <nuttx/video/fb.h>
+#endif
+
 #ifdef CONFIG_STM32H7_QUADSPI
 
 #include <nuttx/mtd/mtd.h>
@@ -60,6 +64,9 @@ extern FAR struct mtd_dev_s *mt25qlxxx_initialize(FAR struct qspi_dev_s *qspi,
 
 #endif
 
+#ifdef CONFIG_INPUT_FT6X06
+int stm32_tsc_setup(int minor);
+#endif
 
 /****************************************************************************
  * Private Functions

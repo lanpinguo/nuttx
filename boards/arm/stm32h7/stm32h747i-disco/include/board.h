@@ -404,6 +404,13 @@
 #define GPIO_USART1_RX     GPIO_USART1_RX_2  /* PA10 */
 #define GPIO_USART1_TX     GPIO_USART1_TX_2  /* PA9 */
 
+
+/* USART2 ( STMOD) */
+
+#define GPIO_USART2_RX     GPIO_USART2_RX_2  /* PD6 */
+#define GPIO_USART2_TX     GPIO_USART2_TX_2  /* PD5 */
+
+
 /* UART4 ( PMOD/STMOD ) */
 
 #define GPIO_UART4_CTS     GPIO_UART4_CTS_2  /* PB15 */
@@ -537,6 +544,15 @@
 #define GPIO_QSPI_IO3         ADJ_SLEW_RATE(GPIO_QUADSPI_BK1_IO3_2)
 #define GPIO_QSPI_SCK         ADJ_SLEW_RATE(GPIO_QUADSPI_CLK      )
 #endif
+
+
+/* SPI2 ( STMOD) */
+
+#define GPIO_SPI2_SCK         GPIO_SPI2_SCK_1   /* PA12 */
+#define GPIO_SPI2_MISO        GPIO_SPI2_MISO_1  /* PB14 */
+#define GPIO_SPI2_MOSI        GPIO_SPI2_MOSI_1  /* PB15 */
+
+#define GPIO_SPI2_NSS_STMOD   GPIO_SPI2_NSS_1   /* PA11 */
 
 
 /****************************************************************************
