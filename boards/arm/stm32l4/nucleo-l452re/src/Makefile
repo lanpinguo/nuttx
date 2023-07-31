@@ -44,4 +44,8 @@ ifeq ($(CONFIG_BOARDCTL),y)
 CSRCS += stm32_appinit.c
 endif
 
+ifeq ($(CONFIG_STM32L4_IRTIM),y)
+CSRCS += stm32_ir.c
+endif
+
 include $(TOPDIR)/boards/Board.mk

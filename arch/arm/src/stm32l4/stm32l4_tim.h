@@ -137,6 +137,8 @@ enum stm32l4_tim_channel_e
 #if 0
   STM32L4_TIM_CH_OUTCOMPARE     = 0x06,
 #endif
+  STM32L4_TIM_CH_FORCE_HI       = 0x02,
+  STM32L4_TIM_CH_FORCE_LO       = 0x06,
 
   /* TODO other modes ... as PWM capture, ENCODER and Hall Sensor */
 

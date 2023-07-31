@@ -132,6 +132,12 @@ int stm32_bringup(void)
   stm32l4_adc_setup();
 #endif
 
+#ifdef CONFIG_STM32L4_IRTIM
+  ainfo("Initializing IRTIM\n");
+
+  stm32l4_ir_setup();
+#endif
+
   UNUSED(ret);
   return OK;
 }

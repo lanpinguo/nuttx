@@ -235,6 +235,10 @@
 #define GPIO_TIM1_CH2OUT  GPIO_TIM1_CH2OUT_1
 #define GPIO_TIM1_CH2NOUT GPIO_TIM1_CH2N_1
 
+
+#define GPIO_IR_OUT        GPIO_IR_OUT_2
+#define GPIO_TIM15_CH1OUT  GPIO_TIM15_CH1OUT_2
+#define GPIO_TIM16_CH1OUT  GPIO_TIM16_CH1OUT_2
 /****************************************************************************
  * Public Data
  ****************************************************************************/

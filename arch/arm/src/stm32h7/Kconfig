@@ -849,7 +849,7 @@ endchoice # Layer 2 color format
 endif # STM32H7_LTDC_L2
 
 config STM32_FB_UPDATE
-	bool " LTDC DSI refresh"
+	bool "LTDC DSI refresh"
 	default n
 	select FB_UPDATE
 	---help---

@@ -678,6 +678,8 @@ static int stm32l4_tim_setmode(struct stm32l4_tim_dev_s *dev,
       }
 #endif
 
+  stm32l4_modifyreg16(dev, STM32L4_ATIM_BDTR_OFFSET, 0, ATIM_BDTR_MOE);
+
   return OK;
 }
 
@@ -1160,10 +1162,22 @@ static int stm32l4_tim_setchannel(struct stm32l4_tim_dev_s *dev,
   switch (mode & STM32L4_TIM_CH_MODE_MASK)
     {
       case STM32L4_TIM_CH_DISABLED:
+        ccmr_val  =  (GTIM_CCMR_MODE_FRZN << GTIM_CCMR1_OC1M_SHIFT) +
+                     GTIM_CCMR1_OC1PE;
         break;
 
       case STM32L4_TIM_CH_OUTPWM:
         ccmr_val  =  (GTIM_CCMR_MODE_PWM1 << GTIM_CCMR1_OC1M_SHIFT) +
+                     GTIM_CCMR1_OC1PE;
+        ccer_val |= GTIM_CCER_CC1E << GTIM_CCER_CCXBASE(channel);
+        break;
+      case STM32L4_TIM_CH_FORCE_HI:
+        ccmr_val  =  (GTIM_CCMR_MODE_OCREFHI << GTIM_CCMR1_OC1M_SHIFT) +
+                     GTIM_CCMR1_OC1PE;
+        ccer_val |= GTIM_CCER_CC1E << GTIM_CCER_CCXBASE(channel);
+        break;
+      case STM32L4_TIM_CH_FORCE_LO:
+        ccmr_val  =  (GTIM_CCMR_MODE_OCREFLO << GTIM_CCMR1_OC1M_SHIFT) +
                      GTIM_CCMR1_OC1PE;
         ccer_val |= GTIM_CCER_CC1E << GTIM_CCER_CCXBASE(channel);
         break;

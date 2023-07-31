@@ -1237,6 +1237,10 @@ config STM32L4_SDMMC
 
 comment "AHB1 Peripherals"
 
+config STM32L4_IRTIM
+	bool "IRTIM"
+	default n
+
 config STM32L4_DMAMUX1
 	bool "DMAMUX1"
 	default n
