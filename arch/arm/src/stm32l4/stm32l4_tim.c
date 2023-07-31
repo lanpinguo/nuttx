@@ -1213,7 +1213,7 @@ static int stm32l4_tim_setchannel(struct stm32l4_tim_dev_s *dev,
   stm32l4_putreg16(dev, STM32L4_GTIM_CCER_OFFSET, ccer_val);
 
   /* set GPIO */
-
+#if 0
   switch (((struct stm32l4_tim_priv_s *)dev)->base)
     {
 #ifdef CONFIG_STM32L4_TIM1
@@ -1516,7 +1516,7 @@ static int stm32l4_tim_setchannel(struct stm32l4_tim_dev_s *dev,
       default:
         return -EINVAL;
     }
-
+#endif
   return OK;
 }
 

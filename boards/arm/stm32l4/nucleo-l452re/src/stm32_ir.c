@@ -58,6 +58,7 @@
 
 #define STM32_L4_IR_MAX_EVENT_SIZE        512
 #define STM32_IRTIM_WORK_PERIOD           SEC2TICK(1)
+#define STM32_L4_IR_MAX_BUF_SIZE          8
 
 /****************************************************************************
  * Private
@@ -104,7 +105,7 @@ struct stm32_irtim_dev_s
   uint32_t globalFrameLen;
   uint32_t sndOpRdyFlag;
   uint32_t sndOpCompleteFlag;
-  uint32_t *frameFmt;
+  uint32_t frameFmt[STM32_L4_IR_MAX_BUF_SIZE];
 
 };
 
@@ -141,16 +142,21 @@ static int irtim_isr(int irq, FAR void *context, FAR void *arg)
 
   ir_dev->irtim[1]->ops->ackint(ir_dev->irtim[1], 0);
 
+  /* dummy 1 tick */
+  if(ir_dev->sndOpRdyFlag == 0){
 
+    ir_dev->sndOpRdyFlag = 1;
+    return 0;
+  }
 
   if ((ir_dev->sndOpRdyFlag == 1) && (ir_dev->bitsSndCnt <= (ir_dev->globalFrameLen)))
   {
     ir_dev->sndOpCompleteFlag = 0x00;
 
     frameFmt = ir_dev->frameFmt[ir_dev->cursor];
-    bit_msg = (uint8_t)((frameFmt >> ir_dev->wordBitsSndCnt) & 1);
+    bit_msg = (frameFmt >> ir_dev->wordBitsSndCnt) & 1;
 
-    //rcinfo("%d \n", bit_msg);
+
     if (bit_msg == 1)
     {
       ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
@@ -159,6 +165,7 @@ static int irtim_isr(int irq, FAR void *context, FAR void *arg)
     {
       ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
     }
+
     ir_dev->bitsSndCnt++;
     ir_dev->wordBitsSndCnt++;
     if(ir_dev->wordBitsSndCnt >= 32){
@@ -262,16 +269,22 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
 
   struct stm32_irtim_dev_s *ir_dev = (struct stm32_irtim_dev_s *)lower;
 
+  if(n > STM32_L4_IR_MAX_BUF_SIZE){
+    return -EINVAL;
+  }
 
   rcinfo("Dummy RC send raw data:%d(size:%d) to device\n", *txbuf, n);
 
   ir_dev->bitsSndCnt = 0;
   ir_dev->globalFrameLen = n * 32;
-  ir_dev->sndOpRdyFlag = 1;
+  ir_dev->sndOpRdyFlag = 0;
   ir_dev->sndOpCompleteFlag = 0;
-  ir_dev->frameFmt = (uint32_t *)txbuf;
   ir_dev->cursor = 0;
   ir_dev->wordBitsSndCnt = 0;
+
+  for(int i = 0; i < n && i < STM32_L4_IR_MAX_BUF_SIZE; i++){
+    ir_dev->frameFmt[i] = txbuf[i];
+  }
 
   ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
   ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 38000);
@@ -280,15 +293,20 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
   ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 3);  
   ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
 
+  ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
+  ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
   ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
   ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 1125);
   ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
   // ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_OUTPWM);  
   period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
   ir_dev->irtim[1]->ops->setcompare(ir_dev->irtim[1], 1, period_reg);  
-  ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
-  ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
   ir_dev->irtim[1]->ops->enable(ir_dev->irtim[1]);
+
+
+  for(int i = 0 ; i < n ; i++){
+    rcinfo("Send IR-Code: %08x \n", ir_dev->frameFmt[i]);
+  }
 
   return n;
 }
@@ -343,12 +361,6 @@ int stm32_irtim_irtim_initialize(int devno)
 
 
 #if 1
-
-  ir_dev->bitsSndCnt = 0;
-  ir_dev->globalFrameLen = 64;
-  ir_dev->sndOpRdyFlag = 0;
-  ir_dev->sndOpCompleteFlag = 1;
-  ir_dev->frameFmt = 0;
 
 
   /* activate the high current sink capability */
