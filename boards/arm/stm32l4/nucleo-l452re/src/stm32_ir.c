@@ -275,6 +275,7 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
 
   rcinfo("Dummy RC send raw data:%d(size:%d) to device\n", *txbuf, n);
 
+  
   ir_dev->bitsSndCnt = 0;
   ir_dev->globalFrameLen = n * 32;
   ir_dev->sndOpRdyFlag = 0;
@@ -296,7 +297,7 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
   ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
   ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
   ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
-  ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 1125);
+  ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 1300);
   ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
   // ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_OUTPWM);  
   period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);

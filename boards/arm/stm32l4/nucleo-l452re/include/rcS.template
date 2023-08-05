@@ -1,0 +1,3 @@
+echo "mount sd card"
+rcsim
+sleep 1
