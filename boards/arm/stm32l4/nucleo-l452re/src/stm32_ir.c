@@ -133,6 +133,7 @@ static const struct lirc_ops_s g_stm32_irtim_ops =
  * Private Functions
  ****************************************************************************/
 
+uint32_t flag = 0;
 
 static int irtim_isr(int irq, FAR void *context, FAR void *arg)
 {
@@ -156,7 +157,7 @@ static int irtim_isr(int irq, FAR void *context, FAR void *arg)
     frameFmt = ir_dev->frameFmt[ir_dev->cursor];
     bit_msg = (frameFmt >> ir_dev->wordBitsSndCnt) & 1;
 
-
+#if 1
     if (bit_msg == 1)
     {
       ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
@@ -165,6 +166,19 @@ static int irtim_isr(int irq, FAR void *context, FAR void *arg)
     {
       ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
     }
+
+#else
+    if (flag == 1)
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
+      flag = 0;
+    }
+    else
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO); 
+      flag = 1; 
+    }
+#endif
 
     ir_dev->bitsSndCnt++;
     ir_dev->wordBitsSndCnt++;
@@ -261,6 +275,785 @@ static int stm32_irtim_s_rx_carrier_range(FAR struct lirc_lowerhalf_s *lower,
   return 0;
 }
 
+// #define PHILIPS_MODE   1
+// #define HAIR_MODE   1
+#define GREE_MODE   1
+
+#if defined(PHILIPS_MODE)
+#define RAW_DATA_LEN     52 
+uint32_t test_ir_raw[RAW_DATA_LEN][2] = {
+		{ 3594, 1 }, 
+		{ 7143, 0 }, 
+		{ 526, 1 }, 
+		{ 701, 0 }, 
+		{ 568, 1 }, 
+		{ 1648, 0 }, 
+		{ 616, 1 }, 
+		{ 628, 0 }, 
+		{ 601, 1 }, 
+		{ 622, 0 }, 
+		{ 577, 1 }, 
+		{ 650, 0 }, 
+		{ 548, 1 }, 
+		{ 1683, 0 }, 
+		{ 600, 1 }, 
+		{ 588, 0 }, 
+		{ 641, 1 }, 
+		{ 622, 0 }, 
+		{ 575, 1 }, 
+		{ 652, 0 }, 
+		{ 525, 1 }, 
+		{ 700, 0 }, 
+		{ 569, 1 }, 
+		{ 658, 0 }, 
+		{ 595, 1 }, 
+		{ 1639, 0 }, 
+		{ 599, 1 }, 
+		{ 628, 0 }, 
+		{ 598, 1 }, 
+		{ 1630, 0 }, 
+		{ 603, 1 }, 
+		{ 604, 0 }, 
+		{ 621, 1 }, 
+		{ 628, 0 }, 
+		{ 600, 1 }, 
+		{ 1626, 0 }, 
+		{ 604, 1 }, 
+		{ 604, 0 }, 
+		{ 624, 1 }, 
+		{ 1626, 0 }, 
+		{ 509, 1 }, 
+		{ 631, 0 }, 
+		{ 625, 1 }, 
+		{ 602, 0 }, 
+		{ 624, 1 }, 
+		{ 626, 0 }, 
+		{ 602, 1 }, 
+		{ 625, 0 }, 
+		{ 602, 1 }, 
+		{ 621, 0 }, 
+		{ 213, 1 }, 
+		{ 50, 0 }, 
+};
+
+static void stm32_irtim_txworker(FAR void *arg)
+{
+  irqstate_t flags = 0;
+  uint32_t period_reg;
+
+  struct stm32_irtim_dev_s *ir_dev = (struct stm32_irtim_dev_s *)arg;
+
+  rcinfo("txworker RC send raw data len: %d\n", RAW_DATA_LEN);
+
+
+
+
+  // ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
+  // ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
+  ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
+  // ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 3000);
+  ir_dev->irtim[1]->ops->setclock(ir_dev->irtim[1], 2*1000*1000); // 2MHz --> t=0.5 micro-second
+  ir_dev->irtim[1]->ops->setperiod(ir_dev->irtim[1], 333*2); // 333 micro-senond
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+  period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
+  ir_dev->irtim[1]->ops->setcompare(ir_dev->irtim[1], 1, period_reg);  
+  ir_dev->irtim[1]->ops->enable(ir_dev->irtim[1]);
+
+  ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
+  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 42000);
+  period_reg = ir_dev->irtim[0]->ops->getperiod(ir_dev->irtim[0]);
+  ir_dev->irtim[0]->ops->setchannel(ir_dev->irtim[0], 1, STM32L4_TIM_CH_OUTPWM);  
+  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg * 0.4);  
+  ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
+
+  flags = enter_critical_section();
+
+  for(int i = 0; i < RAW_DATA_LEN; i++){
+    if (test_ir_raw[i][1])
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
+    }
+    else
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+    }
+    up_udelay(test_ir_raw[i][0]);
+  }
+
+  leave_critical_section(flags);
+
+  rcinfo("txworker RC send done\n");
+
+  ir_dev->sndOpCompleteFlag = 0x01;
+
+  /* TIM IT Disable */
+  ir_dev->irtim[1]->ops->disableint(ir_dev->irtim[1], 0);
+  ir_dev->sndOpRdyFlag = 0;
+  ir_dev->bitsSndCnt = 0;
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_DISABLED);  
+
+  /* TIM Disable */
+  ir_dev->irtim[1]->ops->disable(ir_dev->irtim[1]);
+
+}
+
+#elif defined(MIDEA_MODE)
+#define RAW_DATA_LEN     100 
+uint32_t test_ir_raw[RAW_DATA_LEN][2] = {
+		{ 8455, 1 }, 
+		{ 4167, 0 }, 
+		{ 560, 1 }, 
+		{ 1537, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 484, 0 }, 
+		{ 563, 1 }, 
+		{ 486, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 486, 0 }, 
+		{ 562, 1 }, 
+		{ 485, 0 }, 
+		{ 564, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 564, 1 }, 
+		{ 1534, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 563, 1 }, 
+		{ 1534, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 562, 1 }, 
+		{ 1534, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 562, 1 }, 
+		{ 1534, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 484, 0 }, 
+		{ 563, 1 }, 
+		{ 484, 0 }, 
+		{ 563, 1 }, 
+		{ 484, 0 }, 
+		{ 553, 1 }, 
+		{ 497, 0 }, 
+		{ 557, 1 }, 
+		{ 490, 0 }, 
+		{ 546, 1 }, 
+		{ 502, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 563, 1 }, 
+		{ 1534, 0 }, 
+		{ 562, 1 }, 
+		{ 1535, 0 }, 
+		{ 561, 1 }, 
+		{ 1533, 0 }, 
+		{ 564, 1 }, 
+		{ 1534, 0 }, 
+		{ 562, 1 }, 
+		{ 1534, 0 }, 
+		{ 550, 1 }, 
+		{ 1546, 0 }, 
+		{ 563, 1 }, 
+		{ 1533, 0 }, 
+		{ 563, 1 }, 
+		{ 486, 0 }, 
+		{ 541, 1 }, 
+		{ 505, 0 }, 
+		{ 563, 1 }, 
+		{ 485, 0 }, 
+		{ 562, 1 }, 
+		{ 486, 0 }, 
+		{ 562, 1 }, 
+		{ 485, 0 }, 
+		{ 547, 1 }, 
+		{ 501, 0 }, 
+		{ 562, 1 }, 
+		{ 485, 0 }, 
+		{ 540, 1 }, 
+		{ 508, 0 }, 
+		{ 540, 1 }, 
+		{ 1556, 0 }, 
+		{ 541, 1 }, 
+		{ 1557, 0 }, 
+		{ 540, 1 }, 
+		{ 1557, 0 }, 
+		{ 540, 1 }, 
+		{ 1556, 0 }, 
+		{ 562, 1 }, 
+		{ 1533, 0 }, 
+		{ 541, 1 }, 
+		{ 1557, 0 }, 
+		{ 540, 1 }, 
+		{ 50, 0 }, 
+};
+
+
+
+static void stm32_irtim_txworker(FAR void *arg)
+{
+  irqstate_t flags = 0;
+  uint32_t period_reg;
+
+  struct stm32_irtim_dev_s *ir_dev = (struct stm32_irtim_dev_s *)arg;
+
+  rcinfo("txworker RC send raw data len: %d\n", RAW_DATA_LEN);
+
+
+
+
+  // ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
+  // ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
+  ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
+  // ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 3000);
+  ir_dev->irtim[1]->ops->setclock(ir_dev->irtim[1], 2*1000*1000); // 2MHz --> t=0.5 micro-second
+  ir_dev->irtim[1]->ops->setperiod(ir_dev->irtim[1], 333*2); // 333 micro-senond
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+  period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
+  ir_dev->irtim[1]->ops->setcompare(ir_dev->irtim[1], 1, period_reg);  
+  ir_dev->irtim[1]->ops->enable(ir_dev->irtim[1]);
+
+  ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
+  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 38000);
+  period_reg = ir_dev->irtim[0]->ops->getperiod(ir_dev->irtim[0]);
+  ir_dev->irtim[0]->ops->setchannel(ir_dev->irtim[0], 1, STM32L4_TIM_CH_OUTPWM);  
+  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 2);  
+  ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
+
+  flags = enter_critical_section();
+
+  for(int i = 0; i < RAW_DATA_LEN; i++){
+    if (test_ir_raw[i][1])
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
+    }
+    else
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+    }
+    up_udelay(test_ir_raw[i][0]);
+  }
+
+  leave_critical_section(flags);
+
+  rcinfo("txworker RC send done\n");
+
+  ir_dev->sndOpCompleteFlag = 0x01;
+
+  /* TIM IT Disable */
+  ir_dev->irtim[1]->ops->disableint(ir_dev->irtim[1], 0);
+  ir_dev->sndOpRdyFlag = 0;
+  ir_dev->bitsSndCnt = 0;
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_DISABLED);  
+
+  /* TIM Disable */
+  ir_dev->irtim[1]->ops->disable(ir_dev->irtim[1]);
+
+}
+
+#elif  defined(GREE_MODE)
+#define RAW_DATA_LEN     280 
+uint32_t test_ir_raw[RAW_DATA_LEN][2] = {
+		{ 8509, 1 }, 
+		{ 4229, 0 }, 
+		{ 617, 1 }, 
+		{ 1535, 0 }, 
+		{ 616, 1 }, 
+		{ 495, 0 }, 
+		{ 617, 1 }, 
+		{ 520, 0 }, 
+		{ 617, 1 }, 
+		{ 1535, 0 }, 
+		{ 616, 1 }, 
+		{ 495, 0 }, 
+		{ 617, 1 }, 
+		{ 520, 0 }, 
+		{ 617, 1 }, 
+		{ 495, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 617, 1 }, 
+		{ 521, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 617, 1 }, 
+		{ 1535, 0 }, 
+		{ 616, 1 }, 
+		{ 521, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 495, 0 }, 
+		{ 616, 1 }, 
+		{ 521, 0 }, 
+		{ 616, 1 }, 
+		{ 495, 0 }, 
+		{ 617, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 521, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 1560, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 496, 0 }, 
+		{ 616, 1 }, 
+		{ 523, 0 }, 
+		{ 614, 1 }, 
+		{ 497, 0 }, 
+		{ 592, 1 }, 
+		{ 521, 0 }, 
+		{ 591, 1 }, 
+		{ 573, 0 }, 
+		{ 563, 1 }, 
+		{ 1586, 0 }, 
+		{ 564, 1 }, 
+		{ 548, 0 }, 
+		{ 564, 1 }, 
+		{ 1612, 0 }, 
+		{ 543, 1 }, 
+		{ 569, 0 }, 
+		{ 566, 1 }, 
+		{ 547, 0 }, 
+		{ 568, 1 }, 
+		{ 1583, 0 }, 
+		{ 595, 1 }, 
+		{ 543, 0 }, 
+		{ 595, 1 }, 
+		{ 18792, 0 }, 
+		{ 624, 1 }, 
+		{ 539, 0 }, 
+		{ 598, 1 }, 
+		{ 515, 0 }, 
+		{ 595, 1 }, 
+		{ 517, 0 }, 
+		{ 594, 1 }, 
+		{ 543, 0 }, 
+		{ 592, 1 }, 
+		{ 497, 0 }, 
+		{ 613, 1 }, 
+		{ 522, 0 }, 
+		{ 588, 1 }, 
+		{ 522, 0 }, 
+		{ 615, 1 }, 
+		{ 497, 0 }, 
+		{ 615, 1 }, 
+		{ 496, 0 }, 
+		{ 614, 1 }, 
+		{ 522, 0 }, 
+		{ 614, 1 }, 
+		{ 498, 0 }, 
+		{ 593, 1 }, 
+		{ 519, 0 }, 
+		{ 596, 1 }, 
+		{ 540, 0 }, 
+		{ 613, 1 }, 
+		{ 499, 0 }, 
+		{ 611, 1 }, 
+		{ 1539, 0 }, 
+		{ 590, 1 }, 
+		{ 547, 0 }, 
+		{ 590, 1 }, 
+		{ 523, 0 }, 
+		{ 588, 1 }, 
+		{ 523, 0 }, 
+		{ 588, 1 }, 
+		{ 549, 0 }, 
+		{ 588, 1 }, 
+		{ 525, 0 }, 
+		{ 587, 1 }, 
+		{ 525, 0 }, 
+		{ 586, 1 }, 
+		{ 550, 0 }, 
+		{ 586, 1 }, 
+		{ 527, 0 }, 
+		{ 585, 1 }, 
+		{ 528, 0 }, 
+		{ 584, 1 }, 
+		{ 553, 0 }, 
+		{ 584, 1 }, 
+		{ 528, 0 }, 
+		{ 583, 1 }, 
+		{ 530, 0 }, 
+		{ 582, 1 }, 
+		{ 555, 0 }, 
+		{ 581, 1 }, 
+		{ 1588, 0 }, 
+		{ 562, 1 }, 
+		{ 1589, 0 }, 
+		{ 561, 1 }, 
+		{ 1590, 0 }, 
+		{ 561, 1 }, 
+		{ 1614, 0 }, 
+		{ 561, 1 }, 
+		{ 37650, 0 }, 
+		{ 8452, 1 }, 
+		{ 4286, 0 }, 
+		{ 560, 1 }, 
+		{ 1590, 0 }, 
+		{ 560, 1 }, 
+		{ 552, 0 }, 
+		{ 560, 1 }, 
+		{ 577, 0 }, 
+		{ 559, 1 }, 
+		{ 1591, 0 }, 
+		{ 560, 1 }, 
+		{ 552, 0 }, 
+		{ 560, 1 }, 
+		{ 577, 0 }, 
+		{ 559, 1 }, 
+		{ 553, 0 }, 
+		{ 559, 1 }, 
+		{ 553, 0 }, 
+		{ 559, 1 }, 
+		{ 578, 0 }, 
+		{ 559, 1 }, 
+		{ 553, 0 }, 
+		{ 559, 1 }, 
+		{ 553, 0 }, 
+		{ 558, 1 }, 
+		{ 1592, 0 }, 
+		{ 559, 1 }, 
+		{ 578, 0 }, 
+		{ 559, 1 }, 
+		{ 553, 0 }, 
+		{ 558, 1 }, 
+		{ 554, 0 }, 
+		{ 558, 1 }, 
+		{ 579, 0 }, 
+		{ 558, 1 }, 
+		{ 554, 0 }, 
+		{ 557, 1 }, 
+		{ 555, 0 }, 
+		{ 558, 1 }, 
+		{ 579, 0 }, 
+		{ 558, 1 }, 
+		{ 554, 0 }, 
+		{ 558, 1 }, 
+		{ 555, 0 }, 
+		{ 557, 1 }, 
+		{ 1618, 0 }, 
+		{ 557, 1 }, 
+		{ 555, 0 }, 
+		{ 557, 1 }, 
+		{ 556, 0 }, 
+		{ 557, 1 }, 
+		{ 580, 0 }, 
+		{ 556, 1 }, 
+		{ 556, 0 }, 
+		{ 556, 1 }, 
+		{ 556, 0 }, 
+		{ 556, 1 }, 
+		{ 580, 0 }, 
+		{ 557, 1 }, 
+		{ 1594, 0 }, 
+		{ 556, 1 }, 
+		{ 1596, 0 }, 
+		{ 555, 1 }, 
+		{ 1596, 0 }, 
+		{ 555, 1 }, 
+		{ 581, 0 }, 
+		{ 556, 1 }, 
+		{ 556, 0 }, 
+		{ 555, 1 }, 
+		{ 1596, 0 }, 
+		{ 555, 1 }, 
+		{ 583, 0 }, 
+		{ 554, 1 }, 
+		{ 18860, 0 }, 
+		{ 555, 1 }, 
+		{ 582, 0 }, 
+		{ 554, 1 }, 
+		{ 558, 0 }, 
+		{ 554, 1 }, 
+		{ 558, 0 }, 
+		{ 553, 1 }, 
+		{ 584, 0 }, 
+		{ 553, 1 }, 
+		{ 559, 0 }, 
+		{ 553, 1 }, 
+		{ 559, 0 }, 
+		{ 553, 1 }, 
+		{ 584, 0 }, 
+		{ 553, 1 }, 
+		{ 560, 0 }, 
+		{ 551, 1 }, 
+		{ 560, 0 }, 
+		{ 552, 1 }, 
+		{ 586, 0 }, 
+		{ 552, 1 }, 
+		{ 560, 0 }, 
+		{ 552, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 586, 0 }, 
+		{ 551, 1 }, 
+		{ 562, 0 }, 
+		{ 550, 1 }, 
+		{ 561, 0 }, 
+		{ 550, 1 }, 
+		{ 587, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 586, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 586, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 1600, 0 }, 
+		{ 550, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 586, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 561, 0 }, 
+		{ 551, 1 }, 
+		{ 1625, 0 }, 
+		{ 550, 1 }, 
+		{ 1622, 0 }, 
+		{ 529, 1 }, 
+		{ 584, 0 }, 
+		{ 528, 1 }, 
+		{ 609, 0 }, 
+		{ 529, 1 }, 
+		{ 50, 0 }, 
+};
+
+
+
+
+
+static void stm32_irtim_txworker(FAR void *arg)
+{
+  irqstate_t flags = 0;
+  uint32_t period_reg;
+
+  struct stm32_irtim_dev_s *ir_dev = (struct stm32_irtim_dev_s *)arg;
+
+  rcinfo("txworker RC send raw data len: %d\n", RAW_DATA_LEN);
+
+
+
+
+  // ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
+  // ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
+  ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
+  // ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 3000);
+  ir_dev->irtim[1]->ops->setclock(ir_dev->irtim[1], 2*1000*1000); // 2MHz --> t=0.5 micro-second
+  ir_dev->irtim[1]->ops->setperiod(ir_dev->irtim[1], 333*2); // 333 micro-senond
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+  period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
+  ir_dev->irtim[1]->ops->setcompare(ir_dev->irtim[1], 1, period_reg);  
+  ir_dev->irtim[1]->ops->enable(ir_dev->irtim[1]);
+
+  ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
+  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 38000);
+  period_reg = ir_dev->irtim[0]->ops->getperiod(ir_dev->irtim[0]);
+  ir_dev->irtim[0]->ops->setchannel(ir_dev->irtim[0], 1, STM32L4_TIM_CH_OUTPWM);  
+  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 2);  
+  ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
+
+  flags = enter_critical_section();
+
+  for(int i = 0; i < RAW_DATA_LEN; i++){
+    if (test_ir_raw[i][1])
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
+    }
+    else
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+    }
+    up_udelay(test_ir_raw[i][0]);
+  }
+
+  leave_critical_section(flags);
+
+  rcinfo("txworker RC send done\n");
+
+  ir_dev->sndOpCompleteFlag = 0x01;
+
+  /* TIM IT Disable */
+  ir_dev->irtim[1]->ops->disableint(ir_dev->irtim[1], 0);
+  ir_dev->sndOpRdyFlag = 0;
+  ir_dev->bitsSndCnt = 0;
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_DISABLED);  
+
+  /* TIM Disable */
+  ir_dev->irtim[1]->ops->disable(ir_dev->irtim[1]);
+
+}
+
+#elif defined(HAIR_MODE)
+#define RAW_DATA_LEN     68 
+uint32_t test_ir_raw[RAW_DATA_LEN][2] = {
+		{ 8508, 1 }, 
+		{ 4287, 0 }, 
+		{ 548, 1 }, 
+		{ 534, 0 }, 
+		{ 574, 1 }, 
+		{ 1612, 0 }, 
+		{ 548, 1 }, 
+		{ 527, 0 }, 
+		{ 571, 1 }, 
+		{ 558, 0 }, 
+		{ 547, 1 }, 
+		{ 536, 0 }, 
+		{ 573, 1 }, 
+		{ 1614, 0 }, 
+		{ 544, 1 }, 
+		{ 538, 0 }, 
+		{ 571, 1 }, 
+		{ 559, 0 }, 
+		{ 547, 1 }, 
+		{ 1589, 0 }, 
+		{ 573, 1 }, 
+		{ 558, 0 }, 
+		{ 549, 1 }, 
+		{ 1590, 0 }, 
+		{ 572, 1 }, 
+		{ 1618, 0 }, 
+		{ 546, 1 }, 
+		{ 1590, 0 }, 
+		{ 573, 1 }, 
+		{ 557, 0 }, 
+		{ 546, 1 }, 
+		{ 1590, 0 }, 
+		{ 571, 1 }, 
+		{ 1616, 0 }, 
+		{ 546, 1 }, 
+		{ 536, 0 }, 
+		{ 572, 1 }, 
+		{ 1614, 0 }, 
+		{ 546, 1 }, 
+		{ 1590, 0 }, 
+		{ 573, 1 }, 
+		{ 558, 0 }, 
+		{ 547, 1 }, 
+		{ 1589, 0 }, 
+		{ 551, 1 }, 
+		{ 1634, 0 }, 
+		{ 547, 1 }, 
+		{ 536, 0 }, 
+		{ 571, 1 }, 
+		{ 1615, 0 }, 
+		{ 546, 1 }, 
+		{ 1589, 0 }, 
+		{ 544, 1 }, 
+		{ 584, 0 }, 
+		{ 516, 1 }, 
+		{ 552, 0 }, 
+		{ 541, 1 }, 
+		{ 1640, 0 }, 
+		{ 545, 1 }, 
+		{ 536, 0 }, 
+		{ 569, 1 }, 
+		{ 562, 0 }, 
+		{ 545, 1 }, 
+		{ 1590, 0 }, 
+		{ 570, 1 }, 
+		{ 562, 0 }, 
+		{ 517, 1 }, 
+		{ 50, 0 }, 
+};
+
+
+
+static void stm32_irtim_txworker(FAR void *arg)
+{
+  irqstate_t flags = 0;
+  uint32_t period_reg;
+
+  struct stm32_irtim_dev_s *ir_dev = (struct stm32_irtim_dev_s *)arg;
+
+  rcinfo("txworker RC send raw data len: %d\n", RAW_DATA_LEN);
+
+
+
+
+  // ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
+  // ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
+  ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
+  // ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 3000);
+  ir_dev->irtim[1]->ops->setclock(ir_dev->irtim[1], 2*1000*1000); // 2MHz --> t=0.5 micro-second
+  ir_dev->irtim[1]->ops->setperiod(ir_dev->irtim[1], 333*2); // 333 micro-senond
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+  period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
+  ir_dev->irtim[1]->ops->setcompare(ir_dev->irtim[1], 1, period_reg);  
+  ir_dev->irtim[1]->ops->enable(ir_dev->irtim[1]);
+
+  ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
+  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 38000);
+  period_reg = ir_dev->irtim[0]->ops->getperiod(ir_dev->irtim[0]);
+  ir_dev->irtim[0]->ops->setchannel(ir_dev->irtim[0], 1, STM32L4_TIM_CH_OUTPWM);  
+  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 2);  
+  ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
+
+  flags = enter_critical_section();
+
+  for(int i = 0; i < RAW_DATA_LEN; i++){
+    if (test_ir_raw[i][1])
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_HI);
+    }
+    else
+    {
+      ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
+    }
+    up_udelay(test_ir_raw[i][0]);
+  }
+
+  leave_critical_section(flags);
+
+  rcinfo("txworker RC send done\n");
+
+  ir_dev->sndOpCompleteFlag = 0x01;
+
+  /* TIM IT Disable */
+  ir_dev->irtim[1]->ops->disableint(ir_dev->irtim[1], 0);
+  ir_dev->sndOpRdyFlag = 0;
+  ir_dev->bitsSndCnt = 0;
+  ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_DISABLED);  
+
+  /* TIM Disable */
+  ir_dev->irtim[1]->ops->disable(ir_dev->irtim[1]);
+
+}
+
+
+#endif
+
 static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
                        unsigned *txbuf, unsigned int n)
 {
@@ -275,7 +1068,7 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
 
   rcinfo("Dummy RC send raw data:%d(size:%d) to device\n", *txbuf, n);
 
-  
+#if 0  
   ir_dev->bitsSndCnt = 0;
   ir_dev->globalFrameLen = n * 32;
   ir_dev->sndOpRdyFlag = 0;
@@ -288,16 +1081,18 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
   }
 
   ir_dev->irtim[0]->ops->setmode(ir_dev->irtim[0], STM32L4_TIM_MODE_UP);
-  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 38000);
+  ir_dev->irtim[0]->ops->setfreq(ir_dev->irtim[0], 43300);
   period_reg = ir_dev->irtim[0]->ops->getperiod(ir_dev->irtim[0]);
   ir_dev->irtim[0]->ops->setchannel(ir_dev->irtim[0], 1, STM32L4_TIM_CH_OUTPWM);  
-  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 3);  
+  ir_dev->irtim[0]->ops->setcompare(ir_dev->irtim[0], 1, period_reg / 2);  
   ir_dev->irtim[0]->ops->enable(ir_dev->irtim[0]);
 
   ir_dev->irtim[1]->ops->setisr(ir_dev->irtim[1], irtim_isr, ir_dev, 0);  
   ir_dev->irtim[1]->ops->enableint(ir_dev->irtim[1], 0);
   ir_dev->irtim[1]->ops->setmode(ir_dev->irtim[1], STM32L4_TIM_MODE_UP);
-  ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 1300);
+  // ir_dev->irtim[1]->ops->setfreq(ir_dev->irtim[1], 3000);
+  ir_dev->irtim[1]->ops->setclock(ir_dev->irtim[1], 2*1000*1000); // 2MHz --> t=0.5 micro-second
+  ir_dev->irtim[1]->ops->setperiod(ir_dev->irtim[1], 333*2); // 333 micro-senond
   ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_FORCE_LO);  
   // ir_dev->irtim[1]->ops->setchannel(ir_dev->irtim[1], 1, STM32L4_TIM_CH_OUTPWM);  
   period_reg = ir_dev->irtim[1]->ops->getperiod(ir_dev->irtim[1]);
@@ -309,6 +1104,13 @@ static int stm32_irtim_tx_ir(FAR struct lirc_lowerhalf_s *lower,
     rcinfo("Send IR-Code: %08x \n", ir_dev->frameFmt[i]);
   }
 
+#else
+    DEBUGASSERT(work_available(&ir_dev->work));
+
+    return work_queue(HPWORK, &ir_dev->work,
+                    stm32_irtim_txworker, (FAR void *)ir_dev, 0);
+
+#endif
   return n;
 }
 
