@@ -83,9 +83,21 @@
  * - When the I/O is HIGH value, the LED is on.
  * - When the I/O is LOW, the LED is off.
  */
+/* state red */
+#define GPIO_LD0        (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTA | GPIO_PIN1)
 
+/* state green */
+#define GPIO_LD1        (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTA | GPIO_PIN0)
+                         
+/* state blue */
 #define GPIO_LD2        (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
-                         GPIO_OUTPUT_CLEAR | GPIO_PORTA | GPIO_PIN5)
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTA | GPIO_PIN15)
+
+/* sw led */
+#define GPIO_LD3        (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTB | GPIO_PIN0) 
 
 /* Button definitions *******************************************************/
 
@@ -99,7 +111,7 @@
 #define NUM_IRQBUTTONS  1
 
 #define GPIO_BTN_USER   (GPIO_INPUT | GPIO_FLOAT | GPIO_EXTI | \
-                         GPIO_PORTC | GPIO_PIN13)
+                         GPIO_PORTA | GPIO_PIN10)
 
 /****************************************************************************
  * Public Types

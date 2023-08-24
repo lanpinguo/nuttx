@@ -153,7 +153,10 @@ uint32_t board_userled_initialize(void)
 {
   /* Configure LD2 GPIO for output */
 
+  stm32l4_configgpio(GPIO_LD0);
+  stm32l4_configgpio(GPIO_LD1);
   stm32l4_configgpio(GPIO_LD2);
+  stm32l4_configgpio(GPIO_LD3);
   return BOARD_NLEDS;
 }
 
@@ -163,10 +166,23 @@ uint32_t board_userled_initialize(void)
 
 void board_userled(int led, bool ledon)
 {
-  if (led == BOARD_LD2)
-    {
-      stm32l4_gpiowrite(GPIO_LD2, ledon);
-    }
+  if (led == 0)
+  {
+    stm32l4_gpiowrite(GPIO_LD0, ~ledon);
+  }
+  else if (led == 1)
+  {
+      stm32l4_gpiowrite(GPIO_LD1, ~ledon);
+  }
+  else if (led == 2)
+  {
+      stm32l4_gpiowrite(GPIO_LD2, ~ledon);
+  }
+  else if (led == 3)
+  {
+      stm32l4_gpiowrite(GPIO_LD3, ledon);
+  }
+  
 }
 
 /****************************************************************************
@@ -175,7 +191,10 @@ void board_userled(int led, bool ledon)
 
 void board_userled_all(uint32_t ledset)
 {
-  stm32l4_gpiowrite(GPIO_LD2, (ledset & BOARD_LD2_BIT) != 0);
+  stm32l4_gpiowrite(GPIO_LD0, ~(ledset & BOARD_LD2_BIT) != 0);
+  stm32l4_gpiowrite(GPIO_LD1, ~(ledset & BOARD_LD2_BIT) != 0);
+  stm32l4_gpiowrite(GPIO_LD2, ~(ledset & BOARD_LD2_BIT) != 0);
+  stm32l4_gpiowrite(GPIO_LD3, (ledset & BOARD_LD2_BIT) != 0);
 }
 
 /****************************************************************************

@@ -275,9 +275,9 @@ static int stm32_irtim_s_rx_carrier_range(FAR struct lirc_lowerhalf_s *lower,
   return 0;
 }
 
-// #define PHILIPS_MODE   1
+#define PHILIPS_MODE   1
 // #define HAIR_MODE   1
-#define GREE_MODE   1
+// #define GREE_MODE   1
 
 #if defined(PHILIPS_MODE)
 #define RAW_DATA_LEN     52 

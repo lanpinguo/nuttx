@@ -148,7 +148,7 @@
 /* LED index values for use with board_userled() */
 
 #define BOARD_LD2         0
-#define BOARD_NLEDS       1
+#define BOARD_NLEDS       4
 
 /* LED bits for use with board_userled_all() */
 
