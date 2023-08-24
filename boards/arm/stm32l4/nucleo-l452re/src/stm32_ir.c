@@ -1173,8 +1173,8 @@ int stm32_irtim_irtim_initialize(int devno)
   putreg32(reg, STM32L4_SYSCFG_CFGR1);
 
   stm32l4_configgpio(GPIO_IR_OUT);
-  stm32l4_configgpio(GPIO_TIM15_CH1OUT);
-  stm32l4_configgpio(GPIO_TIM16_CH1OUT);
+//   stm32l4_configgpio(GPIO_TIM15_CH1OUT);
+//   stm32l4_configgpio(GPIO_TIM16_CH1OUT);
 
 
   ir_dev->irtim[0] = stm32l4_tim_init(15);

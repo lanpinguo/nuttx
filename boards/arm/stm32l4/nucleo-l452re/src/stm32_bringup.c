@@ -33,6 +33,15 @@
 #include <nuttx/board.h>
 #include <nuttx/fs/fs.h>
 
+#if defined(CONFIG_SENSORS_SHT21)
+#include <nuttx/sensors/sht21.h>
+#endif
+
+#if defined(CONFIG_SENSORS_BH1750FVI)
+#include <nuttx/sensors/bh1750fvi.h>
+#endif
+
+
 #include "stm32l4_i2c.h"
 #include "nucleo-l452re.h"
 
@@ -118,6 +127,16 @@ int stm32_bringup(void)
           i2cerr("ERROR: Failed to register I2C1 device: %d\n", ret);
         }
     }
+
+
+  #if defined(CONFIG_SENSORS_SHT21)
+  sht21_register("/dev/xht21", i2c, 0x40);
+  #endif
+  
+  #if defined(CONFIG_SENSORS_BH1750FVI)
+  bh1750fvi_register("/dev/bh1750", i2c, 0x23);
+  #endif
+
 #endif
 
 #ifdef CONFIG_DAC
@@ -137,6 +156,9 @@ int stm32_bringup(void)
 
   stm32l4_ir_setup();
 #endif
+
+uint32_t board_sensors_initialize(void);
+
 
   UNUSED(ret);
   return OK;
