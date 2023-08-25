@@ -228,6 +228,13 @@
 #define GPIO_IR_OUT        GPIO_IR_OUT_2
 // #define GPIO_TIM15_CH1OUT  GPIO_TIM15_CH1OUT_2
 // #define GPIO_TIM16_CH1OUT  GPIO_TIM16_CH1OUT_2
+
+/* Relay-IO */
+#define GPIO_RELAY_10A_0   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTB | GPIO_PIN1) 
+#define GPIO_RELAY_16A_0   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
+                         GPIO_OUTPUT_CLEAR | GPIO_PORTB | GPIO_PIN2) 
+
 /****************************************************************************
  * Public Data
  ****************************************************************************/

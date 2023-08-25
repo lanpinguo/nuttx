@@ -69,12 +69,14 @@ uint32_t board_button_initialize(void)
 
 uint32_t board_buttons(void)
 {
-  /* Check that state of each USER button. A LOW value means that the key is
+  /* Check that state of each USER button. A HIGH value means that the key is
    * pressed.
    */
-
+  /* use btn driver to manage PIR sensor here, a high value means detect a body 
+    movement */
   bool released = stm32l4_gpioread(GPIO_BTN_USER);
-  return !released;
+
+  return released ? 1:0;
 }
 
 /****************************************************************************

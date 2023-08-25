@@ -168,15 +168,15 @@ void board_userled(int led, bool ledon)
 {
   if (led == 0)
   {
-    stm32l4_gpiowrite(GPIO_LD0, ~ledon);
+    stm32l4_gpiowrite(GPIO_LD0, !ledon);
   }
   else if (led == 1)
   {
-      stm32l4_gpiowrite(GPIO_LD1, ~ledon);
+      stm32l4_gpiowrite(GPIO_LD1, !ledon);
   }
   else if (led == 2)
   {
-      stm32l4_gpiowrite(GPIO_LD2, ~ledon);
+      stm32l4_gpiowrite(GPIO_LD2, !ledon);
   }
   else if (led == 3)
   {
@@ -191,10 +191,20 @@ void board_userled(int led, bool ledon)
 
 void board_userled_all(uint32_t ledset)
 {
-  stm32l4_gpiowrite(GPIO_LD0, ~(ledset & BOARD_LD2_BIT) != 0);
-  stm32l4_gpiowrite(GPIO_LD1, ~(ledset & BOARD_LD2_BIT) != 0);
-  stm32l4_gpiowrite(GPIO_LD2, ~(ledset & BOARD_LD2_BIT) != 0);
-  stm32l4_gpiowrite(GPIO_LD3, (ledset & BOARD_LD2_BIT) != 0);
+  stm32l4_gpiowrite(GPIO_LD0, (ledset & (1<<0)) ? 0 : 1);
+  stm32l4_gpiowrite(GPIO_LD1, (ledset & (1<<1)) ? 0 : 1);
+  stm32l4_gpiowrite(GPIO_LD2, (ledset & (1<<2)) ? 0 : 1);
+  stm32l4_gpiowrite(GPIO_LD3, (ledset & (1<<3)) ? 1 : 0);
+}
+
+
+/****************************************************************************
+ * Name: board_userled_getall
+ ****************************************************************************/
+
+void board_userled_getall(uint32_t *ledset)
+{
+
 }
 
 /****************************************************************************

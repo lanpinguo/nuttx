@@ -41,6 +41,9 @@
 #include <nuttx/sensors/bh1750fvi.h>
 #endif
 
+#ifdef CONFIG_RELAY_GPIO
+uint32_t board_relay_io_initialize(void);
+#endif
 
 #include "stm32l4_i2c.h"
 #include "nucleo-l452re.h"
@@ -109,6 +112,27 @@ int stm32_bringup(void)
 #endif
 #endif /* CONFIG_INPUT_BUTTONS */
 
+
+#if defined(CONFIG_USERLED) && !defined(CONFIG_ARCH_LEDS)
+#ifdef CONFIG_USERLED_LOWER
+  /* Register the LED driver */
+
+  ret = userled_lower_initialize("/dev/userleds");
+  if (ret != OK)
+    {
+      syslog(LOG_ERR, "ERROR: userled_lower_initialize() failed: %d\n", ret);
+    }
+#else
+  /* Enable USER LED support for some other purpose */
+
+  board_userled_initialize();
+#endif /* CONFIG_USERLED_LOWER */
+#endif /* CONFIG_USERLED && !CONFIG_ARCH_LEDS */
+
+#ifdef CONFIG_RELAY_GPIO
+  board_relay_io_initialize();
+#endif
+
 #ifdef HAVE_I2C_DRIVER
   /* Get the I2C lower half instance */
 
@@ -156,8 +180,6 @@ int stm32_bringup(void)
 
   stm32l4_ir_setup();
 #endif
-
-uint32_t board_sensors_initialize(void);
 
 
   UNUSED(ret);

@@ -110,7 +110,7 @@
 #define MAX_IRQBUTTON   BUTTON_USER
 #define NUM_IRQBUTTONS  1
 
-#define GPIO_BTN_USER   (GPIO_INPUT | GPIO_FLOAT | GPIO_EXTI | \
+#define GPIO_BTN_USER   (GPIO_INPUT | GPIO_PULLDOWN | GPIO_EXTI | \
                          GPIO_PORTA | GPIO_PIN10)
 
 /****************************************************************************

@@ -48,4 +48,8 @@ ifeq ($(CONFIG_STM32L4_IRTIM),y)
 CSRCS += stm32_ir.c
 endif
 
+ifeq ($(CONFIG_RELAY_GPIO),y)
+CSRCS += stm32_relay_io.c
+endif
+
 include $(TOPDIR)/boards/Board.mk

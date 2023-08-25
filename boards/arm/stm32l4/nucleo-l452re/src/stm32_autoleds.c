@@ -51,7 +51,10 @@ void board_autoled_initialize(void)
 {
   /* Configure LD2 GPIO for output */
 
+  stm32l4_configgpio(GPIO_LD0);
+  stm32l4_configgpio(GPIO_LD1);
   stm32l4_configgpio(GPIO_LD2);
+  stm32l4_configgpio(GPIO_LD3);
 }
 
 /****************************************************************************
@@ -60,10 +63,25 @@ void board_autoled_initialize(void)
 
 void board_autoled_on(int led)
 {
-  if (led == 1)
-    {
-      stm32l4_gpiowrite(GPIO_LD2, true);
-    }
+
+  switch (led)
+  {
+  case 0:
+      stm32l4_gpiowrite(GPIO_LD0, false);
+    break;
+  case 1:
+      stm32l4_gpiowrite(GPIO_LD1, false);
+    break;
+  case 2:
+      stm32l4_gpiowrite(GPIO_LD2, false);
+    break;
+  case 3:
+      stm32l4_gpiowrite(GPIO_LD3, true);
+    break;
+  
+  default:
+    break;
+  }  
 }
 
 /****************************************************************************
@@ -72,10 +90,25 @@ void board_autoled_on(int led)
 
 void board_autoled_off(int led)
 {
-  if (led == 1)
-    {
-      stm32l4_gpiowrite(GPIO_LD2, false);
-    }
+
+  switch (led)
+  {
+  case 0:
+      stm32l4_gpiowrite(GPIO_LD0, true);
+    break;
+  case 1:
+      stm32l4_gpiowrite(GPIO_LD1, true);
+    break;
+  case 2:
+      stm32l4_gpiowrite(GPIO_LD2, true);
+    break;
+  case 3:
+      stm32l4_gpiowrite(GPIO_LD3, false);
+    break;
+  
+  default:
+    break;
+  }  
 }
 
 #endif /* CONFIG_ARCH_LEDS */
