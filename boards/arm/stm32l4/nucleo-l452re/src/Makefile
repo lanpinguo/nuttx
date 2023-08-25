@@ -52,4 +52,8 @@ ifeq ($(CONFIG_RELAY_GPIO),y)
 CSRCS += stm32_relay_io.c
 endif
 
+ifeq ($(CONFIG_IEEE802154_CC2520),y)
+  CSRCS += stm32_cc2520.c
+endif
+
 include $(TOPDIR)/boards/Board.mk

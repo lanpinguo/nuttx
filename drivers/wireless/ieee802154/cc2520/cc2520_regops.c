@@ -361,7 +361,7 @@ int cc2520_hw_init(struct cc2520_radio_s *priv)
 	if (ret)
 		goto err_ret;
 
-	if (state != STATE_IDLE){
+	if ((state & (1<<2)) == 0){
         wlerr("cc2520 state error!\n");
 		return -EINVAL;
     }

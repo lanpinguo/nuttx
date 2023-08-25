@@ -131,6 +131,16 @@ void stm32l4_spi1select(struct spi_dev_s *dev,
       stm32l4_gpiowrite(GPIO_SPI_CS_SD_CARD, !selected);
     }
 #endif
+
+  switch (devid)
+  {
+  case SPIDEV_IEEE802154(0):
+    stm32l4_gpiowrite(GPIO_WIRELESS_CS_0, !selected);
+    break;
+  default:
+    break;
+  };
+
 }
 
 uint8_t stm32l4_spi1status(struct spi_dev_s *dev, uint32_t devid)

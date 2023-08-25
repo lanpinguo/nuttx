@@ -118,7 +118,7 @@
 
 #define GPIO_SPI1_MISO   GPIO_SPI1_MISO_1
 #define GPIO_SPI1_MOSI   GPIO_SPI1_MOSI_1
-#define GPIO_SPI1_SCK    GPIO_SPI1_SCK_1
+#define GPIO_SPI1_SCK    GPIO_SPI1_SCK_2
 
 #define GPIO_SPI2_MISO   GPIO_SPI2_MISO_1
 #define GPIO_SPI2_MOSI   GPIO_SPI2_MOSI_1
@@ -234,6 +234,20 @@
                          GPIO_OUTPUT_CLEAR | GPIO_PORTB | GPIO_PIN1) 
 #define GPIO_RELAY_16A_0   (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHz | \
                          GPIO_OUTPUT_CLEAR | GPIO_PORTB | GPIO_PIN2) 
+
+
+/* Wireless CC2520*/
+#define GPIO_WIRELESS_INT (GPIO_INPUT|GPIO_FLOAT|GPIO_EXTI|GPIO_PORTA|GPIO_PIN11)
+
+#define GPIO_WIRELESS_RST (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | \
+                         GPIO_OUTPUT_SET | GPIO_PORTA | GPIO_PIN12)
+
+#define GPIO_WIRELESS_VREG (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHz | \
+                         GPIO_OUTPUT_SET | GPIO_PORTA | GPIO_PIN8)
+
+/* SPI chip selects */
+#define GPIO_WIRELESS_CS_0  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz|\
+                             GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
 
 /****************************************************************************
  * Public Data

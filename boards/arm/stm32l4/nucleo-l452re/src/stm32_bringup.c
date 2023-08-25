@@ -181,6 +181,16 @@ int stm32_bringup(void)
   stm32l4_ir_setup();
 #endif
 
+#ifdef CONFIG_IEEE802154_CC2520
+  /* Configure CC2520 wireless */
+
+  ret = stm32_cc2520_initialize();
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: stm32_cc2520_initialize() failed:"
+                      " %d\n", ret);
+    }
+#endif
 
   UNUSED(ret);
   return OK;

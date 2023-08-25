@@ -69,3 +69,18 @@ int board_app_initialize(uintptr_t arg)
   return OK;
 #endif
 }
+
+
+/****************************************************************************
+ * Name: arm_netinitialize
+ *
+ * Description:
+ *   Dummy function expected to start-up logic.
+ *
+ ****************************************************************************/
+
+#if defined(CONFIG_NET) && !defined(CONFIG_NETDEV_LATEINIT)
+void arm_netinitialize(void)
+{
+}
+#endif
