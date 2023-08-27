@@ -110,7 +110,7 @@
 
 /* The number of ADC channels in the conversion list */
 
-#define ADC1_NCHANNELS 4
+#define ADC1_NCHANNELS 3
 
 #if ADC1_NCHANNELS > 1 && !defined(CONFIG_STM32L4_ADC1_DMA)
 #  warning "Reading multiple channels without DMA might cause overruns!"
@@ -127,7 +127,7 @@ static const uint8_t g_chanlist[ADC1_NCHANNELS] =
   ADC1_INTERNAL_VREFINT_CHANNEL,
   ADC1_INTERNAL_TSENSE_CHANNEL,
   ADC1_INTERNAL_VBATDIV3_CHANNEL,
-  ADC1_MEASURE_CHANNEL,
+  // ADC1_MEASURE_CHANNEL,
 };
 
 /* Configurations of pins used by each ADC channel */
@@ -137,7 +137,7 @@ static const uint32_t g_pinlist[ADC1_NCHANNELS] =
   0xffffffffu,
   0xffffffffu,
   0xffffffffu,
-  GPIO_MEASURE_ADC,
+  // GPIO_MEASURE_ADC,
 };
 
 /****************************************************************************

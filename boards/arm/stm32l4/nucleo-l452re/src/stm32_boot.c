@@ -33,6 +33,8 @@
 
 #include <arch/board/board.h>
 
+extern void stm32l4_spiinitialize(void);
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -55,6 +57,12 @@ void stm32l4_board_initialize(void)
 
   board_autoled_initialize();
 #endif
+
+#if defined(CONFIG_STM32L4_SPI1) || defined(CONFIG_STM32L4_SPI2) || \
+                                    defined(CONFIG_STM32L4_SPI3)
+  stm32l4_spiinitialize();
+#endif
+
 }
 
 /****************************************************************************

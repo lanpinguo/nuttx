@@ -101,10 +101,6 @@ void cc2520_irqwork_rx(FAR struct ieee802154_radio_s *radio)
 	ret = cc2520_read_register(dev, CC2520_EXCFLAG1, &reg_val);
 	if (ret)
 		return;
-    /* clear interrupt status */
-	cc2520_write_register(dev, CC2520_EXCFLAG0, 0);
-	cc2520_write_register(dev, CC2520_EXCFLAG1, 0);
-	cc2520_write_register(dev, CC2520_EXCFLAG2, 0);
 
 
     do{
@@ -224,6 +220,11 @@ flush:
         cc2520_cmd_strobe(dev, CC2520_CMD_SFLUSHRX);
         dev->stat.flush_cnt++;
     }
+
+    /* clear interrupt status */
+	cc2520_write_register(dev, CC2520_EXCFLAG0, 0);
+	cc2520_write_register(dev, CC2520_EXCFLAG1, 0);
+	cc2520_write_register(dev, CC2520_EXCFLAG2, 0);
 
     return;
 }

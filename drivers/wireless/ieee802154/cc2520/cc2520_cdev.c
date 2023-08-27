@@ -84,6 +84,7 @@ typedef enum CC2520_CFG_E{
     CC2520_CFG_STROBE,
     CC2520_CFG_MOD_POLL,
     CC2520_CFG_MOD_INT,
+    CC2520_CFG_INT_CLR,
 }CC2520_CFG_e;
 
 /****************************************************************************
@@ -392,6 +393,11 @@ static int cc2520_cdev_ioctl(FAR struct file *filep,
     case CC2520_CFG_STROBE:
         ret = cc2520_cmd_strobe(priv->dev, arg & 0xFF);
         break;
+    case CC2520_CFG_INT_CLR:
+        /* clear interrupt status */
+        cc2520_write_register(priv->dev, CC2520_EXCFLAG0, 0);
+        cc2520_write_register(priv->dev, CC2520_EXCFLAG1, 0);
+        cc2520_write_register(priv->dev, CC2520_EXCFLAG2, 0);
     default:
         wlinfo("Unrecognized cmd: %d\n", cmd);
         ret = -ENOTTY;

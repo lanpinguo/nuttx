@@ -79,6 +79,9 @@ void weak_function stm32l4_spiinitialize(void)
 #ifdef HAVE_MMCSD
   stm32l4_configgpio(GPIO_SPI_CS_SD_CARD);
 #endif
+
+  stm32l4_configgpio(GPIO_WIRELESS_CS_0);
+
 #endif
 
 #ifdef CONFIG_STM32L4_SPI2

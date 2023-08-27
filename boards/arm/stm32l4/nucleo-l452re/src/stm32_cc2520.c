@@ -314,14 +314,14 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
     struct spi_dev_s *spi;
     int ret;
 
-    /* Configure the interrupt pin */
-    stm32l4_configgpio(GPIO_WIRELESS_VREG);
 
     stm32l4_configgpio(priv->intcfg);
 
     stm32l4_configgpio(priv->rstcfg);
 
-    
+    /* Configure the interrupt pin */
+    stm32l4_configgpio(GPIO_WIRELESS_VREG);
+ 
     /* Tdres ≥ 0.1 ms */
     stm32l4_gpiowrite(priv->rstcfg, 0);
     up_udelay(200);
@@ -341,7 +341,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
 
     /* Re-configure spi mode */
     SPI_SETMODE(spi, SPIDEV_MODE0);
-    SPI_SETFREQUENCY(spi, 8000000);
+    SPI_SETFREQUENCY(spi, 8000000/2);
 
 
 #ifdef CONFIG_SPI_DRIVER
@@ -376,7 +376,7 @@ static int stm32_cc2520_devsetup(struct stm32_priv_s *priv)
     }
 
     stm32_attach_irq(&priv->dev, stm32_interrupt_handler, priv);
-
+    stm32_enable_irq(&priv->dev, true);
 
 #ifdef CONFIG_IEEE802154_NETDEV
     /* Use the IEEE802.15.4 MAC interface instance to create a 6LoWPAN

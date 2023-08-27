@@ -328,12 +328,33 @@ cc2520_probe(FAR struct spi_dev_s *spi, int32_t minor)
 
     spi->ops->lock(spi, false);
 
+	wlinfo("detected chip id: 0x%02x!\n", chipid);
     if(chipid != 0x84){
         return ERROR;
     }
 
 	return OK;
 }
+
+int
+cc2520_reg_dump(struct cc2520_radio_s *dev, uint32_t base, int len)
+{
+	int ret = OK;
+	uint8_t reg;
+
+	printf("based addr: %02x \r\n", base);
+	for(int i = 0; i < len; i++){
+		if((i % 8 == 0) && (i != 0)){
+			printf("\n");
+		}
+		ret = cc2520_read_register(dev, base + i, &reg);
+		printf("%02x ", reg);
+	}
+	printf("\n");
+
+	return ret;
+}
+
 
 
 int cc2520_hw_init(struct cc2520_radio_s *priv)
@@ -361,12 +382,12 @@ int cc2520_hw_init(struct cc2520_radio_s *priv)
 	if (ret)
 		goto err_ret;
 
-	if ((state & (1<<2)) == 0){
-        wlerr("cc2520 state error!\n");
+	if (state != STATE_IDLE){
+        wlerr("cc2520 state error: 0x%02x!\n", state);
 		return -EINVAL;
     }
 
-	wlinfo("oscillator brought up\n");
+	wlinfo("oscillator brought up : 0x%02x\n", state);
 
 	/* If the CC2520 is connected to a CC2591 amplifier, we must both
 	 * configure GPIOs on the CC2520 to correctly configure the CC2591
@@ -467,10 +488,12 @@ int cc2520_hw_init(struct cc2520_radio_s *priv)
 		goto err_ret;
 
     /* GPIO2 as output RX_FRM_DONE exception */
+	/* RX_OVERFLOW, RX_UNDERFLOW*/
 	ret = cc2520_write_register(priv, CC2520_EXCMASKA0, (1<<6) | (1<<5));
 	if (ret)
 		goto err_ret;
 
+	/* FIFOP, RX_FRM_DONE*/
 	ret = cc2520_write_register(priv, CC2520_EXCMASKA1, (1<<4) | (1<<0));
 	if (ret)
 		goto err_ret;
